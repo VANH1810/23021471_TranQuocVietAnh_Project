@@ -74,10 +74,7 @@ void Game::handleEvents()
         case SDL_QUIT:
             isRunning = false;
             break;
-    // Keyboard events
-        case SDL_escapse:
-            isRunning = false;
-            break;
+   
         default:
             break;
     }
@@ -103,6 +100,6 @@ void Game::preload()
 
     ifstream mapData("tankaz.json");
     mapAZ = new Map("tankaz", this->renderer, json::parse(mapData));
-    player1 = new Player("assets/ground_shaker_asset/red/Bodies/body_tracks.png", this->renderer);
+    player1 = new Player("assets/ground_shaker_asset/red/Bodies/body_tracks.png", "assets/ground_shaker_asset/red/Weapons/weapons.png", this->renderer);
     
 }
