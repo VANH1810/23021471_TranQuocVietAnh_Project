@@ -14,6 +14,6 @@ const int SCALEDOWN = 4;
 const char* WINDOW_TITLE = "TANK AZ!";
 const int FPS = 60;
 const int frameDelay = 1000 / FPS;
-const bool fullscreen = true;
+const bool fullscreen = false;
 
 

@@ -4,6 +4,8 @@
 #include "TextureManager.cpp"
 #include "map.cpp"
 #include "Player.cpp"
+#include "Vector2D.cpp"
+#include "ECS/Components.hpp"
 
 class Game
 {
@@ -21,7 +23,6 @@ class Game
         void update();
         void clean();
         void preload();
-       
 
         bool running() 
         {
@@ -29,6 +30,7 @@ class Game
         }
         
         static SDL_Renderer* renderer;
+        static SDL_Event event;
         
 
 };

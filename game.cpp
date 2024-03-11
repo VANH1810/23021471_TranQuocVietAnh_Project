@@ -3,10 +3,13 @@
 #include "game.hpp"
 
 Map *mapAZ;
-Player *player1;
 
 SDL_Renderer* Game::renderer = nullptr;
+SDL_Event Game::event;
 
+Manager manager;
+auto& Player(manager.addEntity());
+ 
 Game::Game()
 {}
 Game::~Game()
@@ -60,30 +63,28 @@ void Game::Render()
 {
     SDL_RenderClear(renderer);
     mapAZ->render();
-    player1->render();
+    manager.draw();
     SDL_RenderPresent(renderer);
 }
 
 
 void Game::handleEvents()
 {
-    SDL_Event event;
     SDL_PollEvent(&event);
     switch (event.type)
     {
         case SDL_QUIT:
             isRunning = false;
             break;
-   
         default:
             break;
     }
-
 }
 
 void Game::update()
 {
-    player1->update();
+    manager.refresh();
+    manager.update();
 }
 
 void Game::clean()
@@ -97,9 +98,10 @@ void Game::preload()
 {
     initSDL(SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
     createRenderer();
-
     ifstream mapData("tankaz.json");
     mapAZ = new Map("tankaz", this->renderer, json::parse(mapData));
-    player1 = new Player("assets/ground_shaker_asset/red/Bodies/body_tracks.png", "assets/ground_shaker_asset/red/Weapons/weapons.png", this->renderer);
-    
+    Player.addComponent<TransformComponent>();
+    Player.addComponent<SpriteComponent>("assets/ground_shaker_asset/Red/Bodies/body_tracks.png", this->renderer);
+
+    Player.addComponent<KeyboardController>(&this->event);
 }
