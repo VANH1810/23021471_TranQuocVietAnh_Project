@@ -8,8 +8,9 @@ SDL_Renderer* Game::renderer = nullptr;
 SDL_Event Game::event;
 
 Manager manager;
-auto& Player(manager.addEntity());
- 
+auto& Player1(manager.addEntity());
+auto& Player2(manager.addEntity());
+
 Game::Game()
 {}
 Game::~Game()
@@ -107,8 +108,11 @@ void Game::preload()
     createRenderer();
     ifstream mapData("tankaz.json");
     mapAZ = new Map("tankaz", this->renderer, json::parse(mapData));
-    Player.addComponent<TransformComponent>();
-    Player.addComponent<SpriteComponent>("assets/ground_shaker_asset/Red/Bodies/body_tracks.png", this->renderer);
+    Player1.addComponent<TransformComponent>(96,96);
+    Player1.addComponent<SpriteComponent>("assets/ground_shaker_asset/Red/Bodies/body_tracks.png", "assets/ground_shaker_asset/Red/Weapons/turret_02_mk2.png", this->renderer);
+    Player1.addComponent<KeyboardController>(&this->event);
 
-    Player.addComponent<KeyboardController>(&this->event);
+    Player1.addComponent<TransformComponent>(704,704);
+    Player1.addComponent<SpriteComponent>("assets/ground_shaker_asset/Blue/Bodies/body_tracks.png", "assets/ground_shaker_asset/Blue/Weapons/turret_02_mk2.png", this->renderer);
+    Player1.addComponent<KeyboardController2>(&this->event);
 }

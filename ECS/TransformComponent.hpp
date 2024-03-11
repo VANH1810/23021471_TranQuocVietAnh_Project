@@ -5,22 +5,19 @@
 
 class TransformComponent : public Component
 {
+
     public:
         Vector2D position;
         Vector2D velocity;
-
+        
         int speed = 2;
         float rotationSpeed = 0.0f;
         float rotation = 0.0f;
-        TransformComponent()
+        TransformComponent() = default;
+        TransformComponent(float spon_x, float spon_y)
         {
-            position.x = 64.0f;
-            position.y = 64.0f;
-        }
-        TransformComponent(float x, float y)
-        {
-            position.x = x;
-            position.y = y;
+            position.x = spon_x;
+            position.y = spon_y;
         }
         void init () override
         {
