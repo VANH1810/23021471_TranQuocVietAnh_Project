@@ -10,7 +10,7 @@ class TransformComponent : public Component
         Vector2D velocity;
 
         int speed = 2;
-        float rotationSpeed = 3.0f;
+        float rotationSpeed = 0.0f;
         float rotation = 0.0f;
         TransformComponent()
         {
@@ -29,7 +29,14 @@ class TransformComponent : public Component
         }
         void update() override
         {
-            position.x += velocity.x * speed;
-            position.y += velocity.y * speed;
+            float angleRad = rotation * M_PI / 180.0f + 180.0f;
+            position.x += velocity.x;
+            position.y += velocity.y;
+            rotation += rotationSpeed;
+            if(rotation >= 360.0f)
+            {
+                rotation = 0;
+            }
         }
+    
 };

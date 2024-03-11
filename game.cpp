@@ -71,13 +71,20 @@ void Game::Render()
 void Game::handleEvents()
 {
     SDL_PollEvent(&event);
-    switch (event.type)
+    if(event.type == SDL_QUIT)
     {
-        case SDL_QUIT:
-            isRunning = false;
-            break;
-        default:
-            break;
+        isRunning = false;
+    }
+    if(event.type == SDL_KEYDOWN)
+    {
+        switch(event.key.keysym.sym)
+        {
+            case SDLK_ESCAPE:
+                isRunning = false;
+                break;
+            default:
+                break;
+        }
     }
 }
 

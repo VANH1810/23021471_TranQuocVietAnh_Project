@@ -30,9 +30,13 @@ public:
         destRect.x = (int) transform->position.x;
         destRect.y = (int) transform->position.y;
     }
-
     void draw() override
     {
-        TextureManager::Draw(renderer, texture, srcRect, destRect);
+        SDL_Rect destRectCopy = destRect; // Create a copy of destRect
+        destRectCopy.x = (int) transform->position.x - destRect.w / 2; // Update the copy
+        destRectCopy.y = (int) transform->position.y - destRect.h / 2;
+        SDL_Point center = {destRect.w / 2, destRect.h / 2}; // Rotation center
+        SDL_RenderCopyEx(renderer, texture, &srcRect, &destRectCopy, transform->rotation + 90.0f, &center, SDL_FLIP_NONE);
     }
+    
 };

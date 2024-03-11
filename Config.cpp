@@ -12,8 +12,8 @@ const int SCREEN_WIDTH = 768;
 const int SCREEN_HEIGHT = 768;
 const int SCALEDOWN = 4;
 const char* WINDOW_TITLE = "TANK AZ!";
-const int FPS = 60;
+const int FPS = 120;
 const int frameDelay = 1000 / FPS;
-const bool fullscreen = false;
+const bool fullscreen = true;
 
 

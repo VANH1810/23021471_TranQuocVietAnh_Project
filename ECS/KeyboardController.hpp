@@ -28,19 +28,21 @@ class KeyboardController : public Component
                 switch(event->key.keysym.sym)
                 {
                     case SDLK_w:
-                        transform->velocity.y = -1;
+                        transform->velocity.x = cos(transform->rotation * M_PI / 180.0f);
+                        transform->velocity.y = sin(transform->rotation * M_PI / 180.0f);
                         cout << "W" << endl;
                         break;
                     case SDLK_a:
-                        transform->rotationSpeed = -1.0f;
+                        transform->rotationSpeed = -5.0f;
                         cout << "A" << endl;
                         break;
                     case SDLK_s:
-                        transform->velocity.y = 1;
+                        transform->velocity.x = -cos(transform->rotation * M_PI / 180.0f);
+                        transform->velocity.y = -sin(transform->rotation * M_PI / 180.0f);
                         cout << "S" << endl;
                         break;
                     case SDLK_d:
-                        transform->rotationSpeed = 1.0f;
+                        transform->rotationSpeed = 5.0f;
                         cout << "D" << endl;
                         break;
                     default:
@@ -52,12 +54,14 @@ class KeyboardController : public Component
                 switch(event->key.keysym.sym)
                 {
                     case SDLK_w:
+                        transform->velocity.x = 0;
                         transform->velocity.y = 0;
                         break;
                     case SDLK_a:
                         transform->rotationSpeed = 0.0f;
                         break;
                     case SDLK_s:
+                        transform->velocity.x = 0;
                         transform->velocity.y = 0;
                         break;
                     case SDLK_d:
