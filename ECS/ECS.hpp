@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../Config.cpp"
+#include "../map.cpp"
 
 class Component;
 class Entity;

@@ -83,6 +83,9 @@ void Game::handleEvents()
             case SDLK_ESCAPE:
                 isRunning = false;
                 break;
+            case SDLK_p:
+                PAUSED ^= 1;
+                break;
             default:
                 break;
         }
@@ -108,11 +111,15 @@ void Game::preload()
     createRenderer();
     ifstream mapData("tankaz.json");
     mapAZ = new Map("tankaz", this->renderer, json::parse(mapData));
-    Player1.addComponent<TransformComponent>(96,96);
+    mapAZ->setCollisionByProperty(new json({{"collision", true}}), true);
+    Player1.addComponent<TransformComponent>(80,80, mapAZ);
     Player1.addComponent<SpriteComponent>("assets/ground_shaker_asset/Red/Bodies/body_tracks.png", "assets/ground_shaker_asset/Red/Weapons/turret_02_mk2.png", this->renderer);
     Player1.addComponent<KeyboardController>(&this->event);
+    
 
-    Player1.addComponent<TransformComponent>(704,704);
-    Player1.addComponent<SpriteComponent>("assets/ground_shaker_asset/Blue/Bodies/body_tracks.png", "assets/ground_shaker_asset/Blue/Weapons/turret_02_mk2.png", this->renderer);
-    Player1.addComponent<KeyboardController2>(&this->event);
+
+    Player2.addComponent<TransformComponent>(720,720, mapAZ);
+    Player2.addComponent<SpriteComponent>("assets/ground_shaker_asset/Blue/Bodies/body_tracks.png", "assets/ground_shaker_asset/Blue/Weapons/turret_02_mk2.png", this->renderer);
+    Player2.addComponent<KeyboardController2>(&this->event);
+
 }

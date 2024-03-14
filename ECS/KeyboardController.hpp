@@ -13,7 +13,6 @@ class KeyboardController : public Component
         KeyboardController(SDL_Event *e)
         {
             this->event = e;
-            //cerr << &this->event;
         }
         TransformComponent *transform;
         void init () override
@@ -28,22 +27,22 @@ class KeyboardController : public Component
                 switch(event->key.keysym.sym)
                 {
                     case SDLK_w:
-                        transform->velocity.x = cos(transform->rotation * M_PI / 180.0f);
-                        transform->velocity.y = sin(transform->rotation * M_PI / 180.0f);
-                        cout << "W" << endl;
+                        transform->velocity.x = cos(transform->rotation * M_PI / 180.0f) * transform->speed;
+                        transform->velocity.y = sin(transform->rotation * M_PI / 180.0f) * transform->speed;
+                        //cout << "W" << endl;
                         break;
                     case SDLK_a:
                         transform->rotationSpeed = -5.0f;
-                        cout << "A" << endl;
+                        //cout << "A" << endl;
                         break;
                     case SDLK_s:
-                        transform->velocity.x = -cos(transform->rotation * M_PI / 180.0f);
-                        transform->velocity.y = -sin(transform->rotation * M_PI / 180.0f);
-                        cout << "S" << endl;
+                        transform->velocity.x = -cos(transform->rotation * M_PI / 180.0f) * transform->speed;
+                        transform->velocity.y = -sin(transform->rotation * M_PI / 180.0f) * transform->speed;
+                        //cout << "S" << endl;
                         break;
                     case SDLK_d:
                         transform->rotationSpeed = 5.0f;
-                        cout << "D" << endl;
+                        //cout << "D" << endl;
                         break;
                     default:
                         break;
@@ -85,7 +84,6 @@ class KeyboardController2 : public KeyboardController
     KeyboardController2(SDL_Event *e)
         {
             this->event = e;
-            //cerr << &this->event;
         }
     void update() override
         {
@@ -94,22 +92,22 @@ class KeyboardController2 : public KeyboardController
                 switch(event->key.keysym.sym)
                 {
                     case SDLK_UP:
-                        transform->velocity.x = cos(transform->rotation * M_PI / 180.0f);
-                        transform->velocity.y = sin(transform->rotation * M_PI / 180.0f);
-                        cout << "Up" << endl;
+                        transform->velocity.x = cos(transform->rotation * M_PI / 180.0f) * transform->speed;
+                        transform->velocity.y = sin(transform->rotation * M_PI / 180.0f) * transform->speed;
+                        //cout << "Up" << endl;
                         break;
                     case SDLK_LEFT:
                         transform->rotationSpeed = -5.0f;
-                        cout << "Left" << endl;
+                        //cout << "Left" << endl;
                         break;
                     case SDLK_DOWN:
-                        transform->velocity.x = -cos(transform->rotation * M_PI / 180.0f);
-                        transform->velocity.y = -sin(transform->rotation * M_PI / 180.0f);
-                        cout << "Down" << endl;
+                        transform->velocity.x = -cos(transform->rotation * M_PI / 180.0f) * transform->speed;
+                        transform->velocity.y = -sin(transform->rotation * M_PI / 180.0f) * transform->speed;
+                        //cout << "Down" << endl;
                         break;
                     case SDLK_RIGHT:
                         transform->rotationSpeed = 5.0f;
-                        cout << "Right" << endl;
+                        //cout << "Right" << endl;
                         break;
                     default:
                         break;

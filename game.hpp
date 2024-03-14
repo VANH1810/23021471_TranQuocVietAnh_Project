@@ -2,10 +2,8 @@
 
 #include "Config.cpp"
 #include "TextureManager.cpp"
-#include "map.cpp"
-#include "Player.cpp"
-#include "Vector2D.cpp"
 #include "ECS/Components.hpp"
+#include "Vector2D.cpp"
 
 class Game
 {

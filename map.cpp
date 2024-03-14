@@ -2,7 +2,7 @@
 #include "map.hpp"
 
 Map::Map(const string &name, SDL_Renderer* ren, const json& map){
-    //construct
+    
     mapName = name;
     Map::renderer = ren;
     mapWidth = map["width"];
@@ -29,9 +29,43 @@ Map::~Map()
     delete mapData;
 }
 
-void Map::render(){
+void Map::render()
+{
     for (auto layer: layers)
     {
         layer->render(tileSet, renderer);
     }
+}
+
+void Map::setCollisionByProperty(json* properties, bool istrue = true){
+    if (tileSet == NULL)
+    {
+        cerr << "No tileset found" << endl;
+        return;
+    }
+    for (auto tile: tileSet->tiles)
+    {
+        Tile* temp = tile.second;
+        unordered_map <string, json> props;
+        for (auto property: temp->properties)
+        {
+            props[property["name"]] = property["value"];
+        }
+        bool match = true;
+        for (auto property: properties->items())
+        {
+                auto it = props.find(property.key());
+                if (it == props.end() || it->second != property.value())
+                {
+                    match = false;
+                    break;
+                }
+        }
+        if (match)
+        {
+                //cerr << "Setting collision for tile " << temp->id << endl;
+                temp->isCollidable = istrue;
+        }           
+    }
+
 }

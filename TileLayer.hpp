@@ -9,8 +9,9 @@ class TileLayer
         TileLayer(json* map);
         ~TileLayer();
         void render(TileSet* tileSet, SDL_Renderer* renderer);
-    private: 
+        int getId(int i, int j);
         int layerWidth;
         int layerHeight;
         long long** layerData;
+    private: 
 };

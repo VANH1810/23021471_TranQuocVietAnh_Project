@@ -8,19 +8,19 @@ class Map
         Map(const string &name, SDL_Renderer* ren, const json& map);
         ~Map();
         void render();
-        
+        void setCollisionByProperty(json* properties, bool istrue);
+        vector <Layer*> layers;
 
-    private:
         int mapWidth;
         int mapHeight;
         int tileWidth;
         int tileHeight;
-        string mapName;
         json* mapData;
         TileSet* tileSet;
-        vector <Layer*> layers;
+        
+        
+    private:
+        string mapName;
         SDL_Renderer *renderer;
-        
-        
 
 };

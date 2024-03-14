@@ -4,12 +4,12 @@
 #include "ObjectGroup.cpp"
 
 
-class Layer{
+class Layer
+{
     public:
         Layer(json* map);
         ~Layer();
         void render(TileSet* tileSet, SDL_Renderer* renderer);
-    private:
         string layerName;
         string layerType; //tilelayer, objectgroup
         SDL_Rect* srcRect;
@@ -18,4 +18,5 @@ class Layer{
         float layerOpacity;
         TileLayer* tileLayer;
         ObjectGroup* objectGroup;
+    private:
 };

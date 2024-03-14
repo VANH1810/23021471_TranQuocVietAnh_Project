@@ -55,7 +55,8 @@
         "iomanip": "cpp",
         "valarray": "cpp",
         "bitset": "cpp",
-        "regex": "cpp"
+        "regex": "cpp",
+        "complex": "cpp"
     },
     "C_Cpp.errorSquiggles": "disabled"
 

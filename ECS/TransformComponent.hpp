@@ -2,23 +2,24 @@
 
 #include "ECS.hpp"
 #include "../Vector2D.hpp"
-
 class TransformComponent : public Component
 {
 
     public:
         Vector2D position;
         Vector2D velocity;
-        
+        Map* map;
         int speed = 2;
         float rotationSpeed = 0.0f;
         float rotation = 0.0f;
         TransformComponent() = default;
-        TransformComponent(float spon_x, float spon_y)
+        TransformComponent(float spon_x, float spon_y, Map* mapdata)
         {
             position.x = spon_x;
             position.y = spon_y;
+            map = mapdata;
         }
+
         void init () override
         {
             velocity.x = 0;
@@ -26,9 +27,32 @@ class TransformComponent : public Component
         }
         void update() override
         {
-            float angleRad = rotation * M_PI / 180.0f + 180.0f;
-            position.x += velocity.x;
-            position.y += velocity.y;
+            int finalPositionX = position.x + velocity.x - 9;
+            int finalPositionY = position.y + velocity.y - 10;
+            bool collide = false;
+            for (int i = finalPositionX * SCALEDOWN / map->tileWidth; i <= (finalPositionX + 17) * SCALEDOWN / map->tileWidth; ++i)
+            {
+                for (int j = finalPositionY * SCALEDOWN / map->tileHeight; j <= (finalPositionY + 19) * SCALEDOWN / map->tileHeight; ++j)
+                {
+                    for (auto layer: map->layers)
+                    {
+                        if (layer->layerType != "tilelayer") continue;
+                        int id = layer->tileLayer->getId(j, i);
+                        if (map->tileSet->tiles[id]->isCollidable)
+                        {
+                            collide = true;
+                            return;
+                        }
+                    }
+                }
+            }
+            float angleRad = rotation * M_PI / 180.0f;
+            if (!collide)
+            {
+                position.x += velocity.x;
+                position.y += velocity.y;
+            }
+
             rotation += rotationSpeed;
             if(rotation >= 360.0f)
             {

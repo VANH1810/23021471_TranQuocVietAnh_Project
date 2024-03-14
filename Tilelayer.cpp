@@ -25,6 +25,12 @@ pair <int, long long> Reformat(long long tileId)
     return angle;
 }
 
+TileLayer::getId(int i, int j)
+{
+    long long id = layerData[i][j];
+    return Reformat(id).second;
+}
+
 TileLayer::TileLayer(json* map)
 {
     layerWidth = (*map)["width"];

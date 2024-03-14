@@ -12,7 +12,6 @@ private:
     SDL_Texture *WeaponTexture;
     SDL_Rect WeaponsrcRect, WeapondestRect;
     SDL_Renderer *renderer;
-    float spon1, spon2;
 
 public:
     SpriteComponent() = default;
@@ -26,11 +25,13 @@ public:
     void init() override
     {
         transform = &entity->getComponent<TransformComponent>();
-        TanksrcRect.x = TanksrcRect.y = 0;
+        TanksrcRect.x = TanksrcRect.y = 26;
         WeaponsrcRect.x = WeaponsrcRect.y = 0;
-        TanksrcRect.w = TanksrcRect.h = 128;
+        TanksrcRect.w = 72;
+        TanksrcRect.h = 80;
         WeaponsrcRect.w = WeaponsrcRect.h = 128;
-        TankdestRect.w = TankdestRect.h = 128 / SCALEDOWN;
+        TankdestRect.w = 72 / SCALEDOWN;
+        TankdestRect.h = 80 / SCALEDOWN;
         WeapondestRect.w = WeapondestRect.h = 128 / SCALEDOWN;
     }
     void update() override

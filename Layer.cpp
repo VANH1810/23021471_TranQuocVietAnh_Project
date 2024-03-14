@@ -1,9 +1,10 @@
 #pragma once
 
 #include "Layer.hpp"
-#include "TileSet.cpp"
 
-Layer::Layer(json* map){
+
+Layer::Layer(json* map)
+{
     //construct
     layerName = (*map)["name"];
     layerType = (*map)["type"];
@@ -33,7 +34,8 @@ Layer::~Layer(){
     
 }
 
-void Layer::render(TileSet* tileSet, SDL_Renderer* renderer){
+void Layer::render(TileSet* tileSet, SDL_Renderer* renderer)
+{
     if (layerType == "tilelayer")
         tileLayer->render(tileSet, renderer);
     
