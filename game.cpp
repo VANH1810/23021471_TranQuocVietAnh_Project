@@ -112,14 +112,14 @@ void Game::preload()
     ifstream mapData("tankaz.json");
     mapAZ = new Map("tankaz", this->renderer, json::parse(mapData));
     mapAZ->setCollisionByProperty(new json({{"collision", true}}), true);
-    Player1.addComponent<TransformComponent>(80,80, mapAZ);
-    Player1.addComponent<SpriteComponent>("assets/ground_shaker_asset/Red/Bodies/body_tracks.png", "assets/ground_shaker_asset/Red/Weapons/turret_02_mk2.png", this->renderer);
+    Player1.addComponent<TransformComponent>(160,160, mapAZ);
+    Player1.addComponent<SpriteComponent>("assets/ground_shaker_asset/Red/Bodies/body_tracks.png", "assets/ground_shaker_asset/Red/Weapons/turret_01_mk4.png", this->renderer, 8, 200);
     Player1.addComponent<KeyboardController>(&this->event);
     
 
 
-    Player2.addComponent<TransformComponent>(720,720, mapAZ);
-    Player2.addComponent<SpriteComponent>("assets/ground_shaker_asset/Blue/Bodies/body_tracks.png", "assets/ground_shaker_asset/Blue/Weapons/turret_02_mk2.png", this->renderer);
+    Player2.addComponent<TransformComponent>(1440,1440, mapAZ);
+    Player2.addComponent<SpriteComponent>("assets/ground_shaker_asset/Blue/Bodies/body_tracks.png", "assets/ground_shaker_asset/Blue/Weapons/turret_01_mk4.png", this->renderer, 8, 200);
     Player2.addComponent<KeyboardController2>(&this->event);
 
 }

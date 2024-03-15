@@ -12,20 +12,29 @@ private:
     SDL_Texture *WeaponTexture;
     SDL_Rect WeaponsrcRect, WeapondestRect;
     SDL_Renderer *renderer;
+    int speed_frames = 50;
 
 public:
+    bool shooting_animated = false;
+    int currentFrame = 0;
+    int animated_frames = 0;
+
     SpriteComponent() = default;
     ~SpriteComponent() = default;
-    SpriteComponent(const string &tank_path, const string &weapon_path, SDL_Renderer *ren)
+    SpriteComponent(const string &tank_path, const string &weapon_path, SDL_Renderer *ren, int nFrames, int mSpeed)
     {
+
+        animated_frames = nFrames;
+        speed_frames = mSpeed;
         renderer = ren;
         TankTexture = TextureManager::LoadTexture(tank_path.c_str(), renderer);
         WeaponTexture = TextureManager::LoadTexture(weapon_path.c_str(), renderer);
     }
+
     void init() override
     {
         transform = &entity->getComponent<TransformComponent>();
-        TanksrcRect.x = TanksrcRect.y = 26;
+        TanksrcRect.x = TanksrcRect.y = 27;
         WeaponsrcRect.x = WeaponsrcRect.y = 0;
         TanksrcRect.w = 72;
         TanksrcRect.h = 80;
@@ -36,6 +45,15 @@ public:
     }
     void update() override
     {
+        if (shooting_animated)
+        {
+            int currentFrame =  static_cast<int>((SDL_GetTicks() / speed_frames) % animated_frames);
+            WeaponsrcRect.x = currentFrame * WeaponsrcRect.w;
+            if(currentFrame == animated_frames - 1)
+            {
+                shooting_animated = false;
+            }
+        }
         TankdestRect.x = (int) transform->position.x;
         TankdestRect.y = (int) transform->position.y;
         WeapondestRect.x = (int) transform->position.x;

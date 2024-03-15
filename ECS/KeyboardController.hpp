@@ -7,6 +7,8 @@ class KeyboardController : public Component
 {
     private:
         SDL_Event *event;
+        Uint32 lastJPressTime = 0;
+        Uint32 minJPressInterval = 1000; // Minimum time between J presses in milliseconds
     public:
         KeyboardController() = default;
         ~KeyboardController() = default;
@@ -15,13 +17,16 @@ class KeyboardController : public Component
             this->event = e;
         }
         TransformComponent *transform;
+        SpriteComponent *sprite;
         void init () override
         {
             transform = &entity->getComponent<TransformComponent>();
+            sprite = &entity->getComponent<SpriteComponent>();
         }
     
         void update() override
         {
+            Uint32 currentTime;
             if(event->type == SDL_KEYDOWN)
             {
                 switch(event->key.keysym.sym)
@@ -43,6 +48,13 @@ class KeyboardController : public Component
                     case SDLK_d:
                         transform->rotationSpeed = 5.0f;
                         //cout << "D" << endl;
+                        break;
+                    case SDLK_j:
+                        currentTime = SDL_GetTicks();
+                        if (currentTime > lastJPressTime + minJPressInterval) {
+                            lastJPressTime = currentTime;
+                            sprite->shooting_animated = true;
+                        }              
                         break;
                     default:
                         break;
@@ -78,6 +90,8 @@ class KeyboardController2 : public KeyboardController
 {
     private:
         SDL_Event *event;
+        Uint32 last1PressTime = 0;
+        Uint32 min1PressInterval = 1000;
     public:
     KeyboardController2() = default;
     ~KeyboardController2() = default;
@@ -87,6 +101,7 @@ class KeyboardController2 : public KeyboardController
         }
     void update() override
         {
+            Uint32 currentTime;
             if(event->type == SDL_KEYDOWN)
             {
                 switch(event->key.keysym.sym)
@@ -108,6 +123,13 @@ class KeyboardController2 : public KeyboardController
                     case SDLK_RIGHT:
                         transform->rotationSpeed = 5.0f;
                         //cout << "Right" << endl;
+                        break;
+                    case SDLK_1:
+                        currentTime = SDL_GetTicks();
+                        if (currentTime > last1PressTime + min1PressInterval) {
+                            last1PressTime = currentTime;
+                            sprite->shooting_animated = true;
+                        }              
                         break;
                     default:
                         break;
