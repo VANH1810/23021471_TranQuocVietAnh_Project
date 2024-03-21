@@ -8,16 +8,19 @@ class KeyboardController : public Component
     private:
         SDL_Event *event;
         Uint32 lastJPressTime = 0;
-        Uint32 minJPressInterval = 1000; // Minimum time between J presses in milliseconds
+        Uint32 minJPressInterval = 1000;
+        // Minimum time between J presses in milliseconds
     public:
+        TransformComponent *transform;
+        SpriteComponent *sprite;
         KeyboardController() = default;
         ~KeyboardController() = default;
         KeyboardController(SDL_Event *e)
         {
             this->event = e;
         }
-        TransformComponent *transform;
-        SpriteComponent *sprite;
+        
+        
         void init () override
         {
             transform = &entity->getComponent<TransformComponent>();
@@ -54,6 +57,7 @@ class KeyboardController : public Component
                         if (currentTime > lastJPressTime + minJPressInterval) {
                             lastJPressTime = currentTime;
                             sprite->shooting_animated = true;
+                            sprite->shoot();
                         }              
                         break;
                     default:
@@ -129,6 +133,7 @@ class KeyboardController2 : public KeyboardController
                         if (currentTime > last1PressTime + min1PressInterval) {
                             last1PressTime = currentTime;
                             sprite->shooting_animated = true;
+                            sprite->shoot();
                         }              
                         break;
                     default:

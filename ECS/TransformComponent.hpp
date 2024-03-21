@@ -46,7 +46,7 @@ class TransformComponent : public Component
                     }
                 }
             }
-            float angleRad = rotation * M_PI / 180.0f;
+        
             if (!collide)
             {
                 position.x += velocity.x;
