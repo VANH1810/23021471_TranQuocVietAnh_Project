@@ -10,6 +10,8 @@ class Game
     private: 
         SDL_Window* window;
         bool isRunning;
+        static SDL_Renderer* renderer;
+        static SDL_Event event;
     public:
         Game();
         ~Game();
@@ -21,14 +23,16 @@ class Game
         void update();
         void clean();
         void preload();
-
+        void ResetGame();
         bool running() 
         {
             return isRunning;
         }
+
+        static int ScorePlayer1;
+        static int ScorePlayer2;
         
-        static SDL_Renderer* renderer;
-        static SDL_Event event;
+        
         
 
 };

@@ -5,3 +5,4 @@
 #include "TransformComponent.hpp"
 #include "KeyboardController.hpp"
 #include "BulletComponent.hpp"
+#include "HandleTwoSprites.hpp"

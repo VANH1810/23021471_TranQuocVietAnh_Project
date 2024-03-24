@@ -1,8 +1,6 @@
 #pragma once
 
 #include "ECS.hpp"
-#include "TransformComponent.hpp"
-#include "../Vector2D.hpp"
 #include "../TextureManager.hpp"
 
 class BulletComponent
@@ -12,13 +10,14 @@ class BulletComponent
         SDL_Rect bulletsrcRect;
         SDL_Renderer *renderer;
         float speed = 10;
+
     public:
+        Vector2D initialPosition; // Position of the gun from which the bullet is
         SDL_Rect bulletdestRect;
-        
         bool isMove;
-        Map* map;
-        Vector2D initialPosition;
         float direction;
+        Map* map;
+
         ~BulletComponent() = default;
         BulletComponent(SDL_Texture *bulletImage, SDL_Renderer *ren, float mSpeed, Map* mapdata)
         {
@@ -35,9 +34,8 @@ class BulletComponent
             isMove = true;
         }
 
-        void update() 
+        void CheckBulletCollisionWithWall()
         {
-            // Update bullet position based on speed and direction
             int finalPositionX = bulletdestRect.x + 1;
             int finalPositionY = bulletdestRect.y + 1;
             bool collide = false;
@@ -60,7 +58,15 @@ class BulletComponent
                 if(collide) break;
             }
             if(collide) this->isMove = false;
-            else{
+            
+        }
+
+        void update() 
+        {
+            CheckBulletCollisionWithWall();
+
+            if(isMove)
+            {
                 bulletdestRect.x += (speed * cos(direction * M_PI / 180.0f));
                 bulletdestRect.y += (speed * sin(direction * M_PI / 180.0f));
             }

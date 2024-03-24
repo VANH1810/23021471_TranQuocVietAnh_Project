@@ -4,7 +4,6 @@
 #include "../Vector2D.hpp"
 class TransformComponent : public Component
 {
-
     public:
         Vector2D position;
         Vector2D velocity;
@@ -12,7 +11,9 @@ class TransformComponent : public Component
         int speed = 2;
         float rotationSpeed = 0.0f;
         float rotation = 0.0f;
+
         TransformComponent() = default;
+        ~TransformComponent() = default;
         TransformComponent(float spon_x, float spon_y, Map* mapdata)
         {
             position.x = spon_x;
@@ -25,6 +26,7 @@ class TransformComponent : public Component
             velocity.x = 0;
             velocity.y = 0;
         }
+
         void update() override
         {
             int finalPositionX = position.x + velocity.x - (72 / SCALEDOWN)/2 + 1;
@@ -54,7 +56,7 @@ class TransformComponent : public Component
             }
 
             rotation += rotationSpeed;
-            if(rotation >= 360.0f)
+            if(rotation == 360.0f)
             {
                 rotation = 0;
             }

@@ -11,6 +11,11 @@ Manager manager;
 auto& Player1(manager.addEntity());
 auto& Player2(manager.addEntity());
 
+HandleBulletsBetweenTwoSprites* HandleBullet = nullptr;
+
+int Game::ScorePlayer1 = 0;
+int Game::ScorePlayer2 = 0;
+
 Game::Game()
 {}
 Game::~Game()
@@ -96,6 +101,7 @@ void Game::update()
 {
     manager.refresh();
     manager.update();
+    HandleBullet->update();
 }
 
 void Game::clean()
@@ -103,6 +109,18 @@ void Game::clean()
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();
+}
+
+void Game::ResetGame()
+{
+    manager.refresh();
+    Player1.getComponent<SpriteComponent>().alive = true;
+    Player2.getComponent<SpriteComponent>().alive = true;
+    Player1.getComponent<TransformComponent>().position = Vector2D(160,160);
+    Player2.getComponent<TransformComponent>().position = Vector2D(1440,1440);
+    Player1.getComponent<SpriteComponent>().bullets.clear();
+    Player2.getComponent<SpriteComponent>().bullets.clear();
+
 }
 
 void Game::preload()
@@ -120,6 +138,6 @@ void Game::preload()
     Player2.addComponent<TransformComponent>(1440,1440, mapAZ);
     Player2.addComponent<SpriteComponent>("assets/ground_shaker_asset/Blue/Bodies/body_tracks.png", "assets/ground_shaker_asset/Blue/Weapons/turret_01_mk4.png","assets/Fire_Shots/Flash_B_04.png", this->renderer, 8, 200);
     Player2.addComponent<KeyboardController2>(&this->event);
-    
+    HandleBullet = new HandleBulletsBetweenTwoSprites(Player1, Player2);
 
 }

@@ -7,30 +7,44 @@ class SpriteComponent : public Component
 {
 private:
     TransformComponent *transform;
-    vector<BulletComponent*> bullets; // Danh sách các viên đạn
     vector<BulletComponent*> bulletsToDelete;
     SDL_Texture *bulletTexture;
+
     SDL_Texture *TankTexture;
-    SDL_Rect TanksrcRect, TankdestRect;
+    SDL_Rect TanksrcRect;
+
     SDL_Texture *WeaponTexture;
     SDL_Rect WeaponsrcRect, WeapondestRect;
+
     SDL_Renderer *renderer;
+
     int speed_frames = 50;
     int currentFrame = 0;
     int animated_frames = 0;
 public:
+    vector<BulletComponent*> bullets;
+    bool alive = true;
     bool shooting_animated = false;
+    SDL_Rect TankdestRect;
+
     SpriteComponent() = default;
+    ~SpriteComponent()
+    {
+        SDL_DestroyTexture(TankTexture);
+        SDL_DestroyTexture(WeaponTexture);
+        SDL_DestroyTexture(bulletTexture);
+    }
     SpriteComponent(const string &tank_path, const string &weapon_path, const string &bullet_path, SDL_Renderer *ren, int nFrames, int mSpeed)
     {
-
         animated_frames = nFrames;
         speed_frames = mSpeed;
         renderer = ren;
         TankTexture = TextureManager::LoadTexture(tank_path.c_str(), ren);
         WeaponTexture = TextureManager::LoadTexture(weapon_path.c_str(), ren);
         bulletTexture = TextureManager::LoadTexture(bullet_path.c_str(), ren);
+    
     }
+    
 
     void init() override
     {
@@ -53,6 +67,7 @@ public:
             newBullet->direction = transform->rotation;
             newBullet->isMove = true;
             bullets.push_back(newBullet); 
+
     }
     void update() override
     {
@@ -68,6 +83,15 @@ public:
         }
         for(BulletComponent* bullet : bullets) 
         {
+            /*
+            if (bullet->bulletdestRect.x < entityTransform->position.x + entitySprite->TankdestRect.x &&
+                bullet->bulletdestRect.x + bullet->bulletdestRect.w > entityTransform->position.x &&
+                bullet->bulletdestRect.y < entityTransform->position.y + entitySprite->TankdestRect.h &&
+                bullet->bulletdestRect.y + bullet->bulletdestRect.h > entityTransform->position.y)
+            {
+                    bullet -> isMove = false;
+                    entitySprite->alive = false;
+            }*/
             if(bullet->isMove) {
                 bullet->update();
             }
@@ -82,6 +106,7 @@ public:
     }
     void draw() override
     {
+        if(alive == false) return;
         SDL_Rect TankdestRectCopy = TankdestRect; // Create a copy of destRect
         TankdestRectCopy.x = (int) transform->position.x - TankdestRect.w / 2; // Update the copy
         TankdestRectCopy.y = (int) transform->position.y - TankdestRect.h / 2;
