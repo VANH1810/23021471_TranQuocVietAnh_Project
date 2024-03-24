@@ -9,6 +9,7 @@ private:
     TransformComponent *transform;
     vector<BulletComponent*> bulletsToDelete;
     SDL_Texture *bulletTexture;
+    SDL_Texture *explosionTexture;
 
     SDL_Texture *TankTexture;
     SDL_Rect TanksrcRect;
@@ -33,8 +34,9 @@ public:
         SDL_DestroyTexture(TankTexture);
         SDL_DestroyTexture(WeaponTexture);
         SDL_DestroyTexture(bulletTexture);
+        SDL_DestroyTexture(explosionTexture);
     }
-    SpriteComponent(const string &tank_path, const string &weapon_path, const string &bullet_path, SDL_Renderer *ren, int nFrames, int mSpeed)
+    SpriteComponent(const string &tank_path, const string &weapon_path, const string &bullet_path, const string &explosion_path, SDL_Renderer *ren, int nFrames, int mSpeed)
     {
         animated_frames = nFrames;
         speed_frames = mSpeed;
@@ -42,7 +44,7 @@ public:
         TankTexture = TextureManager::LoadTexture(tank_path.c_str(), ren);
         WeaponTexture = TextureManager::LoadTexture(weapon_path.c_str(), ren);
         bulletTexture = TextureManager::LoadTexture(bullet_path.c_str(), ren);
-    
+        explosionTexture = TextureManager::LoadTexture(explosion_path.c_str(), ren);
     }
     
 
@@ -60,7 +62,7 @@ public:
     }
     void shoot()
     {
-            BulletComponent* newBullet = new BulletComponent(bulletTexture, renderer, 10.0f, transform->map);
+            BulletComponent* newBullet = new BulletComponent(bulletTexture, explosionTexture, renderer, 10.0f, transform->map);
             newBullet->initialPosition = transform->position;
             newBullet->bulletdestRect.x = transform->position.x;
             newBullet->bulletdestRect.y = transform->position.y;
@@ -83,15 +85,6 @@ public:
         }
         for(BulletComponent* bullet : bullets) 
         {
-            /*
-            if (bullet->bulletdestRect.x < entityTransform->position.x + entitySprite->TankdestRect.x &&
-                bullet->bulletdestRect.x + bullet->bulletdestRect.w > entityTransform->position.x &&
-                bullet->bulletdestRect.y < entityTransform->position.y + entitySprite->TankdestRect.h &&
-                bullet->bulletdestRect.y + bullet->bulletdestRect.h > entityTransform->position.y)
-            {
-                    bullet -> isMove = false;
-                    entitySprite->alive = false;
-            }*/
             if(bullet->isMove) {
                 bullet->update();
             }
@@ -118,18 +111,16 @@ public:
         WeapondestRectCopy.y = (int) transform->position.y - WeapondestRect.w / 2; 
         SDL_Point Weaponcenter = {WeapondestRect.w / 2, WeapondestRect.h / 2}; // Rotation center
         SDL_RenderCopyEx(renderer, WeaponTexture, &WeaponsrcRect, &WeapondestRectCopy, transform->rotation + 90.0f, &Weaponcenter, SDL_FLIP_NONE);
+        
         for(BulletComponent* bullet : bullets) 
-        {
-            if(bullet->isMove) {
-                bullet->draw();
-            }
+        { 
+            bullet->draw();
         }
         for(BulletComponent* bullet : bulletsToDelete) {
             bullets.erase(std::remove(bullets.begin(), bullets.end(), bullet), bullets.end());
             delete bullet;
         }
         bulletsToDelete.clear(); // Clear the vector after deleting bullets
-        
     }
 
     

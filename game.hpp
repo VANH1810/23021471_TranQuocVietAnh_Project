@@ -19,6 +19,7 @@ class Game
         void initSDL(int xpos, int ypos);
         void createRenderer();
         void Render();
+        void ScoreRender();
         void handleEvents();
         void update();
         void clean();

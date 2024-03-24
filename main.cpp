@@ -33,6 +33,7 @@ signed main(int argc, char* argv[])
             game->ResetGame();
             game->ScorePlayer1 ++;
         }
+        //game->ScoreRender();
         
     }
     game->clean();
