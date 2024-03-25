@@ -10,7 +10,6 @@ class Game
     private: 
         SDL_Window* window;
         bool isRunning;
-        static SDL_Renderer* renderer;
         static SDL_Event event;
     public:
         Game();
@@ -32,7 +31,7 @@ class Game
 
         static int ScorePlayer1;
         static int ScorePlayer2;
-        
+        static SDL_Renderer* renderer;
         
         
 

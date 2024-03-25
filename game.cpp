@@ -135,11 +135,11 @@ void Game::preload()
     mapAZ->setCollisionByProperty(new json({{"collision", true}}), true);
     
     Player1.addComponent<TransformComponent>(160,160, mapAZ);
-    Player1.addComponent<SpriteComponent>("assets/ground_shaker_asset/Red/Bodies/body_tracks.png", "assets/ground_shaker_asset/Red/Weapons/turret_01_mk4.png", "assets/Fire_Shots/Flash_A_04.png", "assets/SCML/Effects/Explosion_D.png",this->renderer, 8, 200);
+    Player1.addComponent<SpriteComponent>("assets/ground_shaker_asset/Red/Bodies/body_tracks.png", "assets/ground_shaker_asset/Red/Weapons/turret_01_mk4.png", "assets/Fire_Shots/Flash_A_04.png", "assets/SCML/Effects/Explosion_E.png",this->renderer, 8, 200);
     Player1.addComponent<KeyboardController>(&this->event);
 
     Player2.addComponent<TransformComponent>(1440,1440, mapAZ);
-    Player2.addComponent<SpriteComponent>("assets/ground_shaker_asset/Blue/Bodies/body_tracks.png", "assets/ground_shaker_asset/Blue/Weapons/turret_01_mk4.png","assets/Fire_Shots/Flash_B_04.png", "assets/SCML/Effects/Explosion_D.png",this->renderer, 8, 200);
+    Player2.addComponent<SpriteComponent>("assets/ground_shaker_asset/Blue/Bodies/body_tracks.png", "assets/ground_shaker_asset/Blue/Weapons/turret_01_mk4.png","assets/Fire_Shots/Flash_B_04.png", "assets/SCML/Effects/Explosion_E.png",this->renderer, 8, 200);
     Player2.addComponent<KeyboardController2>(&this->event);
     HandleBullet = new HandleBulletsBetweenTwoSprites(Player1, Player2);
 

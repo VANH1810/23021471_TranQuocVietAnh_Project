@@ -14,7 +14,7 @@ class BulletComponent
         SDL_Rect explosionsrcRect;
         Map* map;
         float speed = 10;
-
+        Mix_Chunk *soundEffect;
     public:
         Vector2D initialPosition; // Position of the gun from which the bullet is
         SDL_Rect bulletdestRect;
@@ -71,6 +71,26 @@ class BulletComponent
             }
             if(collide) this->isMove = false;
         }
+        void BulletSoundEffect()
+        {
+            if (Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 4096) == -1) 
+            {
+                cerr << "Error: " << Mix_GetError() << "\n";
+            }
+
+            soundEffect = Mix_LoadWAV("assets/TankBulletExplosion.wav");
+            if (soundEffect == nullptr) {
+
+                cerr << "Error: " << Mix_GetError() << "\n";
+            }
+
+            if (Mix_PlayChannel(-1, soundEffect, 0) == -1) {
+                cerr << "Error: " << Mix_GetError() << "\n";
+            }
+
+            Mix_FreeChunk(soundEffect);
+            Mix_CloseAudio();
+        }
 
         void update() 
         {
@@ -86,6 +106,7 @@ class BulletComponent
         {
             if(!isMove)
             {
+                //BulletSoundEffect();
                 explosiondestRect.x = bulletdestRect.x - 64;
                 explosiondestRect.y = bulletdestRect.y - 64;
                 SDL_RenderCopy(renderer, explosionTexture, &explosionsrcRect, &explosiondestRect);
