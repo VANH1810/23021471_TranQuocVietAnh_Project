@@ -18,4 +18,3 @@ const int FPS = 120;
 const int frameDelay = 1000 / FPS;
 const bool fullscreen = true;
 
-bool PAUSED = 0;

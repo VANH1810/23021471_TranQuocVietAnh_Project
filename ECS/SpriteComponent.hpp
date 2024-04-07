@@ -19,9 +19,11 @@ private:
 
     SDL_Renderer *renderer;
 
-    int speed_frames = 50;
+    int speed_frames = 100;
     int currentFrame = 0;
     int animated_frames = 0;
+
+    Mix_Chunk *soundEffect;
 public:
     vector<BulletComponent*> bullets;
     bool alive = true;
@@ -45,6 +47,7 @@ public:
         WeaponTexture = TextureManager::LoadTexture(weapon_path.c_str(), ren);
         bulletTexture = TextureManager::LoadTexture(bullet_path.c_str(), ren);
         explosionTexture = TextureManager::LoadTexture(explosion_path.c_str(), ren);
+        soundEffect = AudioManager::LoadSound("assets/TankBulletExplosion.wav");
     }
     
 
@@ -56,14 +59,14 @@ public:
         TanksrcRect.w = 72;
         TanksrcRect.h = 80;
         WeaponsrcRect.w = WeaponsrcRect.h = 128;
-        TankdestRect.w = 72 / SCALEDOWN;
-        TankdestRect.h = 80 / SCALEDOWN;
-        WeapondestRect.w = WeapondestRect.h = 128 / SCALEDOWN;
+        TankdestRect.w = 72;
+        TankdestRect.h = 80;
+        WeapondestRect.w = WeapondestRect.h = 128;
     }
     void shoot()
     {
-            BulletComponent* newBullet = new BulletComponent(bulletTexture, explosionTexture, renderer, 10.0f, transform->map);
-            newBullet->initialPosition = transform->position;
+            BulletComponent* newBullet = new BulletComponent(bulletTexture, explosionTexture, renderer, 6.0f, transform->map, soundEffect);
+            
             newBullet->bulletdestRect.x = transform->position.x;
             newBullet->bulletdestRect.y = transform->position.y;
             newBullet->direction = transform->rotation;

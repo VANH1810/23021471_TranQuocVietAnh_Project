@@ -49,6 +49,7 @@ void Game::initSDL(int xpos, int ypos)
             logErrorAndExit("CreateWindow", SDL_GetError());
         }
     }
+    gamestate = GameState::START_SCREEN;
 }
 
 void Game::createRenderer()
@@ -68,8 +69,16 @@ void Game::createRenderer()
 void Game::Render()
 {
     SDL_RenderClear(renderer);
-    mapAZ->render();
-    manager.draw();
+    if(gamestate == GameState::START_SCREEN)
+    {
+        SDL_RenderCopy(this->renderer, this->startScreenTexture, nullptr, nullptr);
+    }
+    else
+    {
+        mapAZ->render();
+        manager.draw();
+    }
+    
     SDL_RenderPresent(renderer);
 }
 
@@ -92,7 +101,13 @@ void Game::handleEvents()
                 isRunning = false;
                 break;
             case SDLK_p:
-                PAUSED ^= 1;
+                if(gamestate == GameState::PAUSED)
+                    gamestate = GameState::PLAYING;
+                else if(gamestate == GameState::PLAYING)
+                    gamestate = GameState::PAUSED;
+                break;
+            case SDLK_SPACE:
+                gamestate = GameState::PLAYING;
                 break;
             default:
                 break;
@@ -129,17 +144,20 @@ void Game::ResetGame()
 void Game::preload()
 {
     initSDL(SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
-    createRenderer();
+    createRenderer(); 
+
+    this->startScreenTexture = TextureManager::LoadTexture("assets/Play.png", this->renderer);
+
     ifstream mapData("tankaz.json");
     mapAZ = new Map("tankaz", this->renderer, json::parse(mapData));
     mapAZ->setCollisionByProperty(new json({{"collision", true}}), true);
     
     Player1.addComponent<TransformComponent>(160,160, mapAZ);
-    Player1.addComponent<SpriteComponent>("assets/ground_shaker_asset/Red/Bodies/body_tracks.png", "assets/ground_shaker_asset/Red/Weapons/turret_01_mk4.png", "assets/Fire_Shots/Flash_A_04.png", "assets/SCML/Effects/Explosion_E.png",this->renderer, 8, 200);
+    Player1.addComponent<SpriteComponent>("assets/ground_shaker_asset/Red/Bodies/body_tracks.png", "assets/ground_shaker_asset/Red/Weapons/turret_01_mk4.png", "assets/Fire_Shots/Flash_A_04.png", "assets/SCML/Effects/Explosion_E.png",this->renderer, 8, 50);
     Player1.addComponent<KeyboardController>(&this->event);
 
     Player2.addComponent<TransformComponent>(1440,1440, mapAZ);
-    Player2.addComponent<SpriteComponent>("assets/ground_shaker_asset/Blue/Bodies/body_tracks.png", "assets/ground_shaker_asset/Blue/Weapons/turret_01_mk4.png","assets/Fire_Shots/Flash_B_04.png", "assets/SCML/Effects/Explosion_E.png",this->renderer, 8, 200);
+    Player2.addComponent<SpriteComponent>("assets/ground_shaker_asset/Blue/Bodies/body_tracks.png", "assets/ground_shaker_asset/Blue/Weapons/turret_01_mk4.png","assets/Fire_Shots/Flash_B_04.png", "assets/SCML/Effects/Explosion_E.png",this->renderer, 8, 50);
     Player2.addComponent<KeyboardController2>(&this->event);
     HandleBullet = new HandleBulletsBetweenTwoSprites(Player1, Player2);
 

@@ -4,6 +4,7 @@
 #include "TextureManager.cpp"
 #include "ECS/Components.hpp"
 #include "Vector2D.cpp"
+#include "GameState.hpp"
 
 class Game
 {
@@ -11,6 +12,7 @@ class Game
         SDL_Window* window;
         bool isRunning;
         static SDL_Event event;
+        SDL_Texture* startScreenTexture;
     public:
         Game();
         ~Game();
@@ -33,6 +35,6 @@ class Game
         static int ScorePlayer2;
         static SDL_Renderer* renderer;
         
-        
+        GameState gamestate;
 
 };

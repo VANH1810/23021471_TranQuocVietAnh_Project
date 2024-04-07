@@ -25,5 +25,20 @@ class Vector2D
 
         Vector2D& operator*(const float &i);
         Vector2D& Zero();
+
         friend ostream& operator<<(ostream& os, const Vector2D& vec);
+
+        float length() const
+        {
+            return sqrt(x * x + y * y);
+        }
+        void normalize() 
+        {
+            float len = length();
+            if(len != 0)
+            {
+                x /= len;
+                y /= len;
+            }
+        }
 };

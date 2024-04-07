@@ -8,7 +8,7 @@ class TransformComponent : public Component
         Vector2D position;
         Vector2D velocity;
         Map* map;
-        int speed = 2;
+        int speed = 3.0f;
         float rotationSpeed = 0.0f;
         float rotation = 0.0f;
 
@@ -29,8 +29,8 @@ class TransformComponent : public Component
 
         void update() override
         {
-            int finalPositionX = position.x + velocity.x - (72 / SCALEDOWN)/2 + 1;
-            int finalPositionY = position.y + velocity.y - (80 / SCALEDOWN)/2 + 1;
+            int finalPositionX = position.x + velocity.x - (72)/2 + 1;
+            int finalPositionY = position.y + velocity.y - (80)/2 + 1;
             bool collide = false;
             for (int i = finalPositionX * SCALEDOWN / map->tileWidth; i <= (finalPositionX + 72/SCALEDOWN -1) * SCALEDOWN / map->tileWidth; ++i)
             {

@@ -2,6 +2,7 @@
 
 #include "ECS.hpp"
 #include "../TextureManager.hpp"
+#include "../AudioManager.cpp"
 
 class BulletComponent
 {
@@ -13,17 +14,19 @@ class BulletComponent
         SDL_Rect explosiondestRect;
         SDL_Rect explosionsrcRect;
         Map* map;
-        float speed = 10;
+        float speed = 8;
+        float timeAlive;
+
         Mix_Chunk *soundEffect;
     public:
-        Vector2D initialPosition; // Position of the gun from which the bullet is
+        Vector2D normal; 
         SDL_Rect bulletdestRect;
         bool isMove;
         float direction;
         
 
         ~BulletComponent() = default;
-        BulletComponent(SDL_Texture *bulletImage,  SDL_Texture *explosionImage, SDL_Renderer *ren, float mSpeed, Map* mapdata)
+        BulletComponent(SDL_Texture *bulletImage,  SDL_Texture *explosionImage, SDL_Renderer *ren, float mSpeed, Map* mapdata, Mix_Chunk *_soundEffect)
         {
             bulletTexture = bulletImage;
             renderer = ren;
@@ -44,12 +47,26 @@ class BulletComponent
             isMove = true;
 
             explosionTexture = explosionImage;
+            timeAlive = 0.0f;
+
+            soundEffect = _soundEffect;
+            if (soundEffect != nullptr) 
+            {
+                    if (Mix_PlayChannel(-1, soundEffect, 0) == -1) 
+                    {
+                        cerr << "Error: " << Mix_GetError() << "\n";
+                        return;
+                    }
+                    Mix_PlayChannel(-1, soundEffect, 0);
+                    
+            }
+            else cerr << "Error: sound is nullptr\n";
         }
 
-        void CheckBulletCollisionWithWall()
+        bool CheckBulletCollisionWithWall(int finalPositionX, int finalPositionY)
         {
-            int finalPositionX = bulletdestRect.x + 1;
-            int finalPositionY = bulletdestRect.y + 1;
+            finalPositionX ++;
+            finalPositionY ++;
             bool collide = false;
             for (int i = finalPositionX * SCALEDOWN / map->tileWidth; i <= (finalPositionX + 40/SCALEDOWN -1) * SCALEDOWN / map->tileWidth; ++i)
             {
@@ -61,52 +78,51 @@ class BulletComponent
                         int id = layer->tileLayer->getId(j, i);
                         if (map->tileSet->tiles[id]->isCollidable)
                         {
-                            collide = true;
-                            break;
+                            return true;
                         }
                     }
-                    if(collide) break;
+                    
                 }
-                if(collide) break;
             }
-            if(collide) this->isMove = false;
-        }
-        void BulletSoundEffect()
-        {
-            if (Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 4096) == -1) 
-            {
-                cerr << "Error: " << Mix_GetError() << "\n";
-            }
-
-            soundEffect = Mix_LoadWAV("assets/TankBulletExplosion.wav");
-            if (soundEffect == nullptr) {
-
-                cerr << "Error: " << Mix_GetError() << "\n";
-            }
-
-            if (Mix_PlayChannel(-1, soundEffect, 0) == -1) {
-                cerr << "Error: " << Mix_GetError() << "\n";
-            }
-
-            Mix_FreeChunk(soundEffect);
-            Mix_CloseAudio();
+            return false;
+        
         }
 
         void update() 
         {
-            CheckBulletCollisionWithWall();
-            
-            if(isMove)
+            int nextPositionX = bulletdestRect.x + (speed * cos(direction * M_PI / 180.0f));
+            int nextPositionY = bulletdestRect.y + (speed * sin(direction * M_PI / 180.0f));
+
+            // Check horizontal collision
+            if (!CheckBulletCollisionWithWall(nextPositionX, bulletdestRect.y)) {
+                bulletdestRect.x = nextPositionX;
+            } else {
+                // The bullet hit a vertical wall, so reverse the x direction
+                direction = 180-direction;
+                cout << "Bullet hit a horizontal wall" << endl;
+            }
+
+            // Check vertical collision
+            if (!CheckBulletCollisionWithWall(bulletdestRect.x, nextPositionY)) {
+                bulletdestRect.y = nextPositionY;
+            } else {
+                // The bullet hit a horizontal wall, so reverse the y direction
+                direction = - direction;
+                cout << "Bullet hit a vertical wall" << endl;
+            }
+
+            timeAlive += 0.01f;
+            if(timeAlive > 2.0f)
             {
-                bulletdestRect.x += (speed * cos(direction * M_PI / 180.0f));
-                bulletdestRect.y += (speed * sin(direction * M_PI / 180.0f));
+                isMove = false;
             }
         }
+
+        
         void draw()
         {
             if(!isMove)
             {
-                //BulletSoundEffect();
                 explosiondestRect.x = bulletdestRect.x - 64;
                 explosiondestRect.y = bulletdestRect.y - 64;
                 SDL_RenderCopy(renderer, explosionTexture, &explosionsrcRect, &explosiondestRect);
