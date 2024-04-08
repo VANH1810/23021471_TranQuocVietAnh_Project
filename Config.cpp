@@ -10,7 +10,7 @@
 using namespace std;
 using json = nlohmann::json;
 
-const int SCREEN_WIDTH = 1536;
+const int SCREEN_WIDTH = 1920;
 const int SCREEN_HEIGHT = 1536;
 const int SCALEDOWN = 2;
 const char* WINDOW_TITLE = "TANK AZ!";

@@ -14,12 +14,11 @@ class BulletComponent
         SDL_Rect explosiondestRect;
         SDL_Rect explosionsrcRect;
         Map* map;
-        float speed = 8;
+        float speed = 6.0f;
         float timeAlive;
 
         Mix_Chunk *soundEffect;
     public:
-        Vector2D normal; 
         SDL_Rect bulletdestRect;
         bool isMove;
         float direction;
@@ -50,17 +49,8 @@ class BulletComponent
             timeAlive = 0.0f;
 
             soundEffect = _soundEffect;
-            if (soundEffect != nullptr) 
-            {
-                    if (Mix_PlayChannel(-1, soundEffect, 0) == -1) 
-                    {
-                        cerr << "Error: " << Mix_GetError() << "\n";
-                        return;
-                    }
-                    Mix_PlayChannel(-1, soundEffect, 0);
-                    
-            }
-            else cerr << "Error: sound is nullptr\n";
+            AudioManager::PlaySound(soundEffect);
+            
         }
 
         bool CheckBulletCollisionWithWall(int finalPositionX, int finalPositionY)
@@ -94,25 +84,31 @@ class BulletComponent
             int nextPositionY = bulletdestRect.y + (speed * sin(direction * M_PI / 180.0f));
 
             // Check horizontal collision
-            if (!CheckBulletCollisionWithWall(nextPositionX, bulletdestRect.y)) {
+            if (!CheckBulletCollisionWithWall(nextPositionX, bulletdestRect.y)) 
+            {
                 bulletdestRect.x = nextPositionX;
-            } else {
+            } 
+            else 
+            {
                 // The bullet hit a vertical wall, so reverse the x direction
                 direction = 180-direction;
-                cout << "Bullet hit a horizontal wall" << endl;
+                //cout << "Bullet hit a horizontal wall" << endl;
             }
 
             // Check vertical collision
-            if (!CheckBulletCollisionWithWall(bulletdestRect.x, nextPositionY)) {
+            if (!CheckBulletCollisionWithWall(bulletdestRect.x, nextPositionY)) 
+            {
                 bulletdestRect.y = nextPositionY;
-            } else {
+            } 
+            else 
+            {
                 // The bullet hit a horizontal wall, so reverse the y direction
                 direction = - direction;
-                cout << "Bullet hit a vertical wall" << endl;
+                //cout << "Bullet hit a vertical wall" << endl;
             }
 
             timeAlive += 0.01f;
-            if(timeAlive > 2.0f)
+            if(timeAlive > 2.5f)
             {
                 isMove = false;
             }

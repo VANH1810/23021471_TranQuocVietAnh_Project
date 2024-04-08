@@ -73,6 +73,18 @@ void Game::Render()
     {
         SDL_RenderCopy(this->renderer, this->startScreenTexture, nullptr, nullptr);
     }
+    else if(gamestate == GameState::TUTORIAL)
+    {
+        SDL_RenderCopy(this->renderer, this->tutorialTexture, nullptr, nullptr);
+    }
+    else if(gamestate == GameState::SELECT_MODE)
+    {
+        SDL_RenderCopy(this->renderer, this->selectModeTexture, nullptr, nullptr);
+    }
+    else if(gamestate == GameState::SELECT_NUMBER_OF_PLAYERS)
+    {
+        SDL_RenderCopy(this->renderer, this->selectNumberOfPlayersTexture, nullptr, nullptr);
+    }
     else
     {
         mapAZ->render();
@@ -107,7 +119,26 @@ void Game::handleEvents()
                     gamestate = GameState::PAUSED;
                 break;
             case SDLK_SPACE:
-                gamestate = GameState::PLAYING;
+                if(gamestate == GameState::START_SCREEN)
+                    gamestate = GameState::TUTORIAL;
+                else if(gamestate == GameState::TUTORIAL)
+                    gamestate = GameState::SELECT_MODE;
+                else if(gamestate == GameState::SELECT_MODE)
+                    gamestate = GameState::SELECT_NUMBER_OF_PLAYERS;
+                //else if(gamestate == GameState::SELECT_NUMBER_OF_PLAYERS)
+                break;
+            case SDLK_2:
+                if(gamestate == GameState::SELECT_NUMBER_OF_PLAYERS)
+                {
+                    gamestate = GameState::PLAYING;
+                    NumberOfPlayers = 2;
+                }
+            case SDLK_3: 
+                if(gamestate == GameState::SELECT_NUMBER_OF_PLAYERS)
+                {
+                    gamestate = GameState::PLAYING;
+                    NumberOfPlayers = 3;
+                }
                 break;
             default:
                 break;
@@ -146,7 +177,10 @@ void Game::preload()
     initSDL(SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
     createRenderer(); 
 
-    this->startScreenTexture = TextureManager::LoadTexture("assets/Play.png", this->renderer);
+    this->startScreenTexture = TextureManager::LoadTexture("assets/PlayScreen/StartScreen.png", this->renderer);
+    this->tutorialTexture = TextureManager::LoadTexture("assets/PlayScreen/Tutorial.png", this->renderer);
+    this->selectModeTexture = TextureManager::LoadTexture("assets/PlayScreen/SelectMode.png", this->renderer);
+    this->selectNumberOfPlayersTexture = TextureManager::LoadTexture("assets/PlayScreen/SelectNumberOfPlayers.png", this->renderer);
 
     ifstream mapData("tankaz.json");
     mapAZ = new Map("tankaz", this->renderer, json::parse(mapData));

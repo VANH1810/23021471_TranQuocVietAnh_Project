@@ -27,8 +27,6 @@ void AudioManager::PlaySound(Mix_Chunk* sound)
             return;
         }
         Mix_PlayChannel(-1, sound, 0);
-        Mix_FreeChunk(sound);
-        Mix_CloseAudio();
     }
     else cerr << "Error: sound is nullptr\n";
 }

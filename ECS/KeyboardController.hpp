@@ -8,7 +8,7 @@ class KeyboardController : public Component
     private:
         SDL_Event *event;
         Uint32 lastJPressTime = 0;
-        Uint32 minJPressInterval = 1000;
+        Uint32 minJPressInterval = 3000;
         // Minimum time between J presses in milliseconds
     public:
         TransformComponent *transform;
@@ -105,7 +105,7 @@ class KeyboardController2 : public KeyboardController
     private:
         SDL_Event *event;
         Uint32 last1PressTime = 0;
-        Uint32 min1PressInterval = 1000;
+        Uint32 min1PressInterval = 3000;
     public:
     KeyboardController2() = default;
     ~KeyboardController2() = default;
@@ -138,9 +138,10 @@ class KeyboardController2 : public KeyboardController
                         transform->rotationSpeed = 5.0f;
                         //cout << "Right" << endl;
                         break;
-                    case SDLK_1:
+                    case SDLK_RCTRL:
                         currentTime = SDL_GetTicks();
-                        if (currentTime > last1PressTime + min1PressInterval) {
+                        if (currentTime > last1PressTime + min1PressInterval) 
+                        {
                             last1PressTime = currentTime;
                             sprite->shooting_animated = true;
                             sprite->shoot();

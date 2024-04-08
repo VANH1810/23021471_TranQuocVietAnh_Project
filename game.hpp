@@ -13,6 +13,9 @@ class Game
         bool isRunning;
         static SDL_Event event;
         SDL_Texture* startScreenTexture;
+        SDL_Texture* tutorialTexture;
+        SDL_Texture* selectModeTexture;
+        SDL_Texture* selectNumberOfPlayersTexture;
     public:
         Game();
         ~Game();
@@ -31,6 +34,8 @@ class Game
             return isRunning;
         }
 
+        int NumberOfPlayers = 1;
+        
         static int ScorePlayer1;
         static int ScorePlayer2;
         static SDL_Renderer* renderer;
