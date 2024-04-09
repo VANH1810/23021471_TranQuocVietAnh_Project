@@ -34,10 +34,12 @@ class Game
             return isRunning;
         }
 
-        int NumberOfPlayers = 1;
+        int NumberOfPlayers = 2;
         
         static int ScorePlayer1;
         static int ScorePlayer2;
+        static int ScorePlayer3;
+        
         static SDL_Renderer* renderer;
         
         GameState gamestate;

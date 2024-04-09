@@ -10,11 +10,15 @@ SDL_Event Game::event;
 Manager manager;
 auto& Player1(manager.addEntity());
 auto& Player2(manager.addEntity());
+auto& Player3(manager.addEntity());
 
-HandleBulletsBetweenTwoSprites* HandleBullet = nullptr;
+HandleBulletsBetweenTwoSprites* HandleBullet1 = nullptr;
+HandleBulletsBetweenTwoSprites* HandleBullet2 = nullptr;
+HandleBulletsBetweenTwoSprites* HandleBullet3 = nullptr;
 
 int Game::ScorePlayer1 = 0;
 int Game::ScorePlayer2 = 0;
+int Game::ScorePlayer3 = 0;
 
 Game::Game()
 {}
@@ -132,6 +136,9 @@ void Game::handleEvents()
                 {
                     gamestate = GameState::PLAYING;
                     NumberOfPlayers = 2;
+                    Player3.destroy();
+                    delete HandleBullet2;
+                    delete HandleBullet3;
                 }
             case SDLK_3: 
                 if(gamestate == GameState::SELECT_NUMBER_OF_PLAYERS)
@@ -150,7 +157,12 @@ void Game::update()
 {
     manager.refresh();
     manager.update();
-    HandleBullet->update();
+    HandleBullet1->update();
+    if(NumberOfPlayers == 3) 
+    {
+        HandleBullet2->update();
+        HandleBullet3->update();
+    }
 }
 
 void Game::clean()
@@ -166,9 +178,17 @@ void Game::ResetGame()
     Player1.getComponent<SpriteComponent>().alive = true;
     Player2.getComponent<SpriteComponent>().alive = true;
     Player1.getComponent<TransformComponent>().position = Vector2D(160,160);
+
     Player2.getComponent<TransformComponent>().position = Vector2D(1440,1440);
     Player1.getComponent<SpriteComponent>().bullets.clear();
     Player2.getComponent<SpriteComponent>().bullets.clear();
+
+    if(NumberOfPlayers == 3) 
+    {
+        Player3.getComponent<SpriteComponent>().alive = true;
+        Player3.getComponent<TransformComponent>().position = Vector2D(160,1440);
+        Player3.getComponent<SpriteComponent>().bullets.clear();
+    }
 
 }
 
@@ -193,6 +213,13 @@ void Game::preload()
     Player2.addComponent<TransformComponent>(1440,1440, mapAZ);
     Player2.addComponent<SpriteComponent>("assets/ground_shaker_asset/Blue/Bodies/body_tracks.png", "assets/ground_shaker_asset/Blue/Weapons/turret_01_mk4.png","assets/Fire_Shots/Flash_B_04.png", "assets/SCML/Effects/Explosion_E.png",this->renderer, 8, 50);
     Player2.addComponent<KeyboardController2>(&this->event);
-    HandleBullet = new HandleBulletsBetweenTwoSprites(Player1, Player2);
+    
+    Player3.addComponent<TransformComponent>(160,1440, mapAZ);
+    Player3.addComponent<SpriteComponent>("assets/ground_shaker_asset/Camo/Bodies/body_tracks.png", "assets/ground_shaker_asset/Camo/Weapons/turret_01_mk4.png","assets/Fire_Shots/Flash_B_04.png", "assets/SCML/Effects/Explosion_E.png",this->renderer, 8, 50);
+    Player3.addComponent<KeyboardController3>(&this->event);
+
+    HandleBullet1 = new HandleBulletsBetweenTwoSprites(Player1, Player2);
+    HandleBullet2 = new HandleBulletsBetweenTwoSprites(Player1, Player3);
+    HandleBullet3 = new HandleBulletsBetweenTwoSprites(Player2, Player3);
 
 }
