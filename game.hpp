@@ -16,6 +16,7 @@ class Game
         SDL_Texture* tutorialTexture;
         SDL_Texture* selectModeTexture;
         SDL_Texture* selectNumberOfPlayersTexture;
+        SDL_Texture* keyboardShortcuts;
     public:
         Game();
         ~Game();
@@ -39,7 +40,7 @@ class Game
         static int ScorePlayer1;
         static int ScorePlayer2;
         static int ScorePlayer3;
-        
+
         static SDL_Renderer* renderer;
         
         GameState gamestate;

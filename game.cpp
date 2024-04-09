@@ -81,6 +81,10 @@ void Game::Render()
     {
         SDL_RenderCopy(this->renderer, this->tutorialTexture, nullptr, nullptr);
     }
+    else if(gamestate == GameState::KEYBOARD_SHORTCUTS)
+    {
+        SDL_RenderCopy(this->renderer, this->keyboardShortcuts, nullptr, nullptr);
+    }
     else if(gamestate == GameState::SELECT_MODE)
     {
         SDL_RenderCopy(this->renderer, this->selectModeTexture, nullptr, nullptr);
@@ -126,11 +130,17 @@ void Game::handleEvents()
                 if(gamestate == GameState::START_SCREEN)
                     gamestate = GameState::TUTORIAL;
                 else if(gamestate == GameState::TUTORIAL)
+                    gamestate = GameState::KEYBOARD_SHORTCUTS;
+                else if(gamestate == GameState::KEYBOARD_SHORTCUTS)
                     gamestate = GameState::SELECT_MODE;
-                else if(gamestate == GameState::SELECT_MODE)
-                    gamestate = GameState::SELECT_NUMBER_OF_PLAYERS;
-                //else if(gamestate == GameState::SELECT_NUMBER_OF_PLAYERS)
                 break;
+            case SDLK_F2:
+                if(gamestate == GameState::SELECT_MODE)
+                {
+                    gamestate = GameState::SELECT_NUMBER_OF_PLAYERS;
+                }
+                break;
+
             case SDLK_2:
                 if(gamestate == GameState::SELECT_NUMBER_OF_PLAYERS)
                 {
@@ -140,6 +150,7 @@ void Game::handleEvents()
                     delete HandleBullet2;
                     delete HandleBullet3;
                 }
+                break;
             case SDLK_3: 
                 if(gamestate == GameState::SELECT_NUMBER_OF_PLAYERS)
                 {
@@ -201,7 +212,7 @@ void Game::preload()
     this->tutorialTexture = TextureManager::LoadTexture("assets/PlayScreen/Tutorial.png", this->renderer);
     this->selectModeTexture = TextureManager::LoadTexture("assets/PlayScreen/SelectMode.png", this->renderer);
     this->selectNumberOfPlayersTexture = TextureManager::LoadTexture("assets/PlayScreen/SelectNumberOfPlayers.png", this->renderer);
-
+    this->keyboardShortcuts = TextureManager::LoadTexture("assets/PlayScreen/KeyboardShortcuts.png", this->renderer);
     ifstream mapData("tankaz.json");
     mapAZ = new Map("tankaz", this->renderer, json::parse(mapData));
     mapAZ->setCollisionByProperty(new json({{"collision", true}}), true);
