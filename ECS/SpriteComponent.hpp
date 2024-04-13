@@ -65,7 +65,7 @@ public:
     }
     void shoot()
     {
-            BulletComponent* newBullet = new BulletComponent(bulletTexture, explosionTexture, renderer, 6.0f, transform->map, soundEffect);
+            BulletComponent* newBullet = new BulletComponent(bulletTexture, explosionTexture, renderer, 50.0f, transform->map, soundEffect);
             
             newBullet->bulletdestRect.x = transform->position.x;
             newBullet->bulletdestRect.y = transform->position.y;
@@ -128,6 +128,5 @@ public:
 
     
 };
-
 
 

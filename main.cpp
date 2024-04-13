@@ -7,6 +7,8 @@ signed main(int argc, char* argv[])
 
     Uint32 frameStart;
     int frameTime;
+    float timeSinceLastSpawn = 0.0f;
+    const float spawnInterval = 1.0f; 
 
     game->preload();
 
@@ -18,6 +20,15 @@ signed main(int argc, char* argv[])
         {
             game->update(); 
             game->Render();
+
+        }
+
+        timeSinceLastSpawn += 0.1;
+        if(timeSinceLastSpawn >= spawnInterval && game->gamestate == GameState::PLAYING)
+        {
+            
+            game->spawnBulletPackage();
+            timeSinceLastSpawn = 0.0f;
         }
 
         frameTime = SDL_GetTicks() - frameStart;

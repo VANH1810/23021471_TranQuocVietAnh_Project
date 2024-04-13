@@ -17,4 +17,5 @@ const char* WINDOW_TITLE = "TANK AZ!";
 const int FPS = 120;
 const int frameDelay = 1000 / FPS;
 const bool fullscreen = true;
-
+const int mapWidth = 1536;
+const int mapHeight = 1536;

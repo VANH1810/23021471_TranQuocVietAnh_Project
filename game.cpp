@@ -20,6 +20,8 @@ int Game::ScorePlayer1 = 0;
 int Game::ScorePlayer2 = 0;
 int Game::ScorePlayer3 = 0;
 
+
+
 Game::Game()
 {}
 Game::~Game()
@@ -97,6 +99,10 @@ void Game::Render()
     {
         mapAZ->render();
         manager.draw();
+        for(auto it = bulletPackages.begin(); it != bulletPackages.end(); it++)
+        {
+            it->draw();
+        }
     }
     
     SDL_RenderPresent(renderer);
@@ -166,13 +172,16 @@ void Game::handleEvents()
 
 void Game::update()
 {
-    manager.refresh();
-    manager.update();
-    HandleBullet1->update();
-    if(NumberOfPlayers == 3) 
+    if(gamestate == GameState::PLAYING)
     {
-        HandleBullet2->update();
-        HandleBullet3->update();
+        manager.refresh();
+        manager.update();
+        HandleBullet1->update();
+        if(NumberOfPlayers == 3) 
+        {
+            HandleBullet2->update();
+            HandleBullet3->update();
+        }
     }
 }
 
@@ -203,6 +212,45 @@ void Game::ResetGame()
 
 }
 
+void Game::spawnBulletPackage() 
+{
+    int x, y;
+    do 
+    {
+        x = (rand() % (mapWidth / 64)) * 64;
+        y = (rand() % (mapHeight / 64)) * 64;
+       
+    } while (isOccupied(x, y) || isWall(x, y)); 
+    //cout << x << " " << y << endl;
+    bulletPackages.push_back(BulletPackage(x, y, this->bulletIcon, this->renderer));
+}
+
+bool Game::isOccupied(int x, int y) 
+{
+    for(auto it = bulletPackages.begin(); it != bulletPackages.end(); it++) 
+    {
+        if(it->destRect.x == x && it->destRect.y == y) 
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool Game::isWall(int x, int y) 
+{
+    x = x * SCALEDOWN / mapAZ->tileWidth;
+    y = y * SCALEDOWN / mapAZ->tileHeight;
+        for (auto layer: mapAZ->layers) {
+            if (layer->layerType != "tilelayer") continue;
+            int id = layer->tileLayer->getId(y, x);
+            if (mapAZ->tileSet->tiles[id]->isCollidable) {
+                return true;
+            }
+        }
+    
+    return false;
+}
 void Game::preload()
 {
     initSDL(SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
@@ -213,6 +261,7 @@ void Game::preload()
     this->selectModeTexture = TextureManager::LoadTexture("assets/PlayScreen/SelectMode.png", this->renderer);
     this->selectNumberOfPlayersTexture = TextureManager::LoadTexture("assets/PlayScreen/SelectNumberOfPlayers.png", this->renderer);
     this->keyboardShortcuts = TextureManager::LoadTexture("assets/PlayScreen/KeyboardShortcuts.png", this->renderer);
+    this->bulletIcon = TextureManager::LoadTexture("assets/OIP.png", this->renderer);
     ifstream mapData("tankaz.json");
     mapAZ = new Map("tankaz", this->renderer, json::parse(mapData));
     mapAZ->setCollisionByProperty(new json({{"collision", true}}), true);
@@ -222,11 +271,11 @@ void Game::preload()
     Player1.addComponent<KeyboardController>(&this->event);
 
     Player2.addComponent<TransformComponent>(1440,1440, mapAZ);
-    Player2.addComponent<SpriteComponent>("assets/ground_shaker_asset/Blue/Bodies/body_tracks.png", "assets/ground_shaker_asset/Blue/Weapons/turret_01_mk4.png","assets/Fire_Shots/Flash_B_04.png", "assets/SCML/Effects/Explosion_E.png",this->renderer, 8, 50);
+    Player2.addComponent<SpriteComponent>("assets/ground_shaker_asset/Blue/Bodies/body_tracks.png", "assets/ground_shaker_asset/Blue/Weapons/turret_01_mk4.png","assets/Fire_Shots/Flame_H.png", "assets/SCML/Effects/Explosion_E.png",this->renderer, 8, 50);
     Player2.addComponent<KeyboardController2>(&this->event);
     
     Player3.addComponent<TransformComponent>(160,1440, mapAZ);
-    Player3.addComponent<SpriteComponent>("assets/ground_shaker_asset/Camo/Bodies/body_tracks.png", "assets/ground_shaker_asset/Camo/Weapons/turret_01_mk4.png","assets/Fire_Shots/Flash_B_04.png", "assets/SCML/Effects/Explosion_E.png",this->renderer, 8, 50);
+    Player3.addComponent<SpriteComponent>("assets/ground_shaker_asset/Camo/Bodies/body_tracks.png", "assets/ground_shaker_asset/Camo/Weapons/turret_01_mk4.png","assets/Fire_Shots/Flame_H.png", "assets/SCML/Effects/Explosion_E.png",this->renderer, 8, 50);
     Player3.addComponent<KeyboardController3>(&this->event);
 
     HandleBullet1 = new HandleBulletsBetweenTwoSprites(Player1, Player2);

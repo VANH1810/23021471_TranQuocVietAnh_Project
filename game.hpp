@@ -5,7 +5,7 @@
 #include "ECS/Components.hpp"
 #include "Vector2D.cpp"
 #include "GameState.hpp"
-
+#include "BulletPackage.hpp"
 class Game
 {
     private: 
@@ -45,4 +45,9 @@ class Game
         
         GameState gamestate;
 
+        SDL_Texture* bulletIcon;
+        vector<BulletPackage> bulletPackages;
+        void spawnBulletPackage();
+        bool isWall(int x, int y);
+        bool isOccupied(int x, int y);
 };

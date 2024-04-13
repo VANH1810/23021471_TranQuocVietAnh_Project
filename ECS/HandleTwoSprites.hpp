@@ -38,7 +38,7 @@ public:
             }
         }
 
-        for(BulletComponent* bullet : sprite1->bullets) 
+        /*for(BulletComponent* bullet : sprite1->bullets) 
         {
             if (bullet->bulletdestRect.x < sprite2->TankdestRect.x + sprite2->TankdestRect.w &&
                 bullet->bulletdestRect.x + sprite1->TankdestRect.w > sprite2->TankdestRect.x &&
@@ -60,6 +60,6 @@ public:
                 sprite1->alive = false;
 
             }
-        }
+        }*/
     }
 };
