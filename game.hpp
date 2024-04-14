@@ -12,11 +12,17 @@ class Game
         SDL_Window* window;
         bool isRunning;
         static SDL_Event event;
+
         SDL_Texture* startScreenTexture;
         SDL_Texture* tutorialTexture;
         SDL_Texture* selectModeTexture;
         SDL_Texture* selectNumberOfPlayersTexture;
         SDL_Texture* keyboardShortcuts;
+
+        SDL_Texture* RocketIcon;
+        SDL_Texture* FastBulletIcon;
+        SDL_Texture* GatlingIcon;
+        SDL_Texture* TripleBulletIcon;
     public:
         Game();
         ~Game();
@@ -45,8 +51,9 @@ class Game
         
         GameState gamestate;
 
-        SDL_Texture* bulletIcon;
         vector<BulletPackage> bulletPackages;
+        static string TypeOfBulletPackage[4];
+        static map<string, SDL_Texture*> bulletIcons;
         void spawnBulletPackage();
         bool isWall(int x, int y);
         bool isOccupied(int x, int y);

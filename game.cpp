@@ -20,7 +20,8 @@ int Game::ScorePlayer1 = 0;
 int Game::ScorePlayer2 = 0;
 int Game::ScorePlayer3 = 0;
 
-
+string Game::TypeOfBulletPackage[4];
+map <string, SDL_Texture*> Game::bulletIcons;
 
 Game::Game()
 {}
@@ -215,14 +216,16 @@ void Game::ResetGame()
 void Game::spawnBulletPackage() 
 {
     int x, y;
+    string type;
     do 
     {
         x = (rand() % (mapWidth / 64)) * 64;
         y = (rand() % (mapHeight / 64)) * 64;
+        type = this->TypeOfBulletPackage[rand() % (sizeof(TypeOfBulletPackage) / sizeof(TypeOfBulletPackage[0]))];
        
     } while (isOccupied(x, y) || isWall(x, y)); 
     //cout << x << " " << y << endl;
-    bulletPackages.push_back(BulletPackage(x, y, this->bulletIcon, this->renderer));
+    bulletPackages.push_back(BulletPackage(x, y, bulletIcons[type], this->renderer, type));
 }
 
 bool Game::isOccupied(int x, int y) 
@@ -261,7 +264,20 @@ void Game::preload()
     this->selectModeTexture = TextureManager::LoadTexture("assets/PlayScreen/SelectMode.png", this->renderer);
     this->selectNumberOfPlayersTexture = TextureManager::LoadTexture("assets/PlayScreen/SelectNumberOfPlayers.png", this->renderer);
     this->keyboardShortcuts = TextureManager::LoadTexture("assets/PlayScreen/KeyboardShortcuts.png", this->renderer);
-    this->bulletIcon = TextureManager::LoadTexture("assets/OIP.png", this->renderer);
+
+    this->RocketIcon = TextureManager::LoadTexture("assets/BulletPackageIcon/rocket.png", this->renderer);
+    this->GatlingIcon = TextureManager::LoadTexture("assets/BulletPackageIcon/gatling.png", this->renderer);
+    this->TripleBulletIcon = TextureManager::LoadTexture("assets/BulletPackageIcon/triple.png", this->renderer);
+    this->FastBulletIcon = TextureManager::LoadTexture("assets/BulletPackageIcon/fast.png", this->renderer);
+    TypeOfBulletPackage[0] = "Rocket";
+    TypeOfBulletPackage[1] = "Gatling";
+    TypeOfBulletPackage[2] = "Triple";
+    TypeOfBulletPackage[3] = "Fast";
+    bulletIcons["Rocket"] = RocketIcon;
+    bulletIcons["Gatling"] = GatlingIcon;
+    bulletIcons["Triple"] = TripleBulletIcon;
+    bulletIcons["Fast"] = FastBulletIcon;
+
     ifstream mapData("tankaz.json");
     mapAZ = new Map("tankaz", this->renderer, json::parse(mapData));
     mapAZ->setCollisionByProperty(new json({{"collision", true}}), true);

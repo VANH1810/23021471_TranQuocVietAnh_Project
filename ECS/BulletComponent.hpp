@@ -8,8 +8,8 @@ enum class TypeOfBullet
 {
     NORMAL,
     ROCKET,
-    MULTIPLE,
-    TRIPLE,
+    GATLING,
+    TRIPLE_SHOT,
     FAST,
 };
 class BulletComponent
