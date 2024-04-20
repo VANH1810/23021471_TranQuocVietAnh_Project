@@ -34,7 +34,11 @@ private:
     int animated_frames = 0;
 
     Mix_Chunk *soundEffect;
-
+    struct PendingBullet {
+        TypeOfBullet type;
+        float delay;
+    };
+    queue<PendingBullet> pendingBullets;
     
 public:
     vector<BulletComponent*> bullets;
@@ -80,17 +84,75 @@ public:
     }
     void shoot()
     {
+        if(now_type_of_bullet == TypeOfBullet::NORMAL){
             BulletComponent* newBullet = new BulletComponent(bulletTexture, explosionTexture, renderer, 8.0f, transform->map, soundEffect);
-            
             newBullet->bulletdestRect.x = transform->position.x;
             newBullet->bulletdestRect.y = transform->position.y;
             newBullet->direction = transform->rotation;
             newBullet->isMove = true;
             bullets.push_back(newBullet); 
+        }
+        else if(now_type_of_bullet == TypeOfBullet::FAST)
+        {
+            BulletComponent* newBullet = new BulletComponent(bulletTexture, explosionTexture, renderer, 50.0f, transform->map, soundEffect);
+            newBullet->bulletdestRect.x = transform->position.x;
+            newBullet->bulletdestRect.y = transform->position.y;
+            newBullet->direction = transform->rotation;
+            newBullet->isMove = true;
+            bullets.push_back(newBullet); 
+            now_type_of_bullet = TypeOfBullet::NORMAL;
+        }
+        else if (now_type_of_bullet == TypeOfBullet::GATLING)
+        {
+           for (int i = 0; i < 3; ++i) {
+                PendingBullet bullet = { TypeOfBullet::GATLING, i * 0.1f };
+                pendingBullets.push(bullet);
+            }
+            now_type_of_bullet = TypeOfBullet::NORMAL;
+        }
+        else if(now_type_of_bullet == TypeOfBullet::TRIPLE_SHOT)
+        {
+            BulletComponent* newBullet1 = new BulletComponent(bulletTexture, explosionTexture, renderer, 8.0f, transform->map, soundEffect);
+            newBullet1->bulletdestRect.x = transform->position.x;
+            newBullet1->bulletdestRect.y = transform->position.y;
+            newBullet1->direction = transform->rotation;
+            newBullet1->isMove = true;
+            bullets.push_back(newBullet1);
 
+            BulletComponent* newBullet2 = new BulletComponent(bulletTexture, explosionTexture, renderer, 8.0f, transform->map, soundEffect);
+            newBullet2->bulletdestRect.x = transform->position.x;
+            newBullet2->bulletdestRect.y = transform->position.y;
+            newBullet2->direction = transform->rotation + 30.0f;
+            newBullet2->isMove = true;
+            bullets.push_back(newBullet2);
+
+            BulletComponent* newBullet3 = new BulletComponent(bulletTexture, explosionTexture, renderer, 8.0f, transform->map, soundEffect);
+            newBullet3->bulletdestRect.x = transform->position.x;
+            newBullet3->bulletdestRect.y = transform->position.y;
+            newBullet3->direction = transform->rotation - 30.0f;
+            newBullet3->isMove = true;
+            bullets.push_back(newBullet3);
+
+        }
     }
     void update() override
     {
+        if (!pendingBullets.empty()) {
+            PendingBullet& bullet = pendingBullets.front();
+            bullet.delay -= 1.0f / 60.0f;  
+
+            if (bullet.delay <= 0) {
+                
+                BulletComponent* newBullet = new BulletComponent(bulletTexture, explosionTexture, renderer, 8.0f, transform->map, soundEffect);
+                newBullet->bulletdestRect.x = transform->position.x;
+                newBullet->bulletdestRect.y = transform->position.y;
+                newBullet->direction = transform->rotation;
+                newBullet->isMove = true;
+                bullets.push_back(newBullet); 
+
+                pendingBullets.pop();
+            }
+        }
         if (shooting_animated)
         {
             int currentFrame =  static_cast<int>((SDL_GetTicks() / speed_frames) % animated_frames);
