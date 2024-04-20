@@ -8,7 +8,7 @@ signed main(int argc, char* argv[])
     Uint32 frameStart;
     int frameTime;
     float timeSinceLastSpawn = 0.0f;
-    const float spawnInterval = 1.0f; 
+    const float spawnInterval = 5.0f; 
 
     game->preload();
 
@@ -23,7 +23,7 @@ signed main(int argc, char* argv[])
 
         }
 
-        timeSinceLastSpawn += 0.1;
+        timeSinceLastSpawn += 0.01;
         if(timeSinceLastSpawn >= spawnInterval && game->gamestate == GameState::PLAYING)
         {
             

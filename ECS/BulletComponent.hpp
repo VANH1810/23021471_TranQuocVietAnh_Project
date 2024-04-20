@@ -4,14 +4,6 @@
 #include "../TextureManager.hpp"
 #include "../AudioManager.cpp"
 
-enum class TypeOfBullet
-{
-    NORMAL,
-    ROCKET,
-    GATLING,
-    TRIPLE_SHOT,
-    FAST,
-};
 class BulletComponent
 {
     private:

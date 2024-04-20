@@ -6,6 +6,7 @@
 #include "Vector2D.cpp"
 #include "GameState.hpp"
 #include "BulletPackage.hpp"
+#include "HandleCollectBulletPackage.hpp"
 class Game
 {
     private: 
@@ -51,7 +52,7 @@ class Game
         
         GameState gamestate;
 
-        vector<BulletPackage> bulletPackages;
+        vector<BulletPackage*> bulletPackages;
         static string TypeOfBulletPackage[4];
         static map<string, SDL_Texture*> bulletIcons;
         void spawnBulletPackage();

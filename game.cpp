@@ -16,6 +16,11 @@ HandleBulletsBetweenTwoSprites* HandleBullet1 = nullptr;
 HandleBulletsBetweenTwoSprites* HandleBullet2 = nullptr;
 HandleBulletsBetweenTwoSprites* HandleBullet3 = nullptr;
 
+HandleCollectBulletPackage* HandleBulletPackage1 = nullptr;
+HandleCollectBulletPackage* HandleBulletPackage2 = nullptr;
+HandleCollectBulletPackage* HandleBulletPackage3 = nullptr;
+
+
 int Game::ScorePlayer1 = 0;
 int Game::ScorePlayer2 = 0;
 int Game::ScorePlayer3 = 0;
@@ -26,7 +31,34 @@ map <string, SDL_Texture*> Game::bulletIcons;
 Game::Game()
 {}
 Game::~Game()
-{}
+{
+    delete HandleBullet1;
+    delete HandleBullet2;
+    delete HandleBullet3;
+    delete HandleBulletPackage1;
+    delete HandleBulletPackage2;
+    delete HandleBulletPackage3;
+    for(auto it : bulletPackages)
+    {
+        delete it;
+    }
+   
+    delete mapAZ;
+    for(auto it : bulletIcons)
+    {
+        SDL_DestroyTexture(it.second);
+    }
+    SDL_DestroyTexture(this->startScreenTexture);
+    SDL_DestroyTexture(this->tutorialTexture);
+    SDL_DestroyTexture(this->selectModeTexture);
+    SDL_DestroyTexture(this->selectNumberOfPlayersTexture);
+    SDL_DestroyTexture(this->keyboardShortcuts);
+    SDL_DestroyTexture(this->RocketIcon);
+    SDL_DestroyTexture(this->GatlingIcon);
+    SDL_DestroyTexture(this->TripleBulletIcon);
+    SDL_DestroyTexture(this->FastBulletIcon);
+    clean();
+}
 
 void Game::logErrorAndExit(const char* msg, const char* error)
 {
@@ -100,7 +132,7 @@ void Game::Render()
     {
         mapAZ->render();
         manager.draw();
-        for(auto it = bulletPackages.begin(); it != bulletPackages.end(); it++)
+        for(auto it : bulletPackages)
         {
             it->draw();
         }
@@ -178,11 +210,18 @@ void Game::update()
         manager.refresh();
         manager.update();
         HandleBullet1->update();
-        if(NumberOfPlayers == 3) 
+        HandleBulletPackage1->update(bulletPackages);
+        if(NumberOfPlayers == 2) 
+        {
+            HandleBulletPackage2->update(bulletPackages);
+        }
+        else if(NumberOfPlayers == 3) 
         {
             HandleBullet2->update();
             HandleBullet3->update();
+            HandleBulletPackage3->update(bulletPackages);
         }
+        
     }
 }
 
@@ -224,13 +263,12 @@ void Game::spawnBulletPackage()
         type = this->TypeOfBulletPackage[rand() % (sizeof(TypeOfBulletPackage) / sizeof(TypeOfBulletPackage[0]))];
        
     } while (isOccupied(x, y) || isWall(x, y)); 
-    //cout << x << " " << y << endl;
-    bulletPackages.push_back(BulletPackage(x, y, bulletIcons[type], this->renderer, type));
+    bulletPackages.push_back(new BulletPackage(x, y, bulletIcons[type], this->renderer, type));
 }
 
 bool Game::isOccupied(int x, int y) 
 {
-    for(auto it = bulletPackages.begin(); it != bulletPackages.end(); it++) 
+    for(auto it : bulletPackages) 
     {
         if(it->destRect.x == x && it->destRect.y == y) 
         {
@@ -297,5 +335,9 @@ void Game::preload()
     HandleBullet1 = new HandleBulletsBetweenTwoSprites(Player1, Player2);
     HandleBullet2 = new HandleBulletsBetweenTwoSprites(Player1, Player3);
     HandleBullet3 = new HandleBulletsBetweenTwoSprites(Player2, Player3);
+
+    HandleBulletPackage1 = new HandleCollectBulletPackage(Player1);
+    HandleBulletPackage2 = new HandleCollectBulletPackage(Player2);
+    HandleBulletPackage3 = new HandleCollectBulletPackage(Player3);
 
 }

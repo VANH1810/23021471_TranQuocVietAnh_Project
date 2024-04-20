@@ -3,6 +3,16 @@
 #include "ECS.hpp"
 #include "TransformComponent.hpp"
 #include "BulletComponent.hpp"
+
+enum class TypeOfBullet
+{
+    NORMAL,
+    ROCKET,
+    GATLING,
+    TRIPLE_SHOT,
+    FAST,
+};
+
 class SpriteComponent : public Component
 {
 private:
@@ -24,11 +34,15 @@ private:
     int animated_frames = 0;
 
     Mix_Chunk *soundEffect;
+
+    
 public:
     vector<BulletComponent*> bullets;
     bool alive = true;
     bool shooting_animated = false;
     SDL_Rect TankdestRect;
+    TypeOfBullet now_type_of_bullet;
+    
 
     SpriteComponent() = default;
     ~SpriteComponent()
@@ -48,6 +62,7 @@ public:
         bulletTexture = TextureManager::LoadTexture(bullet_path.c_str(), ren);
         explosionTexture = TextureManager::LoadTexture(explosion_path.c_str(), ren);
         soundEffect = AudioManager::LoadSound("assets/TankBulletExplosion.wav");
+        now_type_of_bullet = TypeOfBullet::NORMAL;
     }
     
 
@@ -65,7 +80,7 @@ public:
     }
     void shoot()
     {
-            BulletComponent* newBullet = new BulletComponent(bulletTexture, explosionTexture, renderer, 50.0f, transform->map, soundEffect);
+            BulletComponent* newBullet = new BulletComponent(bulletTexture, explosionTexture, renderer, 8.0f, transform->map, soundEffect);
             
             newBullet->bulletdestRect.x = transform->position.x;
             newBullet->bulletdestRect.y = transform->position.y;
