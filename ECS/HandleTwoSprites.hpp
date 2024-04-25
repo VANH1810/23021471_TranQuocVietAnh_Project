@@ -48,6 +48,7 @@ public:
                 bullet->isMove = false;
                 sprite2->alive = false;
             }
+            
         }
         for(BulletComponent* bullet : sprite2->bullets) 
         {
@@ -60,6 +61,7 @@ public:
                 sprite1->alive = false;
 
             }
+        
         }
     }
 };

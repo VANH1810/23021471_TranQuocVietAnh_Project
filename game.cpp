@@ -175,6 +175,7 @@ void Game::handleEvents()
             case SDLK_3: 
                 if(gamestate == GameState::SELECT_NUMBER_OF_PLAYERS)
                 {
+                    
                     gamestate = GameState::PLAYING;
                     NumberOfPlayers = 3;
                 }
@@ -280,7 +281,8 @@ void Game::spawnBulletPackage()
     {
         x = (rand() % (mapWidth / 64)) * 64;
         y = (rand() % (mapHeight / 64)) * 64;
-        type = this->TypeOfBulletPackage[rand() % (sizeof(TypeOfBulletPackage) / sizeof(TypeOfBulletPackage[0]))];
+        //type = this->TypeOfBulletPackage[rand() % (sizeof(TypeOfBulletPackage) / sizeof(TypeOfBulletPackage[0]))];
+        type = "Rocket";
        
     } while (isOccupied(x, y) || isWall(x, y)); 
     bulletPackages.push_back(new BulletPackage(x, y, bulletIcons[type], this->renderer, type));

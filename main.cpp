@@ -70,11 +70,6 @@ signed main(int argc, char* argv[])
     }
     
     game->clean();
-    if(game->NumberOfPlayers == 2)
-        cout << game->ScorePlayer1 << " - " << game->ScorePlayer2 << endl;
-    else if(game->NumberOfPlayers == 3)
-        cout << game->ScorePlayer1 << " - " << game->ScorePlayer2 << " - " << game->ScorePlayer3 << endl;
-
     delete game;
     return 0;
 }

@@ -3,7 +3,7 @@
 #include "ECS.hpp"
 #include "TransformComponent.hpp"
 #include "BulletComponent.hpp"
-
+#include "RocketComponent.hpp"
 enum class TypeOfBullet
 {
     NORMAL,
@@ -45,7 +45,7 @@ private:
     
 public:
     vector<BulletComponent*> bullets;
-    vector<RocketComponent*> rocket;
+    vector<RocketComponent*> rockets;
     bool alive = true;
     bool shooting_animated = false;
     SDL_Rect TankdestRect;
@@ -150,12 +150,12 @@ public:
         }
         else if(now_type_of_bullet == TypeOfBullet::ROCKET)
         {
-            BulletComponent* newBullet = new BulletComponent(bulletTexture, explosionTexture, renderer, 8.0f, transform->map, soundEffect, 2.0f);
-            newBullet->bulletdestRect.x = transform->position.x;
-            newBullet->bulletdestRect.y = transform->position.y;
-            newBullet->direction = transform->rotation;
-            newBullet->isMove = true;
-            bullets.push_back(newBullet); 
+            RocketComponent* newRocket = new RocketComponent(bulletTexture, explosionTexture, renderer, 8.0f, transform->map, soundEffect, 2.0f);
+            newRocket->rocketdestRect.x = transform->position.x;
+            newRocket->rocketdestRect.y = transform->position.y;
+            newRocket->direction = transform->rotation;
+            newRocket->isMove = true;
+            rockets.push_back(newRocket); 
             now_type_of_bullet = TypeOfBullet::NORMAL;
         }
     }
@@ -212,6 +212,15 @@ public:
                 bulletsToDelete.push_back(bullet);
             }
         }
+        for(RocketComponent* rocket : rockets) 
+        {
+            if(rocket->isMove) {
+                rocket->update();
+            }
+            else {
+                rocketsToDelete.push_back(rocket);
+            }
+        }
         TankdestRect.x = (int) transform->position.x;
         TankdestRect.y = (int) transform->position.y;
         WeapondestRect.x = (int) transform->position.x;
@@ -242,6 +251,16 @@ public:
             delete bullet;
         }
         bulletsToDelete.clear(); 
+
+        for(RocketComponent* rocket : rockets) 
+        { 
+            rocket->draw();
+        }
+        for(RocketComponent* rocket : rocketsToDelete) {
+            rockets.erase(std::remove(rockets.begin(), rockets.end(), rocket), rockets.end());
+            delete rocket;
+        }
+        rocketsToDelete.clear();
     }
 
     
