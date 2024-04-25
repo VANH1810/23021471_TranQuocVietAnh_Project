@@ -7,6 +7,5 @@ class AudioManager
         static Mix_Chunk* LoadSound(const string sound);
         static void PlaySound(Mix_Chunk* sound);
     private:
-    
-    
+
 };

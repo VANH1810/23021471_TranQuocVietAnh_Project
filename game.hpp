@@ -2,6 +2,7 @@
 
 #include "Config.cpp"
 #include "TextureManager.cpp"
+#include "TextManager.cpp"
 #include "ECS/Components.hpp"
 #include "Vector2D.cpp"
 #include "GameState.hpp"
@@ -24,6 +25,13 @@ class Game
         SDL_Texture* FastBulletIcon;
         SDL_Texture* GatlingIcon;
         SDL_Texture* TripleBulletIcon;
+
+        TTF_Font* font;
+
+
+        bool isWall(int x, int y);
+        bool isOccupied(int x, int y);
+
     public:
         Game();
         ~Game();
@@ -42,7 +50,7 @@ class Game
             return isRunning;
         }
 
-        int NumberOfPlayers = 2;
+        int NumberOfPlayers;
         
         static int ScorePlayer1;
         static int ScorePlayer2;
@@ -50,12 +58,12 @@ class Game
 
         static SDL_Renderer* renderer;
         
+        void spawnBulletPackage();
+
         GameState gamestate;
 
         vector<BulletPackage*> bulletPackages;
         static string TypeOfBulletPackage[4];
         static map<string, SDL_Texture*> bulletIcons;
-        void spawnBulletPackage();
-        bool isWall(int x, int y);
-        bool isOccupied(int x, int y);
+        
 };

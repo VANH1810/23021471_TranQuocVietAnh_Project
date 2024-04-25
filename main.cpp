@@ -23,7 +23,7 @@ signed main(int argc, char* argv[])
 
         }
 
-        timeSinceLastSpawn += 0.5;
+        timeSinceLastSpawn += 0.01;
         if(timeSinceLastSpawn >= spawnInterval && game->gamestate == GameState::PLAYING && game->bulletPackages.size() <= 10)
         {
             

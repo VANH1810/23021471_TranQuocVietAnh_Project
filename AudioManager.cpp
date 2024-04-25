@@ -26,7 +26,6 @@ void AudioManager::PlaySound(Mix_Chunk* sound)
             cerr << "Error: " << Mix_GetError() << "\n";
             return;
         }
-        Mix_PlayChannel(-1, sound, 0);
     }
     else cerr << "Error: sound is nullptr\n";
 }

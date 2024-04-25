@@ -32,32 +32,6 @@ Game::Game()
 {}
 Game::~Game()
 {
-    delete HandleBullet1;
-    delete HandleBullet2;
-    delete HandleBullet3;
-    delete HandleBulletPackage1;
-    delete HandleBulletPackage2;
-    delete HandleBulletPackage3;
-    for(auto it : bulletPackages)
-    {
-        delete it;
-    }
-   
-    delete mapAZ;
-    for(auto it : bulletIcons)
-    {
-        SDL_DestroyTexture(it.second);
-    }
-    SDL_DestroyTexture(this->startScreenTexture);
-    SDL_DestroyTexture(this->tutorialTexture);
-    SDL_DestroyTexture(this->selectModeTexture);
-    SDL_DestroyTexture(this->selectNumberOfPlayersTexture);
-    SDL_DestroyTexture(this->keyboardShortcuts);
-    SDL_DestroyTexture(this->RocketIcon);
-    SDL_DestroyTexture(this->GatlingIcon);
-    SDL_DestroyTexture(this->TripleBulletIcon);
-    SDL_DestroyTexture(this->FastBulletIcon);
-    clean();
 }
 
 void Game::logErrorAndExit(const char* msg, const char* error)
@@ -136,13 +110,21 @@ void Game::Render()
         {
             it->draw();
         }
+        if(NumberOfPlayers == 2)
+        {
+            TextManager::DrawText(this->renderer, this->font, "Score Player1: " + to_string(ScorePlayer1), {1600, 384, 384, 128}, {255, 255, 255, 255});
+            TextManager::DrawText(this->renderer, this->font, "Score Player2: " + to_string(ScorePlayer2), {1600, 576, 384, 128}, {255, 255, 255, 255});
+        }
+        else if(NumberOfPlayers == 3)
+        {
+            TextManager::DrawText(this->renderer, this->font, "Score Player1: " + to_string(ScorePlayer1), {1664, 384, 384, 128}, {255, 255, 255, 255});
+            TextManager::DrawText(this->renderer, this->font, "Score Player2: " + to_string(ScorePlayer2), {1664, 576, 384, 128}, {255, 255, 255, 255});
+            TextManager::DrawText(this->renderer, this->font, "Score Player3: " + to_string(ScorePlayer3), {1664, 768, 384, 128}, {255, 255, 255, 255});
+        }
+        
     }
     
     SDL_RenderPresent(renderer);
-}
-
-void Game::ScoreRender()
-{
 }
 
 void Game::handleEvents()
@@ -219,36 +201,74 @@ void Game::update()
         {
             HandleBullet2->update();
             HandleBullet3->update();
+            HandleBulletPackage2->update(bulletPackages);
             HandleBulletPackage3->update(bulletPackages);
         }
         
     }
 }
 
-void Game::clean()
-{
-    SDL_DestroyRenderer(renderer);
-    SDL_DestroyWindow(window);
-    SDL_Quit();
-}
-
 void Game::ResetGame()
 {
     manager.refresh();
-    Player1.getComponent<SpriteComponent>().alive = true;
-    Player2.getComponent<SpriteComponent>().alive = true;
-    Player1.getComponent<TransformComponent>().position = Vector2D(160,160);
+    
+    int player1_xpos, player1_ypos;
+    do 
+    {
+        player1_xpos = (rand() % (mapWidth / 64)) * 64;
+        player1_ypos = (rand() % (mapHeight / 64)) * 64;
+       
+    } while (isWall(player1_xpos, player1_ypos) || 
+             isWall(player1_xpos + 64, player1_ypos) || isWall(player1_xpos, player1_ypos + 64) || 
+             isWall(player1_xpos - 64, player1_ypos) || isWall(player1_xpos, player1_ypos - 64) || 
+             isWall(player1_xpos - 64, player1_ypos - 64) || isWall(player1_xpos - 64, player1_ypos + 64) || 
+             isWall(player1_xpos + 64, player1_ypos + 64) || isWall(player1_xpos + 64, player1_ypos - 64)); 
 
-    Player2.getComponent<TransformComponent>().position = Vector2D(1440,1440);
-    Player1.getComponent<SpriteComponent>().bullets.clear();
+    Player1.getComponent<SpriteComponent>().alive = true;
+    Player1.getComponent<SpriteComponent>().bullets.clear();    
+    Player1.getComponent<TransformComponent>().position = Vector2D(player1_xpos, player1_ypos);
+
+    int player2_xpos, player2_ypos;
+    do 
+    {
+        player2_xpos = (rand() % (mapWidth / 64)) * 64;
+        player2_ypos = (rand() % (mapHeight / 64)) * 64;
+
+    } while (isWall(player2_xpos, player2_ypos) || 
+             isWall(player2_xpos + 64, player2_ypos) || isWall(player2_xpos, player2_ypos + 64) || 
+             isWall(player2_xpos - 64, player2_ypos) || isWall(player2_xpos, player2_ypos - 64) || 
+             isWall(player1_xpos - 64, player1_ypos - 64) || isWall(player1_xpos - 64, player1_ypos + 64) || 
+             isWall(player1_xpos + 64, player1_ypos + 64) || isWall(player1_xpos + 64, player1_ypos - 64) || 
+             (player1_xpos == player2_xpos && player1_ypos == player2_ypos)); 
+    Player2.getComponent<SpriteComponent>().alive = true;
+    Player2.getComponent<TransformComponent>().position = Vector2D(player2_xpos, player2_ypos);
     Player2.getComponent<SpriteComponent>().bullets.clear();
+
 
     if(NumberOfPlayers == 3) 
     {
+        int player3_xpos, player3_ypos;
+        do 
+        {
+            player3_xpos = (rand() % (mapWidth / 64)) * 64;
+            player3_ypos = (rand() % (mapHeight / 64)) * 64;
+
+        
+        }while (isWall(player3_xpos, player3_ypos) || 
+                isWall(player3_xpos + 64, player3_ypos) || isWall(player3_xpos, player3_ypos + 64) || 
+                isWall(player3_xpos - 64, player3_ypos) || isWall(player3_xpos, player3_ypos - 64) || 
+                isWall(player3_xpos - 64, player3_ypos - 64) || isWall(player3_xpos - 64, player3_ypos + 64) || 
+                isWall(player3_xpos + 64, player3_ypos + 64) || isWall(player3_xpos + 64, player3_ypos - 64) || 
+                (player3_xpos == player1_xpos && player3_ypos == player1_ypos) || (player3_xpos == player2_xpos && player3_ypos == player2_ypos)); 
         Player3.getComponent<SpriteComponent>().alive = true;
-        Player3.getComponent<TransformComponent>().position = Vector2D(160,1440);
+        Player3.getComponent<TransformComponent>().position = Vector2D(player3_xpos, player3_ypos);
         Player3.getComponent<SpriteComponent>().bullets.clear();
     }
+    for(auto it : bulletPackages)
+    {
+        delete it;
+    }
+    bulletPackages.clear();
 
 }
 
@@ -292,6 +312,38 @@ bool Game::isWall(int x, int y)
     
     return false;
 }
+void Game::clean()
+{
+    delete HandleBullet1;
+    delete HandleBullet2;
+    delete HandleBullet3;
+    delete HandleBulletPackage1;
+    delete HandleBulletPackage2;
+    delete HandleBulletPackage3;
+    for(auto it : bulletPackages)
+    {
+        delete it;
+    }
+   
+    delete mapAZ;
+    for(auto it : bulletIcons)
+    {
+        SDL_DestroyTexture(it.second);
+    }
+    SDL_DestroyTexture(this->startScreenTexture);
+    SDL_DestroyTexture(this->tutorialTexture);
+    SDL_DestroyTexture(this->selectModeTexture);
+    SDL_DestroyTexture(this->selectNumberOfPlayersTexture);
+    SDL_DestroyTexture(this->keyboardShortcuts);
+    SDL_DestroyTexture(this->RocketIcon);
+    SDL_DestroyTexture(this->GatlingIcon);
+    SDL_DestroyTexture(this->TripleBulletIcon);
+    SDL_DestroyTexture(this->FastBulletIcon);
+    TTF_Quit();
+    SDL_DestroyRenderer(renderer);
+    SDL_DestroyWindow(window);
+    SDL_Quit();
+}
 void Game::preload()
 {
     initSDL(SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
@@ -307,6 +359,8 @@ void Game::preload()
     this->GatlingIcon = TextureManager::LoadTexture("assets/BulletPackageIcon/gatling.png", this->renderer);
     this->TripleBulletIcon = TextureManager::LoadTexture("assets/BulletPackageIcon/triple.png", this->renderer);
     this->FastBulletIcon = TextureManager::LoadTexture("assets/BulletPackageIcon/fast.png", this->renderer);
+
+    this->font = TextManager::LoadText("assets/Fonts/04B_19.TTF");
     TypeOfBulletPackage[0] = "Rocket";
     TypeOfBulletPackage[1] = "Gatling";
     TypeOfBulletPackage[2] = "Triple";
@@ -324,12 +378,12 @@ void Game::preload()
     Player1.addComponent<SpriteComponent>("assets/ground_shaker_asset/Red/Bodies/body_tracks.png", "assets/ground_shaker_asset/Red/Weapons/turret_01_mk4.png", "assets/Fire_Shots/Flash_A_04.png", "assets/SCML/Effects/Explosion_E.png",this->renderer, 8, 50);
     Player1.addComponent<KeyboardController>(&this->event);
 
-    Player2.addComponent<TransformComponent>(1440,1440, mapAZ);
-    Player2.addComponent<SpriteComponent>("assets/ground_shaker_asset/Blue/Bodies/body_tracks.png", "assets/ground_shaker_asset/Blue/Weapons/turret_01_mk4.png","assets/Fire_Shots/Flame_H.png", "assets/SCML/Effects/Explosion_E.png",this->renderer, 8, 50);
+    Player2.addComponent<TransformComponent>(160,200, mapAZ);
+    Player2.addComponent<SpriteComponent>("assets/ground_shaker_asset/Blue/Bodies/body_tracks.png", "assets/ground_shaker_asset/Blue/Weapons/turret_01_mk4.png","assets/Fire_Shots/Flash_A_04.png", "assets/SCML/Effects/Explosion_E.png",this->renderer, 8, 50);
     Player2.addComponent<KeyboardController2>(&this->event);
     
     Player3.addComponent<TransformComponent>(160,1440, mapAZ);
-    Player3.addComponent<SpriteComponent>("assets/ground_shaker_asset/Camo/Bodies/body_tracks.png", "assets/ground_shaker_asset/Camo/Weapons/turret_01_mk4.png","assets/Fire_Shots/Flame_H.png", "assets/SCML/Effects/Explosion_E.png",this->renderer, 8, 50);
+    Player3.addComponent<SpriteComponent>("assets/ground_shaker_asset/Camo/Bodies/body_tracks.png", "assets/ground_shaker_asset/Camo/Weapons/turret_01_mk4.png","assets/Fire_Shots/Flash_A_04.png", "assets/SCML/Effects/Explosion_E.png",this->renderer, 8, 50);
     Player3.addComponent<KeyboardController3>(&this->event);
 
     HandleBullet1 = new HandleBulletsBetweenTwoSprites(Player1, Player2);

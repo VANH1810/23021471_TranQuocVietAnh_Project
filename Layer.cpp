@@ -5,7 +5,7 @@
 
 Layer::Layer(json* map)
 {
-    //construct
+
     layerName = (*map)["name"];
     layerType = (*map)["type"];
     layerId = (*map)["id"];
@@ -29,9 +29,6 @@ Layer::~Layer(){
     if (layerType == "tilelayer")
         delete tileLayer;
 
-    else if (layerType == "objectgroup")
-        delete objectGroup;
-    
 }
 
 void Layer::render(TileSet* tileSet, SDL_Renderer* renderer)

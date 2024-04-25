@@ -27,6 +27,12 @@ Map::Map(const string &name, SDL_Renderer* ren, const json& map){
 Map::~Map()
 {
     delete mapData;
+    for (auto layer: layers)
+    {
+        delete layer;
+    }
+    if (tileSet != NULL)
+        delete tileSet;
 }
 
 void Map::render()

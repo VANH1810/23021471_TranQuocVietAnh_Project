@@ -11,7 +11,7 @@ class Layer
         ~Layer();
         void render(TileSet* tileSet, SDL_Renderer* renderer);
         string layerName;
-        string layerType; //tilelayer, objectgroup
+        string layerType; 
         SDL_Rect* srcRect;
         int layerId;
         bool visible;

@@ -5,11 +5,11 @@ SDL_Texture* TextureManager::LoadTexture(const string& texture, SDL_Renderer* re
 {
     SDL_Surface* tempSurface = IMG_Load(texture.c_str());
     SDL_Texture* tex;
-    if(tempSurface == nullptr) std::cout << "Unable to load image " <<  texture << IMG_GetError() << std::endl;
+    if(tempSurface == nullptr) cerr << "Unable to load image " <<  texture << IMG_GetError() << endl;
     else
     {
         tex = SDL_CreateTextureFromSurface(ren, tempSurface);
-        if(tex == nullptr) std::cout << "Unable to create texture from " <<  texture << SDL_GetError() << std::endl;
+        if(tex == nullptr) cerr << "Unable to create texture from " <<  texture << SDL_GetError() << endl;
         SDL_FreeSurface(tempSurface);    
     }
     return tex;

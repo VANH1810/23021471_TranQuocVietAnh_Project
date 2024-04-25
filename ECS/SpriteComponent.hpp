@@ -17,7 +17,10 @@ class SpriteComponent : public Component
 {
 private:
     TransformComponent *transform;
+
     vector<BulletComponent*> bulletsToDelete;
+    vector<RocketComponent*> rocketsToDelete;
+
     SDL_Texture *bulletTexture;
     SDL_Texture *explosionTexture;
 
@@ -42,11 +45,11 @@ private:
     
 public:
     vector<BulletComponent*> bullets;
+    vector<RocketComponent*> rocket;
     bool alive = true;
     bool shooting_animated = false;
     SDL_Rect TankdestRect;
     TypeOfBullet now_type_of_bullet;
-    
 
     SpriteComponent() = default;
     ~SpriteComponent()
@@ -55,6 +58,13 @@ public:
         SDL_DestroyTexture(WeaponTexture);
         SDL_DestroyTexture(bulletTexture);
         SDL_DestroyTexture(explosionTexture);
+        Mix_FreeChunk(soundEffect);
+        for(auto bullet : bullets)
+            delete bullet;
+        for(auto bullet : bulletsToDelete)
+            delete bullet;
+        while(!pendingBullets.empty())
+            pendingBullets.pop();
     }
     SpriteComponent(const string &tank_path, const string &weapon_path, const string &bullet_path, const string &explosion_path, SDL_Renderer *ren, int nFrames, int mSpeed)
     {
@@ -77,15 +87,19 @@ public:
         WeaponsrcRect.x = WeaponsrcRect.y = 0;
         TanksrcRect.w = 72;
         TanksrcRect.h = 80;
-        WeaponsrcRect.w = WeaponsrcRect.h = 128;
-        TankdestRect.w = 72;
-        TankdestRect.h = 80;
-        WeapondestRect.w = WeapondestRect.h = 128;
+        WeaponsrcRect.w = 128;
+        WeaponsrcRect.h = 128;
+
+        TankdestRect.w = TanksrcRect.w;
+        TankdestRect.h = TanksrcRect.h;
+        WeapondestRect.w = WeaponsrcRect.w;
+        WeapondestRect.h = WeaponsrcRect.h;
     }
     void shoot()
     {
+        if(!alive) return;
         if(now_type_of_bullet == TypeOfBullet::NORMAL){
-            BulletComponent* newBullet = new BulletComponent(bulletTexture, explosionTexture, renderer, 8.0f, transform->map, soundEffect);
+            BulletComponent* newBullet = new BulletComponent(bulletTexture, explosionTexture, renderer, 8.0f, transform->map, soundEffect, 2.5f);
             newBullet->bulletdestRect.x = transform->position.x;
             newBullet->bulletdestRect.y = transform->position.y;
             newBullet->direction = transform->rotation;
@@ -94,7 +108,7 @@ public:
         }
         else if(now_type_of_bullet == TypeOfBullet::FAST)
         {
-            BulletComponent* newBullet = new BulletComponent(bulletTexture, explosionTexture, renderer, 50.0f, transform->map, soundEffect);
+            BulletComponent* newBullet = new BulletComponent(bulletTexture, explosionTexture, renderer, 50.0f, transform->map, soundEffect, 0.8f);
             newBullet->bulletdestRect.x = transform->position.x;
             newBullet->bulletdestRect.y = transform->position.y;
             newBullet->direction = transform->rotation;
@@ -112,21 +126,21 @@ public:
         }
         else if(now_type_of_bullet == TypeOfBullet::TRIPLE_SHOT)
         {
-            BulletComponent* newBullet1 = new BulletComponent(bulletTexture, explosionTexture, renderer, 8.0f, transform->map, soundEffect);
+            BulletComponent* newBullet1 = new BulletComponent(bulletTexture, explosionTexture, renderer, 8.0f, transform->map, soundEffect, 2.0f);
             newBullet1->bulletdestRect.x = transform->position.x;
             newBullet1->bulletdestRect.y = transform->position.y;
             newBullet1->direction = transform->rotation;
             newBullet1->isMove = true;
             bullets.push_back(newBullet1);
 
-            BulletComponent* newBullet2 = new BulletComponent(bulletTexture, explosionTexture, renderer, 8.0f, transform->map, soundEffect);
+            BulletComponent* newBullet2 = new BulletComponent(bulletTexture, explosionTexture, renderer, 8.0f, transform->map, soundEffect,2.0f);
             newBullet2->bulletdestRect.x = transform->position.x;
             newBullet2->bulletdestRect.y = transform->position.y;
             newBullet2->direction = transform->rotation + 30.0f;
             newBullet2->isMove = true;
             bullets.push_back(newBullet2);
 
-            BulletComponent* newBullet3 = new BulletComponent(bulletTexture, explosionTexture, renderer, 8.0f, transform->map, soundEffect);
+            BulletComponent* newBullet3 = new BulletComponent(bulletTexture, explosionTexture, renderer, 8.0f, transform->map, soundEffect,2.0f);
             newBullet3->bulletdestRect.x = transform->position.x;
             newBullet3->bulletdestRect.y = transform->position.y;
             newBullet3->direction = transform->rotation - 30.0f;
@@ -134,16 +148,41 @@ public:
             bullets.push_back(newBullet3);
 
         }
+        else if(now_type_of_bullet == TypeOfBullet::ROCKET)
+        {
+            BulletComponent* newBullet = new BulletComponent(bulletTexture, explosionTexture, renderer, 8.0f, transform->map, soundEffect, 2.0f);
+            newBullet->bulletdestRect.x = transform->position.x;
+            newBullet->bulletdestRect.y = transform->position.y;
+            newBullet->direction = transform->rotation;
+            newBullet->isMove = true;
+            bullets.push_back(newBullet); 
+            now_type_of_bullet = TypeOfBullet::NORMAL;
+        }
     }
     void update() override
     {
-        if (!pendingBullets.empty()) {
+        if(!alive)
+        {
+            now_type_of_bullet = TypeOfBullet::NORMAL;
+
+            TankdestRect.x = -1000;
+            TankdestRect.y = -1000;
+            WeapondestRect.x = -1000;
+            WeapondestRect.y = -1000;
+
+            while(!pendingBullets.empty())
+                pendingBullets.pop();
+            return;
+        }
+        if (!pendingBullets.empty()) 
+        {
             PendingBullet& bullet = pendingBullets.front();
             bullet.delay -= 1.0f / 60.0f;  
 
-            if (bullet.delay <= 0) {
+            if (bullet.delay <= 0) 
+            {
                 
-                BulletComponent* newBullet = new BulletComponent(bulletTexture, explosionTexture, renderer, 8.0f, transform->map, soundEffect);
+                BulletComponent* newBullet = new BulletComponent(bulletTexture, explosionTexture, renderer, 8.0f, transform->map, soundEffect, 2.0f);
                 newBullet->bulletdestRect.x = transform->position.x;
                 newBullet->bulletdestRect.y = transform->position.y;
                 newBullet->direction = transform->rotation;
@@ -153,6 +192,7 @@ public:
                 pendingBullets.pop();
             }
         }
+
         if (shooting_animated)
         {
             int currentFrame =  static_cast<int>((SDL_GetTicks() / speed_frames) % animated_frames);
@@ -177,16 +217,17 @@ public:
         WeapondestRect.x = (int) transform->position.x;
         WeapondestRect.y = (int) transform->position.y;
     }
+
     void draw() override
     {
         if(alive == false) return;
-        SDL_Rect TankdestRectCopy = TankdestRect; // Create a copy of destRect
-        TankdestRectCopy.x = (int) transform->position.x - TankdestRect.w / 2; // Update the copy
+        SDL_Rect TankdestRectCopy = TankdestRect; 
+        TankdestRectCopy.x = (int) transform->position.x - TankdestRect.w / 2; 
         TankdestRectCopy.y = (int) transform->position.y - TankdestRect.h / 2;
         SDL_Point Tankcenter = {TankdestRect.w / 2, TankdestRect.h / 2}; // Rotation center
         SDL_RenderCopyEx(renderer, TankTexture, &TanksrcRect, &TankdestRectCopy, transform->rotation + 90.0f, &Tankcenter, SDL_FLIP_NONE);
 
-        SDL_Rect WeapondestRectCopy = WeapondestRect; // Create a copy of destRect
+        SDL_Rect WeapondestRectCopy = WeapondestRect;
         WeapondestRectCopy.x = (int) transform->position.x - WeapondestRect.w / 2; 
         WeapondestRectCopy.y = (int) transform->position.y - WeapondestRect.w / 2; 
         SDL_Point Weaponcenter = {WeapondestRect.w / 2, WeapondestRect.h / 2}; // Rotation center
@@ -200,7 +241,7 @@ public:
             bullets.erase(std::remove(bullets.begin(), bullets.end(), bullet), bullets.end());
             delete bullet;
         }
-        bulletsToDelete.clear(); // Clear the vector after deleting bullets
+        bulletsToDelete.clear(); 
     }
 
     

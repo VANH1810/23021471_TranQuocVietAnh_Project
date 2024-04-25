@@ -25,7 +25,7 @@ class BulletComponent
         
 
         ~BulletComponent() = default;
-        BulletComponent(SDL_Texture *bulletImage,  SDL_Texture *explosionImage, SDL_Renderer *ren, float mSpeed, Map* mapdata, Mix_Chunk *_soundEffect)
+        BulletComponent(SDL_Texture *bulletImage,  SDL_Texture *explosionImage, SDL_Renderer *ren, float mSpeed, Map* mapdata, Mix_Chunk *_soundEffect, float time_alive)
         {
             bulletTexture = bulletImage;
             renderer = ren;
@@ -37,22 +37,22 @@ class BulletComponent
             bulletsrcRect.h = 37;
             bulletdestRect.w = bulletsrcRect.w / SCALEDOWN;
             bulletdestRect.h = bulletsrcRect.h / SCALEDOWN;
+
             explosionsrcRect.x = 0;
             explosionsrcRect.y = 0;
             explosionsrcRect.w = 256;
             explosionsrcRect.h = 256;
             explosiondestRect.w = explosionsrcRect.w / SCALEDOWN;
             explosiondestRect.h = explosionsrcRect.h / SCALEDOWN;
+
             isMove = true;
 
             explosionTexture = explosionImage;
-            timeAlive = 0.0f;
+            timeAlive = time_alive;
 
             soundEffect = _soundEffect;
             AudioManager::PlaySound(soundEffect);
-            
         }
-
         bool CheckBulletCollisionWithWall(int finalPositionX, int finalPositionY)
         {
             finalPositionX ++;
@@ -75,7 +75,6 @@ class BulletComponent
                 }
             }
             return false;
-        
         }
 
         void update() 
@@ -90,9 +89,7 @@ class BulletComponent
             } 
             else 
             {
-                // The bullet hit a vertical wall, so reverse the x direction
                 direction = 180-direction;
-                //cout << "Bullet hit a horizontal wall" << endl;
             }
 
             // Check vertical collision
@@ -102,19 +99,16 @@ class BulletComponent
             } 
             else 
             {
-                // The bullet hit a horizontal wall, so reverse the y direction
                 direction = - direction;
-                //cout << "Bullet hit a vertical wall" << endl;
             }
 
-            timeAlive += 0.01f;
-            if(timeAlive > 2.5f)
+            timeAlive -= 0.01f;
+            if(timeAlive <= 0.0f)
             {
                 isMove = false;
             }
         }
-
-        
+         
         void draw()
         {
             if(!isMove)
@@ -129,8 +123,7 @@ class BulletComponent
                 SDL_RenderCopyEx(renderer, bulletTexture, &bulletsrcRect, &bulletdestRect, direction, &BulletCenter, SDL_FLIP_NONE);
             }
         }
-
-        
+    
 };
 
 class RocketComponent
