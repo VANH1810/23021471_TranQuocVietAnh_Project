@@ -32,7 +32,6 @@ signed main(int argc, char* argv[])
         timeSinceLastSpawn += 0.01;
         if(timeSinceLastSpawn >= spawnInterval && game->gamestate == GameState::PLAYING && game->bulletPackages.size() <= 10)
         {
-            
             game->spawnBulletPackage();
             timeSinceLastSpawn = 0.0f;
         }
@@ -57,7 +56,6 @@ signed main(int argc, char* argv[])
             }
             if(!Player2.getComponent<SpriteComponent>().alive)
             {
-                
                 if(resetTime == 0)
                 {
                     resetTime = SDL_GetTicks();
@@ -75,18 +73,44 @@ signed main(int argc, char* argv[])
         {
             if (!Player1.getComponent<SpriteComponent>().alive && !Player2.getComponent<SpriteComponent>().alive) 
             {
-                game->ResetGame();
-                game->ScorePlayer3 ++;
+                if(resetTime == 0)
+                {
+                    resetTime = SDL_GetTicks();
+                }
+                else if(SDL_GetTicks() - resetTime > 3000)
+                {
+                    game->ScorePlayer3 ++;
+                    game->ResetGame();
+                    resetTime = 0;
+                }
+            
             }
             else if(!Player2.getComponent<SpriteComponent>().alive && !Player3.getComponent<SpriteComponent>().alive)
             {
-                game->ResetGame();
-                game->ScorePlayer1 ++;
+                if(resetTime == 0)
+                {
+                    resetTime = SDL_GetTicks();
+                }
+                else if(SDL_GetTicks() - resetTime > 3000)
+                {
+                    game->ScorePlayer1 ++;
+                    game->ResetGame();
+                    resetTime = 0;
+                }
             }
             else if(!Player3.getComponent<SpriteComponent>().alive && !Player1.getComponent<SpriteComponent>().alive)
             {
-                game->ResetGame();
-                game->ScorePlayer2 ++;
+                if(resetTime == 0)
+                {
+                    resetTime = SDL_GetTicks();
+                }
+                else if(SDL_GetTicks() - resetTime > 3000)
+                {
+                    game->ScorePlayer2 ++;
+                    game->ResetGame();
+                    resetTime = 0;
+                }
+
             }
             
         }

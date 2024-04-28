@@ -12,9 +12,8 @@ auto& Player1(manager.addEntity());
 auto& Player2(manager.addEntity());
 auto& Player3(manager.addEntity());
 
-HandleBulletsBetweenTwoSprites* HandleBullet1 = nullptr;
-HandleBulletsBetweenTwoSprites* HandleBullet2 = nullptr;
-HandleBulletsBetweenTwoSprites* HandleBullet3 = nullptr;
+HandleTwoSprites* HandleTwo = nullptr;
+HandleThreeSprites* HandleThree = nullptr;
 
 HandleCollectBulletPackage* HandleBulletPackage1 = nullptr;
 HandleCollectBulletPackage* HandleBulletPackage2 = nullptr;
@@ -82,27 +81,8 @@ void Game::createRenderer()
 void Game::Render()
 {
     SDL_RenderClear(renderer);
-    if(gamestate == GameState::START_SCREEN)
-    {
-        SDL_RenderCopy(this->renderer, this->startScreenTexture, nullptr, nullptr);
-    }
-    else if(gamestate == GameState::TUTORIAL)
-    {
-        SDL_RenderCopy(this->renderer, this->tutorialTexture, nullptr, nullptr);
-    }
-    else if(gamestate == GameState::KEYBOARD_SHORTCUTS)
-    {
-        SDL_RenderCopy(this->renderer, this->keyboardShortcuts, nullptr, nullptr);
-    }
-    else if(gamestate == GameState::SELECT_MODE)
-    {
-        SDL_RenderCopy(this->renderer, this->selectModeTexture, nullptr, nullptr);
-    }
-    else if(gamestate == GameState::SELECT_NUMBER_OF_PLAYERS)
-    {
-        SDL_RenderCopy(this->renderer, this->selectNumberOfPlayersTexture, nullptr, nullptr);
-    }
-    else
+    
+    if(gamestate == GameState::PLAYING)
     {
         mapAZ->render();
         manager.draw();
@@ -123,6 +103,10 @@ void Game::Render()
         }
         
     }
+    else 
+    {
+        menu->Render(gamestate);
+    }
     
     SDL_RenderPresent(renderer);
 }
@@ -141,49 +125,14 @@ void Game::handleEvents()
             case SDLK_ESCAPE:
                 isRunning = false;
                 break;
-            case SDLK_p:
-                if(gamestate == GameState::PAUSED)
-                    gamestate = GameState::PLAYING;
-                else if(gamestate == GameState::PLAYING)
-                    gamestate = GameState::PAUSED;
-                break;
-            case SDLK_SPACE:
-                if(gamestate == GameState::START_SCREEN)
-                    gamestate = GameState::TUTORIAL;
-                else if(gamestate == GameState::TUTORIAL)
-                    gamestate = GameState::KEYBOARD_SHORTCUTS;
-                else if(gamestate == GameState::KEYBOARD_SHORTCUTS)
-                    gamestate = GameState::SELECT_MODE;
-                break;
-            case SDLK_F2:
-                if(gamestate == GameState::SELECT_MODE)
-                {
-                    gamestate = GameState::SELECT_NUMBER_OF_PLAYERS;
-                }
-                break;
-
-            case SDLK_2:
-                if(gamestate == GameState::SELECT_NUMBER_OF_PLAYERS)
-                {
-                    gamestate = GameState::PLAYING;
-                    NumberOfPlayers = 2;
-                    Player3.destroy();
-                    delete HandleBullet2;
-                    delete HandleBullet3;
-                }
-                break;
-            case SDLK_3: 
-                if(gamestate == GameState::SELECT_NUMBER_OF_PLAYERS)
-                {
-                    
-                    gamestate = GameState::PLAYING;
-                    NumberOfPlayers = 3;
-                }
-                break;
             default:
                 break;
         }
     }
+    menu->HandleEvents(gamestate);
+    NumberOfPlayers = menu->numberOfPlayers;
+    
+    
 }
 
 void Game::update()
@@ -192,16 +141,19 @@ void Game::update()
     {
         manager.refresh();
         manager.update();
-        HandleBullet1->update();
-        HandleBulletPackage1->update(bulletPackages);
+        
         if(NumberOfPlayers == 2) 
         {
+            HandleTwo->update();
+            HandleBulletPackage1->update(bulletPackages);
             HandleBulletPackage2->update(bulletPackages);
+            Player3.getComponent<SpriteComponent>().alive = false;
+            
         }
         else if(NumberOfPlayers == 3) 
         {
-            HandleBullet2->update();
-            HandleBullet3->update();
+            HandleThree->update();
+            HandleBulletPackage1->update(bulletPackages);
             HandleBulletPackage2->update(bulletPackages);
             HandleBulletPackage3->update(bulletPackages);
         }
@@ -212,7 +164,7 @@ void Game::update()
 void Game::ResetGame()
 {
     manager.refresh();
-    
+  
     int player1_xpos, player1_ypos;
     do 
     {
@@ -265,10 +217,9 @@ void Game::ResetGame()
         Player3.getComponent<TransformComponent>().position = Vector2D(player3_xpos, player3_ypos);
         Player3.getComponent<SpriteComponent>().bullets.clear();
     }
+
     for(auto it : bulletPackages)
-    {
         delete it;
-    }
     bulletPackages.clear();
 
 }
@@ -291,12 +242,9 @@ void Game::spawnBulletPackage()
 bool Game::isOccupied(int x, int y) 
 {
     for(auto it : bulletPackages) 
-    {
         if(it->destRect.x == x && it->destRect.y == y) 
-        {
-            return true;
-        }
-    }
+           return true;
+        
     return false;
 }
 
@@ -304,34 +252,32 @@ bool Game::isWall(int x, int y)
 {
     x = x * SCALEDOWN / mapAZ->tileWidth;
     y = y * SCALEDOWN / mapAZ->tileHeight;
-        for (auto layer: mapAZ->layers) {
+        for (auto layer: mapAZ->layers) 
+        {
             if (layer->layerType != "tilelayer") continue;
             int id = layer->tileLayer->getId(y, x);
-            if (mapAZ->tileSet->tiles[id]->isCollidable) {
+            if (mapAZ->tileSet->tiles[id]->isCollidable) 
                 return true;
-            }
         }
     
     return false;
 }
 void Game::clean()
 {
-    delete HandleBullet1;
-    delete HandleBullet2;
-    delete HandleBullet3;
+    delete menu;
+    delete HandleTwo;
+    delete HandleThree;
     delete HandleBulletPackage1;
     delete HandleBulletPackage2;
     delete HandleBulletPackage3;
     for(auto it : bulletPackages)
-    {
         delete it;
-    }
+    
    
     delete mapAZ;
     for(auto it : bulletIcons)
-    {
         SDL_DestroyTexture(it.second);
-    }
+
     SDL_DestroyTexture(this->startScreenTexture);
     SDL_DestroyTexture(this->tutorialTexture);
     SDL_DestroyTexture(this->selectModeTexture);
@@ -350,19 +296,21 @@ void Game::preload()
 {
     initSDL(SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
     createRenderer(); 
-
+    
     this->startScreenTexture = TextureManager::LoadTexture("assets/PlayScreen/StartScreen.png", this->renderer);
     this->tutorialTexture = TextureManager::LoadTexture("assets/PlayScreen/Tutorial.png", this->renderer);
     this->selectModeTexture = TextureManager::LoadTexture("assets/PlayScreen/SelectMode.png", this->renderer);
     this->selectNumberOfPlayersTexture = TextureManager::LoadTexture("assets/PlayScreen/SelectNumberOfPlayers.png", this->renderer);
     this->keyboardShortcuts = TextureManager::LoadTexture("assets/PlayScreen/KeyboardShortcuts.png", this->renderer);
 
+    menu = new Menu(this->renderer, &this->event, this->startScreenTexture, this->tutorialTexture, this->selectModeTexture, this->selectNumberOfPlayersTexture, this->keyboardShortcuts);
     this->RocketIcon = TextureManager::LoadTexture("assets/BulletPackageIcon/rocket.png", this->renderer);
     this->GatlingIcon = TextureManager::LoadTexture("assets/BulletPackageIcon/gatling.png", this->renderer);
     this->TripleBulletIcon = TextureManager::LoadTexture("assets/BulletPackageIcon/triple.png", this->renderer);
     this->FastBulletIcon = TextureManager::LoadTexture("assets/BulletPackageIcon/fast.png", this->renderer);
 
     this->font = TextManager::LoadText("assets/Fonts/04B_19.TTF");
+
     TypeOfBulletPackage[0] = "Rocket";
     TypeOfBulletPackage[1] = "Gatling";
     TypeOfBulletPackage[2] = "Triple";
@@ -380,7 +328,7 @@ void Game::preload()
     Player1.addComponent<SpriteComponent>("assets/ground_shaker_asset/Red/Bodies/body_tracks.png", "assets/ground_shaker_asset/Red/Weapons/turret_01_mk4.png", "assets/Fire_Shots/Flash_A_04.png", "assets/SCML/Effects/Explosion_E.png",this->renderer, 8, 50);
     Player1.addComponent<KeyboardController>(&this->event);
 
-    Player2.addComponent<TransformComponent>(160,360, mapAZ);
+    Player2.addComponent<TransformComponent>(1440,1440, mapAZ);
     Player2.addComponent<SpriteComponent>("assets/ground_shaker_asset/Blue/Bodies/body_tracks.png", "assets/ground_shaker_asset/Blue/Weapons/turret_01_mk4.png","assets/Fire_Shots/Flash_A_04.png", "assets/SCML/Effects/Explosion_E.png",this->renderer, 8, 50);
     Player2.addComponent<KeyboardController2>(&this->event);
     
@@ -388,9 +336,8 @@ void Game::preload()
     Player3.addComponent<SpriteComponent>("assets/ground_shaker_asset/Camo/Bodies/body_tracks.png", "assets/ground_shaker_asset/Camo/Weapons/turret_01_mk4.png","assets/Fire_Shots/Flash_A_04.png", "assets/SCML/Effects/Explosion_E.png",this->renderer, 8, 50);
     Player3.addComponent<KeyboardController3>(&this->event);
 
-    HandleBullet1 = new HandleBulletsBetweenTwoSprites(Player1, Player2);
-    HandleBullet2 = new HandleBulletsBetweenTwoSprites(Player1, Player3);
-    HandleBullet3 = new HandleBulletsBetweenTwoSprites(Player2, Player3);
+    HandleTwo = new HandleTwoSprites(Player1, Player2);
+    HandleThree = new HandleThreeSprites(Player1, Player2, Player3);
 
     HandleBulletPackage1 = new HandleCollectBulletPackage(Player1);
     HandleBulletPackage2 = new HandleCollectBulletPackage(Player2);

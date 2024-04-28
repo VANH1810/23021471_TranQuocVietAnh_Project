@@ -8,6 +8,7 @@
 #include "GameState.hpp"
 #include "BulletPackage.hpp"
 #include "HandleCollectBulletPackage.hpp"
+#include "menu.cpp"
 class Game
 {
     private: 
@@ -28,9 +29,10 @@ class Game
 
         TTF_Font* font;
 
-
         bool isWall(int x, int y);
         bool isOccupied(int x, int y);
+
+        Menu* menu;
 
     public:
         Game();

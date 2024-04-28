@@ -24,13 +24,14 @@ class RocketComponent
             CellInfo* prevCell;
 
             CellInfo(int x, int y, CellInfo* prevCell) : x(x), y(y), prevCell(prevCell) {}
+            
             bool operator!=(const CellInfo& other) const {
                 return x != other.x || y != other.y;
             }
         };
 
-        vector<int> dx = {64, -64, 0, 0, 64, -64, 64, -64}; 
-        vector<int> dy = {0, 0, 64, -64, 64, 64, -64, -64}; 
+        vector<int> dx = {tileWidth, -tileWidth, 0, 0, tileWidth, tileWidth, tileWidth, -tileWidth}; 
+        vector<int> dy = {0, 0, tileHeight, -tileHeight, tileHeight, tileHeight, -tileHeight, -tileHeight};  
         vector<pair<int, int>> path;
         int pathIndex = 0;
         int frameCount;
@@ -44,6 +45,7 @@ class RocketComponent
         ~RocketComponent() = default;
         RocketComponent(SDL_Texture *rocketImage,  SDL_Texture *explosionImage, SDL_Renderer *ren, float mSpeed, Map* mapdata, Mix_Chunk *_soundEffect, float time_alive)
         {
+    
             rocketTexture = rocketImage;
             renderer = ren;
             speed = mSpeed;
@@ -75,7 +77,8 @@ class RocketComponent
         {
             int x = xpos* SCALEDOWN / map->tileWidth;
             int y = ypos* SCALEDOWN / map->tileHeight;
-            if(x <= 0 || x >= map->mapWidth || y <= 0 || y >= map->mapHeight) return false;
+    
+            if(x <= 0 || x >= mapWidth || y <= 0 || y >= mapHeight) return false;
             for (auto layer: map->layers)
             {
                 if (layer->layerType != "tilelayer") continue;
@@ -86,15 +89,14 @@ class RocketComponent
             
             return true;
         }
+
         bool canMoveDiagonally(int x, int y, int dx, int dy)
         {
-            // Kiểm tra xem liệu ô (x, y) có nằm trong không gian chơi hay không
-            if (x + dx < 0 || x + dx >= 1536 || y + dy < 0 || y + dy >= 1536) {
+          
+            if (x + dx < 0 || x + dx >= mapWidth || y + dy < 0 || y + dy >= mapHeight) {
                 return false;
             }
 
-            // Kiểm tra xem liệu ô kề cạnh (x, y) theo hướng chéo có bị chặn hay không
-            // Bạn cần thay thế `isBlocked` bằng hàm thực sự kiểm tra xem liệu một ô có bị chặn hay không
             if (!isValid(x + dx, y) || !isValid(x, y + dy) || !isValid(x + dx, y + dy)) {
                 return false;
             }
@@ -107,8 +109,8 @@ class RocketComponent
            
             queue<CellInfo*> q;
             bool found = false;
-           
-            vector<vector<bool>> visited(1536, vector<bool>(1536, false));
+            
+            vector<vector<bool>> visited(mapHeight, vector<bool>(mapWidth, false));
             CellInfo* startCell = new CellInfo(startX, startY, nullptr);
             CellInfo* targetCell = nullptr; 
            
@@ -121,13 +123,14 @@ class RocketComponent
                 q.pop();
                 
                 int distance = sqrt((current->x - targetX) * (current->x - targetX) + (current->y - targetY) * (current->y - targetY));
-                if (distance <= 64) {
+                if (distance <= 64) 
+                {
                     targetCell = current;   
                     found = true;
                     break;
                 }
                 
-                for (int i = 0; i < 8; ++i)
+                for (int i = 0; i < (int) dx.size(); ++i)
                 {
                     int nextX = current->x + dx[i];
                     int nextY = current->y + dy[i];
@@ -155,23 +158,24 @@ class RocketComponent
             return {};
         }
         
-        void update() {
-            targetX = 1440;
-            targetY = 1440; 
+        void update() 
+        {
             frameCount++;
-            if(path.empty() || frameCount % 3 == 0)
+            if(path.empty() || frameCount % 5 == 0)
             {   
                 path.clear();
                 path = findPathToTarget(rocketdestRect.x, rocketdestRect.y, targetX, targetY);
+            
                 pathIndex = 0;
             }
+
             if (!path.empty() && isMove)
             {
                 int nextX = path[pathIndex].first;
                 int nextY = path[pathIndex].second;
                 float direction_x = nextX - rocketdestRect.x;
                 float direction_y = nextY - rocketdestRect.y;
-                float length = std::sqrt(direction_x * direction_x + direction_y * direction_y);
+                float length = sqrt(direction_x * direction_x + direction_y * direction_y);
 
                 // Normalize direction vector
                 if (length > 0) {
@@ -183,8 +187,8 @@ class RocketComponent
                 rocketdestRect.y += (float)(direction_y * speed);
                 
                 float distanceToNextWaypoint = sqrt((nextX - rocketdestRect.x)*(nextX - rocketdestRect.x) + (nextY - rocketdestRect.y)*(nextY - rocketdestRect.y));
-                if (distanceToNextWaypoint < 10.0) {
-                    cerr << pathIndex << endl;
+                if (distanceToNextWaypoint < (map->tileWidth / SCALEDOWN) / 4) {
+                
                     rocketdestRect.x = nextX;
                     rocketdestRect.y = nextY;
                     pathIndex++;
@@ -206,8 +210,8 @@ class RocketComponent
         {
             if(!isMove)
             {
-                explosiondestRect.x = rocketdestRect.x - 64;
-                explosiondestRect.y = rocketdestRect.y - 64;
+                explosiondestRect.x = rocketdestRect.x - map->tileWidth / SCALEDOWN;
+                explosiondestRect.y = rocketdestRect.y - map->tileHeight / SCALEDOWN;
                 SDL_RenderCopy(renderer, explosionTexture, &explosionsrcRect, &explosiondestRect);
             }
             else if(isMove)

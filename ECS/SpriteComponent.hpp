@@ -42,6 +42,8 @@ private:
         float delay;
     };
     queue<PendingBullet> pendingBullets;
+
+    
     
 public:
     vector<BulletComponent*> bullets;
@@ -50,6 +52,7 @@ public:
     bool shooting_animated = false;
     SDL_Rect TankdestRect;
     TypeOfBullet now_type_of_bullet;
+    pair<int,int> nearestEnemy;
 
     SpriteComponent() = default;
     ~SpriteComponent()
@@ -98,7 +101,8 @@ public:
     void shoot()
     {
         if(!alive) return;
-        if(now_type_of_bullet == TypeOfBullet::NORMAL){
+        if(now_type_of_bullet == TypeOfBullet::NORMAL)
+        {
             BulletComponent* newBullet = new BulletComponent(bulletTexture, explosionTexture, renderer, 8.0f, transform->map, soundEffect, 2.5f);
             newBullet->bulletdestRect.x = transform->position.x;
             newBullet->bulletdestRect.y = transform->position.y;
@@ -118,7 +122,8 @@ public:
         }
         else if (now_type_of_bullet == TypeOfBullet::GATLING)
         {
-           for (int i = 0; i < 3; ++i) {
+           for (int i = 0; i < 3; ++i) 
+           {
                 PendingBullet bullet = { TypeOfBullet::GATLING, i * 0.1f };
                 pendingBullets.push(bullet);
             }
@@ -155,6 +160,9 @@ public:
             newRocket->rocketdestRect.y = transform->position.y;
             newRocket->direction = transform->rotation;
             newRocket->isMove = true;
+            newRocket->targetX = nearestEnemy.first;
+            newRocket->targetY = nearestEnemy.second;
+
             rockets.push_back(newRocket); 
             now_type_of_bullet = TypeOfBullet::NORMAL;
         }
@@ -203,6 +211,7 @@ public:
             }
             
         }
+
         for(BulletComponent* bullet : bullets) 
         {
             if(bullet->isMove) {
@@ -215,7 +224,10 @@ public:
         for(RocketComponent* rocket : rockets) 
         {
             if(rocket->isMove) {
+                rocket->targetX = nearestEnemy.first;
+                rocket->targetY = nearestEnemy.second;
                 rocket->update();
+
             }
             else {
                 rocketsToDelete.push_back(rocket);
