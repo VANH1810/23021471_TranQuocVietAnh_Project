@@ -3,7 +3,6 @@
 #include "ECS.hpp"
 #include "../TextureManager.hpp"
 #include "../AudioManager.cpp"
-
 class RocketComponent
 {
     private:
@@ -18,24 +17,29 @@ class RocketComponent
         float timeAlive;
 
         Mix_Chunk *soundEffect;
+
         struct CellInfo 
         {
-            int x, y; // Vị trí của ô
-            int distance; // Khoảng cách từ điểm bắt đầu
-            int parentX, parentY; // Thông tin về ô cha
+            int x, y;
+            CellInfo* prevCell;
+
+            CellInfo(int x, int y, CellInfo* prevCell) : x(x), y(y), prevCell(prevCell) {}
             bool operator!=(const CellInfo& other) const {
                 return x != other.x || y != other.y;
             }
         };
+
+        vector<int> dx = {64, -64, 0, 0, 64, -64, 64, -64}; 
+        vector<int> dy = {0, 0, 64, -64, 64, 64, -64, -64}; 
+        vector<pair<int, int>> path;
+        int pathIndex = 0;
+        int frameCount;
+
     public:
         SDL_Rect rocketdestRect;
         bool isMove;
         float direction;
-        vector<int> dx = {64, -64, 0, 0}; 
-        vector<int> dy = {0, 0, 64, -64}; 
-        vector<pair<int, int>> path; // Lưu trữ đường đi
-        size_t pathIndex = 0; // Lưu trữ chỉ số của ô tiếp theo trên đường đi
-        int frameCount;
+        int targetX, targetY;
 
         ~RocketComponent() = default;
         RocketComponent(SDL_Texture *rocketImage,  SDL_Texture *explosionImage, SDL_Renderer *ren, float mSpeed, Map* mapdata, Mix_Chunk *_soundEffect, float time_alive)
@@ -66,100 +70,102 @@ class RocketComponent
 
             frameCount = 0;
             
-            
         }
-        bool isValid(int x, int y)
+        bool isValid(int xpos, int ypos)
         {
-            x = x* SCALEDOWN / map->tileWidth;
-            y = y* SCALEDOWN / map->tileHeight;
-            if (x >= 0 && x < mapWidth && y >= 0 && y < mapHeight)
+            int x = xpos* SCALEDOWN / map->tileWidth;
+            int y = ypos* SCALEDOWN / map->tileHeight;
+            if(x <= 0 || x >= map->mapWidth || y <= 0 || y >= map->mapHeight) return false;
+            for (auto layer: map->layers)
             {
-                for (auto layer: map->layers)
-                    {
-                        if (layer->layerType != "tilelayer") continue;
-                        int id = layer->tileLayer->getId(y, x);
-                        if (!map->tileSet->tiles[id]->isCollidable)
-                        {
-                            return true;
-                        }
-                        
-                    }
+                if (layer->layerType != "tilelayer") continue;
+                int id = layer->tileLayer->getId(y, x);
+                if (map->tileSet->tiles[id]->isCollidable)
+                    return false;  
             }
-            return false;
+            
+            return true;
+        }
+        bool canMoveDiagonally(int x, int y, int dx, int dy)
+        {
+            // Kiểm tra xem liệu ô (x, y) có nằm trong không gian chơi hay không
+            if (x + dx < 0 || x + dx >= 1536 || y + dy < 0 || y + dy >= 1536) {
+                return false;
+            }
+
+            // Kiểm tra xem liệu ô kề cạnh (x, y) theo hướng chéo có bị chặn hay không
+            // Bạn cần thay thế `isBlocked` bằng hàm thực sự kiểm tra xem liệu một ô có bị chặn hay không
+            if (!isValid(x + dx, y) || !isValid(x, y + dy) || !isValid(x + dx, y + dy)) {
+                return false;
+            }
+
+            return true;
         }
 
         vector<pair<int, int>> findPathToTarget(int startX, int startY, int targetX, int targetY)
         {
-            // Tạo một hàng đợi để lưu trữ các ô cần duyệt
-            queue<CellInfo> q;
+           
+            queue<CellInfo*> q;
             bool found = false;
-            // Khởi tạo mảng để đánh dấu các ô đã duyệt
+           
             vector<vector<bool>> visited(1536, vector<bool>(1536, false));
-            vector<vector<CellInfo>> prevCell(1536, vector<CellInfo>(1536));
-            // Đánh dấu điểm bắt đầu đã được duyệt và thêm nó vào hàng đợi
+            CellInfo* startCell = new CellInfo(startX, startY, nullptr);
+            CellInfo* targetCell = nullptr; 
+           
             visited[startX][startY] = true;
-            q.push({startX, startY, 0, startX, startY});
+            q.push(startCell);
             
-            // Duyệt hàng đợi
             while (!q.empty())
             {
-                CellInfo current = q.front();
+                CellInfo* current = q.front();
                 q.pop();
                 
-                // Nếu đạt được điểm đích, thoát khỏi vòng lặp
-                int distance = sqrt((current.x - targetX) * (current.x - targetX) + (current.y - targetY) * (current.y - targetY));
+                int distance = sqrt((current->x - targetX) * (current->x - targetX) + (current->y - targetY) * (current->y - targetY));
                 if (distance <= 64) {
-                    targetX = current.x;
-                    targetY = current.y;
+                    targetCell = current;   
                     found = true;
                     break;
                 }
                 
-                // Duyệt các ô lân cận của ô hiện tại
-                for (int i = 0; i < 4; ++i)
+                for (int i = 0; i < 8; ++i)
                 {
-                    int nextX = current.x + dx[i];
-                    int nextY = current.y + dy[i];
-                    
-                    // Kiểm tra xem ô tiếp theo có hợp lệ không và chưa được duyệt
-                    if (isValid(nextX, nextY) && !visited[nextX][nextY])
+                    int nextX = current->x + dx[i];
+                    int nextY = current->y + dy[i];
+                    if (canMoveDiagonally(current->x, current->y, dx[i], dy[i]) && !visited[nextX][nextY])
                     {
                         visited[nextX][nextY] = true;
-                        q.push({nextX, nextY, current.distance + 1, current.x, current.y});
-                        prevCell[nextX][nextY] = {current.x, current.y};
+                        CellInfo* nextCell = new CellInfo(nextX, nextY, current);
+                        q.push(nextCell);
                     }
                 }
             }
             if (found) 
             {
-                CellInfo startCell = {startX, startY, 0, startX, startY};
-                CellInfo targetCell = {targetX, targetY};
-                
                 vector<pair<int, int>> path;
-                for (CellInfo cell = targetCell; cell != startCell; cell = prevCell[cell.x][cell.y]) {
-                    path.push_back({cell.x, cell.y});
+                for (CellInfo* cell = targetCell; cell->prevCell != nullptr; cell = cell->prevCell) 
+                {
+                    path.push_back(make_pair(cell->x, cell->y));
                 }
-                path.push_back(make_pair(startCell.x, startCell.y)); // Đảm bảo bắt đầu cũng được bao gồm
-                //if (path.size() > 5)  path.erase(path.begin() + 5, path.end());
-                reverse(path.begin(), path.end()); // Đảo ngược đường đi vì chúng ta đã xây dựng nó từ cuối đến đầu
-                
+                path.push_back(make_pair(startX, startY)); 
+                reverse(path.begin(), path.end()); 
+
                 return path;
             }
     
-            
             return {};
         }
         
         void update() {
-            int targetX = 1440, targetY = 1440; // Vị trí mục tiêu mới
+            targetX = 1440;
+            targetY = 1440; 
             frameCount++;
-            if(path.empty())
-            {
+            if(path.empty() || frameCount % 3 == 0)
+            {   
+                path.clear();
                 path = findPathToTarget(rocketdestRect.x, rocketdestRect.y, targetX, targetY);
-                for(auto x:path) cout << x.first << " " << x.second << endl;    
                 pathIndex = 0;
             }
-            if (!path.empty())
+            if (!path.empty() && isMove)
             {
                 int nextX = path[pathIndex].first;
                 int nextY = path[pathIndex].second;
@@ -172,33 +178,19 @@ class RocketComponent
                     direction_x /= length;
                     direction_y /= length;
                 }
+
+                rocketdestRect.x += (float)(direction_x * speed);
+                rocketdestRect.y += (float)(direction_y * speed);
                 
-
-                //float distanceToTarget = std::sqrt((targetX - rocketdestRect.x) * (targetX - rocketdestRect.x) + (targetY - rocketdestRect.y) * (targetY - rocketdestRect.y));
-                //float moveStep = std::min(distanceToTarget, static_cast<float>(64));
-                //dx[0] = moveStep;
-                //dx[1] = -moveStep;
-                //dy[2] = moveStep;
-                //dy[3] = -moveStep;
-                // Normalize direction vector
-
-                // Cập nhật hướng đi của viên đạn
-                //direction = atan2(direction_y, direction_x) * (180 / M_PI);
-
-                // Cập nhật vị trí của viên đạn với một bước di chuyển cố định
-               
-                rocketdestRect.x += static_cast<int>(direction_x * speed);
-                rocketdestRect.y += static_cast<int>(direction_y * speed);
-                
-                float distanceToNextWaypoint = std::sqrt(std::pow(nextX - rocketdestRect.x, 2) + std::pow(nextY - rocketdestRect.y, 2));
-                if (distanceToNextWaypoint < 1.0) {
-                    // Update position to waypoint and move to next waypoint
+                float distanceToNextWaypoint = sqrt((nextX - rocketdestRect.x)*(nextX - rocketdestRect.x) + (nextY - rocketdestRect.y)*(nextY - rocketdestRect.y));
+                if (distanceToNextWaypoint < 10.0) {
+                    cerr << pathIndex << endl;
                     rocketdestRect.x = nextX;
                     rocketdestRect.y = nextY;
                     pathIndex++;
 
                     if (pathIndex >= path.size()) {
-                        // Clear path if reached end
+                        
                         path.clear();
                         pathIndex = 0;
                         isMove = false;
