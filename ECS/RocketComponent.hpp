@@ -31,10 +31,11 @@ class RocketComponent
         SDL_Rect rocketdestRect;
         bool isMove;
         float direction;
-        vector<int> dx = {1, -1, 0, 0}; 
-        vector<int> dy = {0, 0, 1, -1}; 
+        vector<int> dx = {64, -64, 0, 0}; 
+        vector<int> dy = {0, 0, 64, -64}; 
         vector<pair<int, int>> path; // Lưu trữ đường đi
         size_t pathIndex = 0; // Lưu trữ chỉ số của ô tiếp theo trên đường đi
+        int frameCount;
 
         ~RocketComponent() = default;
         RocketComponent(SDL_Texture *rocketImage,  SDL_Texture *explosionImage, SDL_Renderer *ren, float mSpeed, Map* mapdata, Mix_Chunk *_soundEffect, float time_alive)
@@ -62,6 +63,8 @@ class RocketComponent
 
             soundEffect = _soundEffect;
             AudioManager::PlaySound(soundEffect);
+
+            frameCount = 0;
             
             
         }
@@ -69,7 +72,7 @@ class RocketComponent
         {
             x = x* SCALEDOWN / map->tileWidth;
             y = y* SCALEDOWN / map->tileHeight;
-            if (x >= 0 && x < 1536 && y >= 0 && y < 1536)
+            if (x >= 0 && x < mapWidth && y >= 0 && y < mapHeight)
             {
                 for (auto layer: map->layers)
                     {
@@ -84,6 +87,7 @@ class RocketComponent
             }
             return false;
         }
+
         vector<pair<int, int>> findPathToTarget(int startX, int startY, int targetX, int targetY)
         {
             // Tạo một hàng đợi để lưu trữ các ô cần duyệt
@@ -103,8 +107,10 @@ class RocketComponent
                 q.pop();
                 
                 // Nếu đạt được điểm đích, thoát khỏi vòng lặp
-                if (current.x == targetX && current.y == targetY)
-                {
+                int distance = sqrt((current.x - targetX) * (current.x - targetX) + (current.y - targetY) * (current.y - targetY));
+                if (distance <= 64) {
+                    targetX = current.x;
+                    targetY = current.y;
                     found = true;
                     break;
                 }
@@ -134,7 +140,9 @@ class RocketComponent
                     path.push_back({cell.x, cell.y});
                 }
                 path.push_back(make_pair(startCell.x, startCell.y)); // Đảm bảo bắt đầu cũng được bao gồm
+                //if (path.size() > 5)  path.erase(path.begin() + 5, path.end());
                 reverse(path.begin(), path.end()); // Đảo ngược đường đi vì chúng ta đã xây dựng nó từ cuối đến đầu
+                
                 return path;
             }
     
@@ -143,36 +151,45 @@ class RocketComponent
         }
         
         void update() {
-            int targetX = 1440, targetY = 1440;
-
-            if (path.empty()) {
-                // Find path to target
+            int targetX = 1440, targetY = 1440; // Vị trí mục tiêu mới
+            frameCount++;
+            if(path.empty())
+            {
                 path = findPathToTarget(rocketdestRect.x, rocketdestRect.y, targetX, targetY);
+                for(auto x:path) cout << x.first << " " << x.second << endl;    
                 pathIndex = 0;
             }
-
-            // If path is found
-            if (!path.empty()) {
-                // Get next waypoint on the path
+            if (!path.empty())
+            {
                 int nextX = path[pathIndex].first;
                 int nextY = path[pathIndex].second;
-
-                // Update rocket position towards the next waypoint
                 float direction_x = nextX - rocketdestRect.x;
                 float direction_y = nextY - rocketdestRect.y;
                 float length = std::sqrt(direction_x * direction_x + direction_y * direction_y);
 
                 // Normalize direction vector
-                if (length != 0) {
+                if (length > 0) {
                     direction_x /= length;
                     direction_y /= length;
                 }
+                
 
-                // Update rocket position with a fixed step
-                rocketdestRect.x += static_cast<int>(direction_x * 1.0);
-                rocketdestRect.y += static_cast<int>(direction_y * 1.0);
+                //float distanceToTarget = std::sqrt((targetX - rocketdestRect.x) * (targetX - rocketdestRect.x) + (targetY - rocketdestRect.y) * (targetY - rocketdestRect.y));
+                //float moveStep = std::min(distanceToTarget, static_cast<float>(64));
+                //dx[0] = moveStep;
+                //dx[1] = -moveStep;
+                //dy[2] = moveStep;
+                //dy[3] = -moveStep;
+                // Normalize direction vector
 
-                // Check if reached target waypoint
+                // Cập nhật hướng đi của viên đạn
+                //direction = atan2(direction_y, direction_x) * (180 / M_PI);
+
+                // Cập nhật vị trí của viên đạn với một bước di chuyển cố định
+               
+                rocketdestRect.x += static_cast<int>(direction_x * speed);
+                rocketdestRect.y += static_cast<int>(direction_y * speed);
+                
                 float distanceToNextWaypoint = std::sqrt(std::pow(nextX - rocketdestRect.x, 2) + std::pow(nextY - rocketdestRect.y, 2));
                 if (distanceToNextWaypoint < 1.0) {
                     // Update position to waypoint and move to next waypoint
@@ -188,6 +205,8 @@ class RocketComponent
                     }
                 }
             }
+            
+    
         }
 
         

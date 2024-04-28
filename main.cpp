@@ -10,6 +10,8 @@ signed main(int argc, char* argv[])
     float timeSinceLastSpawn = 0.0f;
     const float spawnInterval = 5.0f; 
 
+    Uint32 resetTime = 0;
+
     game->preload();
 
     while(game->running())
@@ -23,6 +25,10 @@ signed main(int argc, char* argv[])
 
         }
 
+        frameTime = SDL_GetTicks() - frameStart;
+        if(frameDelay > frameTime)
+            SDL_Delay(frameDelay - frameTime);
+
         timeSinceLastSpawn += 0.01;
         if(timeSinceLastSpawn >= spawnInterval && game->gamestate == GameState::PLAYING && game->bulletPackages.size() <= 10)
         {
@@ -31,20 +37,38 @@ signed main(int argc, char* argv[])
             timeSinceLastSpawn = 0.0f;
         }
 
-        frameTime = SDL_GetTicks() - frameStart;
-        if(frameDelay > frameTime)
-            SDL_Delay(frameDelay - frameTime);
+        
         if(game->NumberOfPlayers == 2) 
         {   
             if (!Player1.getComponent<SpriteComponent>().alive) 
             {
-                game->ResetGame();
-                game->ScorePlayer2 ++;
+                
+                if(resetTime == 0)
+                {
+                    resetTime = SDL_GetTicks();
+                }
+                else if(SDL_GetTicks() - resetTime > 3000)
+                {
+                    game->ScorePlayer2 ++;
+                    game->ResetGame();
+                    resetTime = 0;
+                }
+                
             }
             if(!Player2.getComponent<SpriteComponent>().alive)
             {
-                game->ResetGame();
-                game->ScorePlayer1 ++;
+                
+                if(resetTime == 0)
+                {
+                    resetTime = SDL_GetTicks();
+                }
+                else if(SDL_GetTicks() - resetTime > 3000)
+                {
+                    game->ScorePlayer1 ++;
+                    game->ResetGame();
+                    resetTime = 0;
+                }
+                
             }
         }
         else if(game->NumberOfPlayers == 3)

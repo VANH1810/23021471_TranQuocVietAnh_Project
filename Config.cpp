@@ -19,3 +19,6 @@ const int frameDelay = 1000 / FPS;
 const bool fullscreen = true;
 const int mapWidth = 1536;
 const int mapHeight = 1536;
+const int tileWidth = 64;
+const int tileHeight = 64;
+const int numTiles = 24;
