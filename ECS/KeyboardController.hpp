@@ -9,7 +9,6 @@ class KeyboardController : public Component
         SDL_Event *event;
         Uint32 lastRPressTime = 0;
         Uint32 minRPressInterval = 3000;
-        // Minimum time between J presses in milliseconds
     public:
         TransformComponent *transform;
         SpriteComponent *sprite;
@@ -84,14 +83,14 @@ class KeyboardController2 : public KeyboardController
         Uint32 lastCtrlPressTime = 0;
         Uint32 minCtrlPressInterval = 3000;
     public:
-    KeyboardController2() = default;
-    ~KeyboardController2() = default;
-    KeyboardController2(SDL_Event *e)
-    {
-            this->event = e;
-    }
-    void update() override
-    {
+        KeyboardController2() = default;
+        ~KeyboardController2() = default;
+        KeyboardController2(SDL_Event *e)
+        {
+                this->event = e;
+        }
+        void update() override
+        {
             Uint32 currentTime;
             const Uint8* state = SDL_GetKeyboardState(NULL);
             if(event->type == SDL_KEYDOWN || event->type == SDL_KEYUP)
@@ -133,9 +132,8 @@ class KeyboardController2 : public KeyboardController
                         sprite->shoot();
                     }              
                 }
-            
             }
-    }
+        }
 };
 
 class KeyboardController3 : public KeyboardController
@@ -145,14 +143,14 @@ class KeyboardController3 : public KeyboardController
         Uint32 lastYPressTime = 0;
         Uint32 minYPressInterval = 3000;
     public:
-    KeyboardController3() = default;
-    ~KeyboardController3() = default;
-    KeyboardController3(SDL_Event *e)
-    {
+        KeyboardController3() = default;
+        ~KeyboardController3() = default;
+        KeyboardController3(SDL_Event *e)
+        {
             this->event = e;
-    }
-    void update() override
-    {
+        }
+        void update() override
+        {
             Uint32 currentTime;
             const Uint8* state = SDL_GetKeyboardState(NULL);
             if(event->type == SDL_KEYDOWN || event->type == SDL_KEYUP)
@@ -178,7 +176,6 @@ class KeyboardController3 : public KeyboardController
                 }
                 else if(state[SDL_SCANCODE_L]) {
                     transform->rotationSpeed = 5.0f;
-                    
                 }
                 else {
                     transform->rotationSpeed = 0.0f;
@@ -194,7 +191,6 @@ class KeyboardController3 : public KeyboardController
                         sprite->shoot();
                     }              
                 }
-            
             }
-    }
+        }
 };

@@ -35,5 +35,4 @@ void Layer::render(TileSet* tileSet, SDL_Renderer* renderer)
 {
     if (layerType == "tilelayer")
         tileLayer->render(tileSet, renderer);
-    
 }

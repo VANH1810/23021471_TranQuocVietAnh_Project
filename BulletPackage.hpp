@@ -8,7 +8,6 @@ private:
     SDL_Rect srcRect;
     SDL_Renderer* renderer;
 
-
 public:
     SDL_Rect destRect;
     string type;

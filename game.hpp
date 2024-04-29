@@ -16,7 +16,6 @@ class Game
         SDL_Window* window;
         bool isRunning;
         static SDL_Event event;
-        static SDL_Renderer* renderer;
 
         SDL_Texture* startScreenTexture;
         SDL_Texture* tutorialTexture;
@@ -29,10 +28,11 @@ class Game
         SDL_Texture* GatlingIcon;
         SDL_Texture* TripleBulletIcon;
 
-        TTF_Font* font;
-
         bool isWall(int x, int y);
         bool isOccupied(int x, int y);
+
+        static string TypeOfBulletPackage[4];
+        static map<string, SDL_Texture*> bulletIcons;
 
         Menu* menu;
 
@@ -58,18 +58,18 @@ class Game
             return isRunning;
         }
         void playMusic();
-
+        static SDL_Renderer* renderer;
         int NumberOfPlayers;
         
         static int ScorePlayer1;
         static int ScorePlayer2;
         static int ScorePlayer3;
 
+        TTF_Font* font;
+
         GameState gamestate;
 
-        vector<BulletPackage*> bulletPackages;
-        static string TypeOfBulletPackage[4];
-        static map<string, SDL_Texture*> bulletIcons;
-        
         bool mute;
+        vector<BulletPackage*> bulletPackages;
+        
 };

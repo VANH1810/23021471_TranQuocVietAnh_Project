@@ -1,12 +1,13 @@
 #pragma once
 #include "menu.hpp"
 
-Menu::Menu(SDL_Renderer* ren, SDL_Event* e, Mix_Music* bg_music, Mix_Music* win_music, SDL_Texture* startScreenTexture, SDL_Texture* tutorialTexture, SDL_Texture* selectModeTexture, SDL_Texture* selectNumberOfPlayersTexture, SDL_Texture* keyboardShortcuts)
+Menu::Menu(SDL_Renderer* ren, SDL_Event* e, Mix_Music* bg_music, Mix_Music* win_music, TTF_Font* f, SDL_Texture* startScreenTexture, SDL_Texture* tutorialTexture, SDL_Texture* selectModeTexture, SDL_Texture* selectNumberOfPlayersTexture, SDL_Texture* keyboardShortcuts)
 {
     this->renderer = ren;
     this->event = e;
     this->backgroundMusic = bg_music;
     this->WinningMusic = win_music;
+    this->font = f;
     this->startScreenTexture = startScreenTexture;
     this->tutorialTexture = tutorialTexture;
     this->selectModeTexture = selectModeTexture;
@@ -95,7 +96,7 @@ void Menu::HandleBackgroundMusic(GameState &gamestate, bool &mute)
         AudioManager::UnmuteMusic();
         AudioManager::UnmuteSound();
     }
-    
+
     if(gamestate == GameState::PLAYING)
         Mix_PauseMusic();
     else

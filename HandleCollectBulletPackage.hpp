@@ -21,12 +21,10 @@ public:
             sprite = &(this->Player->getComponent<SpriteComponent>());
         }
         else cerr << "The entity does not have a sprite component" << endl;
-        
     }
     
     void update(vector<BulletPackage*> &Packages)
     {
-    
         for (BulletPackage* package : Packages) 
         {
             
@@ -56,18 +54,14 @@ public:
                 }
                 
             }
-                
-                
         }
 
         for (BulletPackage* package : packageToDelete) 
         {
-        // Erase the pointer from the Packages vector
-            auto it = std::find(Packages.begin(), Packages.end(), package);
+            auto it = find(Packages.begin(), Packages.end(), package);
             if (it != Packages.end()) {
                 Packages.erase(it);
             }
-            // Delete the pointer
             delete package;
         }
         packageToDelete.clear();

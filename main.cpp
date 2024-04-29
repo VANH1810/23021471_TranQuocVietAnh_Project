@@ -18,13 +18,14 @@ signed main(int argc, char* argv[])
     {
         game->handleEvents();
         game->playMusic();
-        
+
         frameStart = SDL_GetTicks();
         if (game->gamestate != GameState::PAUSED)
         {
             game->update(); 
             game->Render();
         }
+
 
         frameTime = SDL_GetTicks() - frameStart;
         if(frameDelay > frameTime)

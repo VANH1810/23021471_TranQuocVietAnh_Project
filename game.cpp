@@ -81,7 +81,9 @@ void Game::Render()
 {
     SDL_RenderClear(renderer);
     
-    if(gamestate == GameState::PLAYING)
+    if(gamestate != GameState::PLAYING)
+        menu->Render(gamestate);
+    else if(gamestate == GameState::PLAYING)
     {
         mapAZ->render();
         manager.draw();
@@ -89,10 +91,6 @@ void Game::Render()
             it->draw();
         ScoreRender();
     }
-    else 
-        menu->Render(gamestate);
-    
-    
     SDL_RenderPresent(renderer);
 }
 void Game::ScoreRender()
@@ -341,7 +339,7 @@ void Game::preload()
     bulletIcons["Triple"] = TripleBulletIcon;
     bulletIcons["Fast"] = FastBulletIcon;
 
-    menu = new Menu(this->renderer, &this->event, this->backgroundMusic, this->WinningMusic, this->startScreenTexture, this->tutorialTexture, this->selectModeTexture, this->selectNumberOfPlayersTexture, this->keyboardShortcuts);
+    menu = new Menu(this->renderer, &this->event, this->backgroundMusic, this->WinningMusic, this->font, this->startScreenTexture, this->tutorialTexture, this->selectModeTexture, this->selectNumberOfPlayersTexture, this->keyboardShortcuts);
     menu->PlayBackgroundMusic();
 
     

@@ -61,7 +61,6 @@ class HandleTwoSprites
                     sprite1->alive = false;
 
                 }
-            
             }
 
             sprite1->nearestEnemy.first = sprite2->TankdestRect.x;
@@ -79,7 +78,6 @@ class HandleTwoSprites
                     rocket->isMove = false;
                     sprite2->alive = false;
                 }
-                
             }
 
             for(RocketComponent* rocket : sprite2->rockets) 
