@@ -62,7 +62,6 @@ TileSet::TileSet(SDL_Renderer* ren, json* map)
 TileSet::~TileSet()
 {
     for (auto tile : tiles)
-    {
         delete tile.second;
-    }
+    
 }

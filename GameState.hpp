@@ -6,8 +6,8 @@ enum class GameState {
     SELECT_MODE,
     SELECT_NUMBER_OF_PLAYERS,
     PLAYING,
-
     PAUSED,
+    WINNING_TIME,
     // Other states...
 
 };

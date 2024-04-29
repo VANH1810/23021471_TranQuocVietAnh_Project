@@ -30,8 +30,7 @@ map <string, SDL_Texture*> Game::bulletIcons;
 Game::Game()
 {}
 Game::~Game()
-{
-}
+{}
 
 void Game::logErrorAndExit(const char* msg, const char* error)
 {
@@ -43,10 +42,10 @@ void Game::initSDL(int xpos, int ypos)
 {
 
     if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
-        {
+    {
             logErrorAndExit("SDL_Init", SDL_GetError());
             isRunning = false;
-        }
+    }
     else
     {
         isRunning = true;
@@ -61,7 +60,8 @@ void Game::initSDL(int xpos, int ypos)
             logErrorAndExit("CreateWindow", SDL_GetError());
         }
     }
-    gamestate = GameState::START_SCREEN;
+    this->gamestate = GameState::START_SCREEN;
+    this->mute = false;
 }
 
 void Game::createRenderer()
@@ -76,7 +76,6 @@ void Game::createRenderer()
 
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
     SDL_RenderSetLogicalSize(renderer, SCREEN_WIDTH, SCREEN_HEIGHT);
-    
 }
 void Game::Render()
 {
@@ -87,30 +86,29 @@ void Game::Render()
         mapAZ->render();
         manager.draw();
         for(auto it : bulletPackages)
-        {
             it->draw();
-        }
-        if(NumberOfPlayers == 2)
-        {
-            TextManager::DrawText(this->renderer, this->font, "Score Player1: " + to_string(ScorePlayer1), {1600, 384, 384, 128}, {255, 255, 255, 255});
-            TextManager::DrawText(this->renderer, this->font, "Score Player2: " + to_string(ScorePlayer2), {1600, 576, 384, 128}, {255, 255, 255, 255});
-        }
-        else if(NumberOfPlayers == 3)
-        {
-            TextManager::DrawText(this->renderer, this->font, "Score Player1: " + to_string(ScorePlayer1), {1664, 384, 384, 128}, {255, 255, 255, 255});
-            TextManager::DrawText(this->renderer, this->font, "Score Player2: " + to_string(ScorePlayer2), {1664, 576, 384, 128}, {255, 255, 255, 255});
-            TextManager::DrawText(this->renderer, this->font, "Score Player3: " + to_string(ScorePlayer3), {1664, 768, 384, 128}, {255, 255, 255, 255});
-        }
-        
+        ScoreRender();
     }
     else 
-    {
         menu->Render(gamestate);
-    }
+    
     
     SDL_RenderPresent(renderer);
 }
-
+void Game::ScoreRender()
+{
+    if(NumberOfPlayers == 2)
+    {
+        TextManager::DrawText(this->renderer, this->font, "Score Player1: " + to_string(ScorePlayer1), {1600, 384, 384, 128}, {255, 255, 255, 255});
+        TextManager::DrawText(this->renderer, this->font, "Score Player2: " + to_string(ScorePlayer2), {1600, 576, 384, 128}, {255, 255, 255, 255});
+    }
+    else if(NumberOfPlayers == 3)
+    {
+        TextManager::DrawText(this->renderer, this->font, "Score Player1: " + to_string(ScorePlayer1), {1664, 384, 384, 128}, {255, 255, 255, 255});
+        TextManager::DrawText(this->renderer, this->font, "Score Player2: " + to_string(ScorePlayer2), {1664, 576, 384, 128}, {255, 255, 255, 255});
+        TextManager::DrawText(this->renderer, this->font, "Score Player3: " + to_string(ScorePlayer3), {1664, 768, 384, 128}, {255, 255, 255, 255});
+    }
+}
 void Game::handleEvents()
 {
     SDL_PollEvent(&event);
@@ -125,21 +123,41 @@ void Game::handleEvents()
             case SDLK_ESCAPE:
                 isRunning = false;
                 break;
+            case SDLK_p:
+                if(gamestate == GameState::PAUSED)
+                    gamestate = GameState::PLAYING;
+                else if(gamestate == GameState::PLAYING)
+                    gamestate = GameState::PAUSED;
+                break;
+            case SDLK_m:
+                if(mute) 
+                    mute = false;
+                else 
+                    mute = true;
+                break;
+            case SDLK_BACKSPACE:
+                if(gamestate == GameState::PAUSED)
+                {
+                    ResetGame();
+                    gamestate = GameState::START_SCREEN;
+                    ScorePlayer1 = 0;
+                    ScorePlayer2 = 0;
+                    ScorePlayer3 = 0;
+                    Player3.getComponent<SpriteComponent>().alive = true;
+                }
+                break;
             default:
                 break;
         }
     }
     menu->HandleEvents(gamestate);
-    NumberOfPlayers = menu->numberOfPlayers;
-    
-    
+    this->NumberOfPlayers = menu->numberOfPlayers;
 }
 
 void Game::update()
 {
     if(gamestate == GameState::PLAYING)
     {
-        manager.refresh();
         manager.update();
         
         if(NumberOfPlayers == 2) 
@@ -161,10 +179,14 @@ void Game::update()
     }
 }
 
+void Game::playMusic()
+{
+    menu->HandleBackgroundMusic(this->gamestate, this->mute);
+}
 void Game::ResetGame()
 {
     manager.refresh();
-  
+    gamestate = GameState::PLAYING;
     int player1_xpos, player1_ypos;
     do 
     {
@@ -302,15 +324,14 @@ void Game::preload()
     this->selectModeTexture = TextureManager::LoadTexture("assets/PlayScreen/SelectMode.png", this->renderer);
     this->selectNumberOfPlayersTexture = TextureManager::LoadTexture("assets/PlayScreen/SelectNumberOfPlayers.png", this->renderer);
     this->keyboardShortcuts = TextureManager::LoadTexture("assets/PlayScreen/KeyboardShortcuts.png", this->renderer);
-
-    menu = new Menu(this->renderer, &this->event, this->startScreenTexture, this->tutorialTexture, this->selectModeTexture, this->selectNumberOfPlayersTexture, this->keyboardShortcuts);
     this->RocketIcon = TextureManager::LoadTexture("assets/BulletPackageIcon/rocket.png", this->renderer);
     this->GatlingIcon = TextureManager::LoadTexture("assets/BulletPackageIcon/gatling.png", this->renderer);
     this->TripleBulletIcon = TextureManager::LoadTexture("assets/BulletPackageIcon/triple.png", this->renderer);
     this->FastBulletIcon = TextureManager::LoadTexture("assets/BulletPackageIcon/fast.png", this->renderer);
-
     this->font = TextManager::LoadText("assets/Fonts/04B_19.TTF");
-
+    this->backgroundMusic = AudioManager::LoadMusic("assets/Dani Stob - Unstoppable - Loop.wav");
+    this->WinningMusic = AudioManager::LoadMusic("assets/Dani Stob - Victory Fanfare.wav");
+   
     TypeOfBulletPackage[0] = "Rocket";
     TypeOfBulletPackage[1] = "Gatling";
     TypeOfBulletPackage[2] = "Triple";
@@ -320,6 +341,10 @@ void Game::preload()
     bulletIcons["Triple"] = TripleBulletIcon;
     bulletIcons["Fast"] = FastBulletIcon;
 
+    menu = new Menu(this->renderer, &this->event, this->backgroundMusic, this->WinningMusic, this->startScreenTexture, this->tutorialTexture, this->selectModeTexture, this->selectNumberOfPlayersTexture, this->keyboardShortcuts);
+    menu->PlayBackgroundMusic();
+
+    
     ifstream mapData("tankaz.json");
     mapAZ = new Map("tankaz", this->renderer, json::parse(mapData));
     mapAZ->setCollisionByProperty(new json({{"collision", true}}), true);

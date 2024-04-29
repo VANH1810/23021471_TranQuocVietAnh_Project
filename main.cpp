@@ -2,7 +2,7 @@
 
 signed main(int argc, char* argv[])
 {
-    //Khởi tạo môi trường đồ họa
+
     Game *game = new Game();
 
     Uint32 frameStart;
@@ -17,12 +17,13 @@ signed main(int argc, char* argv[])
     while(game->running())
     {
         game->handleEvents();
+        game->playMusic();
+        
         frameStart = SDL_GetTicks();
         if (game->gamestate != GameState::PAUSED)
         {
             game->update(); 
             game->Render();
-
         }
 
         frameTime = SDL_GetTicks() - frameStart;
@@ -41,11 +42,10 @@ signed main(int argc, char* argv[])
         {   
             if (!Player1.getComponent<SpriteComponent>().alive) 
             {
-                
+                game->gamestate == GameState::WINNING_TIME;
                 if(resetTime == 0)
-                {
                     resetTime = SDL_GetTicks();
-                }
+                
                 else if(SDL_GetTicks() - resetTime > 3000)
                 {
                     game->ScorePlayer2 ++;
@@ -56,10 +56,9 @@ signed main(int argc, char* argv[])
             }
             if(!Player2.getComponent<SpriteComponent>().alive)
             {
+                game->gamestate == GameState::WINNING_TIME;
                 if(resetTime == 0)
-                {
                     resetTime = SDL_GetTicks();
-                }
                 else if(SDL_GetTicks() - resetTime > 3000)
                 {
                     game->ScorePlayer1 ++;
@@ -73,6 +72,7 @@ signed main(int argc, char* argv[])
         {
             if (!Player1.getComponent<SpriteComponent>().alive && !Player2.getComponent<SpriteComponent>().alive) 
             {
+                game->gamestate == GameState::WINNING_TIME;
                 if(resetTime == 0)
                 {
                     resetTime = SDL_GetTicks();
@@ -87,6 +87,7 @@ signed main(int argc, char* argv[])
             }
             else if(!Player2.getComponent<SpriteComponent>().alive && !Player3.getComponent<SpriteComponent>().alive)
             {
+                game->gamestate == GameState::WINNING_TIME;
                 if(resetTime == 0)
                 {
                     resetTime = SDL_GetTicks();
@@ -100,6 +101,7 @@ signed main(int argc, char* argv[])
             }
             else if(!Player3.getComponent<SpriteComponent>().alive && !Player1.getComponent<SpriteComponent>().alive)
             {
+                game->gamestate == GameState::WINNING_TIME;
                 if(resetTime == 0)
                 {
                     resetTime = SDL_GetTicks();

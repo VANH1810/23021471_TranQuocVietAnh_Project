@@ -3,6 +3,7 @@
 #include "Config.cpp"
 #include "TextureManager.cpp"
 #include "TextManager.cpp"
+#include "AudioManager.cpp"
 #include "ECS/Components.hpp"
 #include "Vector2D.cpp"
 #include "GameState.hpp"
@@ -15,6 +16,7 @@ class Game
         SDL_Window* window;
         bool isRunning;
         static SDL_Event event;
+        static SDL_Renderer* renderer;
 
         SDL_Texture* startScreenTexture;
         SDL_Texture* tutorialTexture;
@@ -34,6 +36,9 @@ class Game
 
         Menu* menu;
 
+        Mix_Music* backgroundMusic;
+        Mix_Music* WinningMusic;
+
     public:
         Game();
         ~Game();
@@ -47,10 +52,12 @@ class Game
         void clean();
         void preload();
         void ResetGame();
+        void spawnBulletPackage();
         bool running() 
         {
             return isRunning;
         }
+        void playMusic();
 
         int NumberOfPlayers;
         
@@ -58,14 +65,11 @@ class Game
         static int ScorePlayer2;
         static int ScorePlayer3;
 
-        static SDL_Renderer* renderer;
-        
-        void spawnBulletPackage();
-
         GameState gamestate;
 
         vector<BulletPackage*> bulletPackages;
         static string TypeOfBulletPackage[4];
         static map<string, SDL_Texture*> bulletIcons;
         
+        bool mute;
 };
