@@ -17,6 +17,5 @@ class Layer
         bool visible;
         float layerOpacity;
         TileLayer* tileLayer;
-        ObjectGroup* objectGroup;
     private:
 };

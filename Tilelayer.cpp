@@ -21,6 +21,12 @@ pair <int, long long> Reformat(long long tileId)
         tileId-=1610612736LL;
         angle.first = 270;
     }
+    else if(tileId>1073741824LL) //if the tile was flipped
+    { 
+        tileId-=1073741824LL;
+        angle.first = 360;
+    }
+   
     angle.second = tileId;
     return angle;
 }
