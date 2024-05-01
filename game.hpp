@@ -39,6 +39,8 @@ class Game
         Mix_Music* backgroundMusic;
         Mix_Music* WinningMusic;
 
+        Map* randomMap(Map* map1, Map* map2, Map* map3, Map* map4, Map* map5);    
+
     public:
         Game();
         ~Game();

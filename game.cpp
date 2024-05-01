@@ -2,7 +2,12 @@
 
 #include "game.hpp"
 
-Map *mapAZ;
+Map *mapAZ_1;
+Map *mapAZ_2;
+Map *mapAZ_3;
+Map *mapAZ_4;
+Map *mapAZ_5;
+Map* chosenMap;
 
 SDL_Renderer* Game::renderer = nullptr;
 SDL_Event Game::event;
@@ -85,7 +90,7 @@ void Game::Render()
         menu->Render(gamestate);
     else if(gamestate == GameState::PLAYING)
     {
-        mapAZ->render();
+        chosenMap->render();
         manager.draw();
         for(auto it : bulletPackages)
             it->draw();
@@ -181,10 +186,28 @@ void Game::playMusic()
 {
     menu->HandleBackgroundMusic(this->gamestate, this->mute);
 }
+
+Map* Game::randomMap(Map* map1, Map* map2, Map* map3, Map* map4, Map* map5)
+{
+    int mapChoice = rand() % 5;
+    if(mapChoice == 0) 
+        return map1;
+    else if(mapChoice == 1) 
+        return map2;
+    else if(mapChoice == 2)
+        return map3;
+    else if(mapChoice == 3)
+        return map4;
+    else
+        return map5;
+}   
 void Game::ResetGame()
 {
     manager.refresh();
     gamestate = GameState::PLAYING;
+
+    chosenMap = randomMap(mapAZ_1, mapAZ_2, mapAZ_3, mapAZ_4, mapAZ_5);
+
     int player1_xpos, player1_ypos;
     do 
     {
@@ -198,8 +221,13 @@ void Game::ResetGame()
              isWall(player1_xpos + 64, player1_ypos + 64) || isWall(player1_xpos + 64, player1_ypos - 64)); 
 
     Player1.getComponent<SpriteComponent>().alive = true;
-    Player1.getComponent<SpriteComponent>().bullets.clear();    
+    Player1.getComponent<SpriteComponent>().bullets.clear(); 
+    Player1.getComponent<SpriteComponent>().now_type_of_bullet = TypeOfBullet::NORMAL;
     Player1.getComponent<TransformComponent>().position = Vector2D(player1_xpos, player1_ypos);
+    Player1.getComponent<TransformComponent>().velocity = Vector2D(0, 0);
+    Player1.getComponent<TransformComponent>().rotation = 0.0f;
+    Player1.getComponent<TransformComponent>().setMap(chosenMap);
+    
 
     int player2_xpos, player2_ypos;
     do 
@@ -214,9 +242,12 @@ void Game::ResetGame()
              isWall(player1_xpos + 64, player1_ypos + 64) || isWall(player1_xpos + 64, player1_ypos - 64) || 
              (player1_xpos == player2_xpos && player1_ypos == player2_ypos)); 
     Player2.getComponent<SpriteComponent>().alive = true;
+    Player2.getComponent<SpriteComponent>().bullets.clear(); 
+    Player2.getComponent<SpriteComponent>().now_type_of_bullet = TypeOfBullet::NORMAL;
     Player2.getComponent<TransformComponent>().position = Vector2D(player2_xpos, player2_ypos);
-    Player2.getComponent<SpriteComponent>().bullets.clear();
-
+    Player2.getComponent<TransformComponent>().velocity = Vector2D(0, 0);
+    Player2.getComponent<TransformComponent>().rotation = 0.0f;
+    Player2.getComponent<TransformComponent>().setMap(chosenMap);
 
     if(NumberOfPlayers == 3) 
     {
@@ -234,8 +265,12 @@ void Game::ResetGame()
                 isWall(player3_xpos + 64, player3_ypos + 64) || isWall(player3_xpos + 64, player3_ypos - 64) || 
                 (player3_xpos == player1_xpos && player3_ypos == player1_ypos) || (player3_xpos == player2_xpos && player3_ypos == player2_ypos)); 
         Player3.getComponent<SpriteComponent>().alive = true;
+        Player3.getComponent<SpriteComponent>().bullets.clear(); 
+        Player3.getComponent<SpriteComponent>().now_type_of_bullet = TypeOfBullet::NORMAL;
         Player3.getComponent<TransformComponent>().position = Vector2D(player3_xpos, player3_ypos);
-        Player3.getComponent<SpriteComponent>().bullets.clear();
+        Player3.getComponent<TransformComponent>().velocity = Vector2D(0, 0);
+        Player3.getComponent<TransformComponent>().rotation = 0.0f;
+        Player3.getComponent<TransformComponent>().setMap(chosenMap);
     }
 
     for(auto it : bulletPackages)
@@ -252,8 +287,8 @@ void Game::spawnBulletPackage()
     {
         x = (rand() % (mapWidth / 64)) * 64;
         y = (rand() % (mapHeight / 64)) * 64;
-        //type = this->TypeOfBulletPackage[rand() % (sizeof(TypeOfBulletPackage) / sizeof(TypeOfBulletPackage[0]))];
-        type = "Rocket";
+        type = this->TypeOfBulletPackage[rand() % (sizeof(TypeOfBulletPackage) / sizeof(TypeOfBulletPackage[0]))];
+        //type = "Rocket";
        
     } while (isOccupied(x, y) || isWall(x, y)); 
     bulletPackages.push_back(new BulletPackage(x, y, bulletIcons[type], this->renderer, type));
@@ -270,13 +305,13 @@ bool Game::isOccupied(int x, int y)
 
 bool Game::isWall(int x, int y) 
 {
-    x = x * SCALEDOWN / mapAZ->tileWidth;
-    y = y * SCALEDOWN / mapAZ->tileHeight;
-        for (auto layer: mapAZ->layers) 
+    x = x * SCALEDOWN / chosenMap->tileWidth;
+    y = y * SCALEDOWN / chosenMap->tileHeight;
+        for (auto layer: chosenMap->layers) 
         {
             if (layer->layerType != "tilelayer") continue;
             int id = layer->tileLayer->getId(y, x);
-            if (mapAZ->tileSet->tiles[id]->isCollidable) 
+            if (chosenMap->tileSet->tiles[id]->isCollidable) 
                 return true;
         }
     
@@ -292,11 +327,14 @@ void Game::clean()
     delete HandleBulletPackage3;
     for(auto it : bulletPackages)
         delete it;
-    
-   
-    delete mapAZ;
     for(auto it : bulletIcons)
         SDL_DestroyTexture(it.second);
+    delete mapAZ_1;
+    delete mapAZ_2;
+    delete mapAZ_3;
+    delete mapAZ_4;
+    delete mapAZ_5;
+    delete chosenMap;
 
     SDL_DestroyTexture(this->startScreenTexture);
     SDL_DestroyTexture(this->tutorialTexture);
@@ -307,6 +345,10 @@ void Game::clean()
     SDL_DestroyTexture(this->GatlingIcon);
     SDL_DestroyTexture(this->TripleBulletIcon);
     SDL_DestroyTexture(this->FastBulletIcon);
+    Mix_FreeMusic(this->backgroundMusic);
+    Mix_FreeMusic(this->WinningMusic);
+
+    TTF_CloseFont(this->font);
     TTF_Quit();
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
@@ -343,20 +385,37 @@ void Game::preload()
     menu->PlayBackgroundMusic();
 
     
-    ifstream mapData("map3.json");
-    mapAZ = new Map("map3", this->renderer, json::parse(mapData));
-    mapAZ->setCollisionByProperty(new json({{"collision", true}}), true);
-    cerr << mapAZ << endl;
+    ifstream mapData("mapAZ_1.json");
+    mapAZ_1 = new Map("map1", this->renderer, json::parse(mapData));
+    mapAZ_1->setCollisionByProperty(new json({{"collision", true}}), true);
+
+    ifstream mapData2("mapAZ_2.json");
+    mapAZ_2 = new Map("map2", this->renderer, json::parse(mapData2));
+    mapAZ_2->setCollisionByProperty(new json({{"collision", true}}), true);
+
+    ifstream mapData3("mapAZ_3.json");
+    mapAZ_3 = new Map("map3", this->renderer, json::parse(mapData3));
+    mapAZ_3->setCollisionByProperty(new json({{"collision", true}}), true);
+
+    ifstream mapData4("mapAZ_4.json");
+    mapAZ_4 = new Map("map4", this->renderer, json::parse(mapData4));
+    mapAZ_4->setCollisionByProperty(new json({{"collision", true}}), true);
+
+    ifstream mapData5("mapAZ_5.json");
+    mapAZ_5 = new Map("map5", this->renderer, json::parse(mapData5));
+    mapAZ_5->setCollisionByProperty(new json({{"collision", true}}), true);
     
-    Player1.addComponent<TransformComponent>(160,160, mapAZ);
+    chosenMap = randomMap(mapAZ_1, mapAZ_2, mapAZ_3, mapAZ_4, mapAZ_5);
+    
+    Player1.addComponent<TransformComponent>(160,160, chosenMap);
     Player1.addComponent<SpriteComponent>("assets/ground_shaker_asset/Red/Bodies/body_tracks.png", "assets/ground_shaker_asset/Red/Weapons/turret_01_mk4.png", "assets/Fire_Shots/Flash_A_04.png", "assets/SCML/Effects/Explosion_E.png",this->renderer, 8, 50);
     Player1.addComponent<KeyboardController>(&this->event);
 
-    Player2.addComponent<TransformComponent>(1440,1440, mapAZ);
+    Player2.addComponent<TransformComponent>(1440,1440, chosenMap);
     Player2.addComponent<SpriteComponent>("assets/ground_shaker_asset/Blue/Bodies/body_tracks.png", "assets/ground_shaker_asset/Blue/Weapons/turret_01_mk4.png","assets/Fire_Shots/Flash_B_04.png", "assets/SCML/Effects/Explosion_E.png",this->renderer, 8, 50);
     Player2.addComponent<KeyboardController2>(&this->event);
     
-    Player3.addComponent<TransformComponent>(160,1440, mapAZ);
+    Player3.addComponent<TransformComponent>(160,1440, chosenMap);
     Player3.addComponent<SpriteComponent>("assets/ground_shaker_asset/Camo/Bodies/body_tracks.png", "assets/ground_shaker_asset/Camo/Weapons/turret_01_mk4.png","assets/Fire_Shots/Flash_A_04.png", "assets/SCML/Effects/Explosion_E.png",this->renderer, 8, 50);
     Player3.addComponent<KeyboardController3>(&this->event);
 

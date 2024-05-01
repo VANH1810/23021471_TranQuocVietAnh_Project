@@ -55,7 +55,7 @@ signed main(int argc, char* argv[])
                 }
                 
             }
-            if(!Player2.getComponent<SpriteComponent>().alive)
+            else if(!Player2.getComponent<SpriteComponent>().alive)
             {
                 game->gamestate == GameState::WINNING_TIME;
                 if(resetTime == 0)

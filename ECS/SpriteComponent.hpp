@@ -209,7 +209,6 @@ public:
             {
                 shooting_animated = false;
             }
-            
         }
 
         for(BulletComponent* bullet : bullets) 

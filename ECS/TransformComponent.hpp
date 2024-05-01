@@ -61,5 +61,10 @@ class TransformComponent : public Component
                 rotation -= 360.0f;
             }
         }
+        void setMap(Map* newMap) 
+        {
+            this->map = newMap;
+        }
+
     
 };
