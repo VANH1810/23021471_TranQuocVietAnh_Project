@@ -238,8 +238,8 @@ void Game::ResetGame()
     } while (isWall(player2_xpos, player2_ypos) || 
              isWall(player2_xpos + 64, player2_ypos) || isWall(player2_xpos, player2_ypos + 64) || 
              isWall(player2_xpos - 64, player2_ypos) || isWall(player2_xpos, player2_ypos - 64) || 
-             isWall(player1_xpos - 64, player1_ypos - 64) || isWall(player1_xpos - 64, player1_ypos + 64) || 
-             isWall(player1_xpos + 64, player1_ypos + 64) || isWall(player1_xpos + 64, player1_ypos - 64) || 
+             isWall(player2_xpos - 64, player2_ypos - 64) || isWall(player2_xpos - 64, player2_ypos + 64) || 
+             isWall(player2_xpos + 64, player2_ypos + 64) || isWall(player2_xpos + 64, player2_ypos - 64) || 
              (player1_xpos == player2_xpos && player1_ypos == player2_ypos)); 
     Player2.getComponent<SpriteComponent>().alive = true;
     Player2.getComponent<SpriteComponent>().bullets.clear(); 
