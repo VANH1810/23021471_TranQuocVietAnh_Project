@@ -23,7 +23,6 @@ class BulletComponent
         bool isMove;
         float direction;
         
-
         ~BulletComponent() = default;
         BulletComponent(SDL_Texture *bulletImage,  SDL_Texture *explosionImage, SDL_Renderer *ren, float mSpeed, Map* mapdata, Mix_Chunk *_soundEffect, float time_alive)
         {
@@ -84,23 +83,15 @@ class BulletComponent
 
             // Check horizontal collision
             if (!CheckBulletCollisionWithWall(nextPositionX, bulletdestRect.y)) 
-            {
                 bulletdestRect.x = nextPositionX;
-            } 
             else 
-            {
                 direction = 180-direction;
-            }
 
             // Check vertical collision
             if (!CheckBulletCollisionWithWall(bulletdestRect.x, nextPositionY)) 
-            {
                 bulletdestRect.y = nextPositionY;
-            } 
             else 
-            {
                 direction = - direction;
-            }
 
             timeAlive -= 0.01f;
             if(timeAlive <= 0.0f)
@@ -122,7 +113,6 @@ class BulletComponent
                 SDL_Point BulletCenter = {bulletdestRect.w / 2, bulletdestRect.h / 2}; // Rotation center
                 SDL_RenderCopyEx(renderer, bulletTexture, &bulletsrcRect, &bulletdestRect, direction, &BulletCenter, SDL_FLIP_NONE);
             }
-        }
-    
+        }   
 };
 

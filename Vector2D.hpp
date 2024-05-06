@@ -1,5 +1,5 @@
 #pragma once
-#include "Config.cpp"
+#include "Config.hpp"
 class Vector2D
 {
     public:

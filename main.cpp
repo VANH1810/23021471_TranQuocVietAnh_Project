@@ -10,7 +10,6 @@ signed main(int argc, char* argv[])
     float timeSinceLastSpawn = 0.0f;
     const float spawnInterval = 5.0f; 
 
-    Uint32 resetTime = 0;
 
     game->preload();
 
@@ -26,7 +25,6 @@ signed main(int argc, char* argv[])
             game->Render();
         }
 
-
         frameTime = SDL_GetTicks() - frameStart;
         if(frameDelay > frameTime)
             SDL_Delay(frameDelay - frameTime);
@@ -37,87 +35,8 @@ signed main(int argc, char* argv[])
             game->spawnBulletPackage();
             timeSinceLastSpawn = 0.0f;
         }
-
+        game->updateWinner();
         
-        if(game->NumberOfPlayers == 2) 
-        {   
-            if (!Player1.getComponent<SpriteComponent>().alive) 
-            {
-                game->gamestate == GameState::WINNING_TIME;
-                if(resetTime == 0)
-                    resetTime = SDL_GetTicks();
-                
-                else if(SDL_GetTicks() - resetTime > 3000)
-                {
-                    game->ScorePlayer2 ++;
-                    game->ResetGame();
-                    resetTime = 0;
-                }
-                
-            }
-            else if(!Player2.getComponent<SpriteComponent>().alive)
-            {
-                game->gamestate == GameState::WINNING_TIME;
-                if(resetTime == 0)
-                    resetTime = SDL_GetTicks();
-                else if(SDL_GetTicks() - resetTime > 3000)
-                {
-                    game->ScorePlayer1 ++;
-                    game->ResetGame();
-                    resetTime = 0;
-                }
-                
-            }
-        }
-        else if(game->NumberOfPlayers == 3)
-        {
-            if (!Player1.getComponent<SpriteComponent>().alive && !Player2.getComponent<SpriteComponent>().alive) 
-            {
-                game->gamestate == GameState::WINNING_TIME;
-                if(resetTime == 0)
-                {
-                    resetTime = SDL_GetTicks();
-                }
-                else if(SDL_GetTicks() - resetTime > 3000)
-                {
-                    game->ScorePlayer3 ++;
-                    game->ResetGame();
-                    resetTime = 0;
-                }
-            
-            }
-            else if(!Player2.getComponent<SpriteComponent>().alive && !Player3.getComponent<SpriteComponent>().alive)
-            {
-                game->gamestate == GameState::WINNING_TIME;
-                if(resetTime == 0)
-                {
-                    resetTime = SDL_GetTicks();
-                }
-                else if(SDL_GetTicks() - resetTime > 3000)
-                {
-                    game->ScorePlayer1 ++;
-                    game->ResetGame();
-                    resetTime = 0;
-                }
-            }
-            else if(!Player3.getComponent<SpriteComponent>().alive && !Player1.getComponent<SpriteComponent>().alive)
-            {
-                game->gamestate == GameState::WINNING_TIME;
-                if(resetTime == 0)
-                {
-                    resetTime = SDL_GetTicks();
-                }
-                else if(SDL_GetTicks() - resetTime > 3000)
-                {
-                    game->ScorePlayer2 ++;
-                    game->ResetGame();
-                    resetTime = 0;
-                }
-
-            }
-            
-        }
-               
     }
     
     game->clean();

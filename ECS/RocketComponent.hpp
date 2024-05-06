@@ -165,7 +165,6 @@ class RocketComponent
             {   
                 path.clear();
                 path = findPathToTarget(rocketdestRect.x, rocketdestRect.y, targetX, targetY);
-            
                 pathIndex = 0;
             }
 
@@ -205,7 +204,6 @@ class RocketComponent
     
         }
 
-        
         void draw () 
         {
             if(!isMove)
@@ -220,7 +218,6 @@ class RocketComponent
                 SDL_RenderCopyEx(renderer, rocketTexture, &rocketsrcRect, &rocketdestRect, direction, &rocketCenter, SDL_FLIP_NONE);
             }
         }
-
-        
+  
 };
 

@@ -32,6 +32,8 @@ int Game::ScorePlayer3 = 0;
 string Game::TypeOfBulletPackage[4];
 map <string, SDL_Texture*> Game::bulletIcons;
 
+
+
 Game::Game()
 {}
 Game::~Game()
@@ -48,8 +50,8 @@ void Game::initSDL(int xpos, int ypos)
 
     if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
     {
-            logErrorAndExit("SDL_Init", SDL_GetError());
-            isRunning = false;
+        logErrorAndExit("SDL_Init", SDL_GetError());
+        isRunning = false;
     }
     else
     {
@@ -65,8 +67,6 @@ void Game::initSDL(int xpos, int ypos)
             logErrorAndExit("CreateWindow", SDL_GetError());
         }
     }
-    this->gamestate = GameState::START_SCREEN;
-    this->mute = false;
 }
 
 void Game::createRenderer()
@@ -86,9 +86,9 @@ void Game::Render()
 {
     SDL_RenderClear(renderer);
     
-    if(gamestate != GameState::PLAYING)
+    if(gamestate != GameState::PLAYING && gamestate != GameState::WINNING_TIME)
         menu->Render(gamestate);
-    else if(gamestate == GameState::PLAYING)
+    else
     {
         chosenMap->render();
         manager.draw();
@@ -102,14 +102,31 @@ void Game::ScoreRender()
 {
     if(NumberOfPlayers == 2)
     {
-        TextManager::DrawText(this->renderer, this->font, "Score Player1: " + to_string(ScorePlayer1), {1600, 384, 384, 128}, {255, 255, 255, 255});
-        TextManager::DrawText(this->renderer, this->font, "Score Player2: " + to_string(ScorePlayer2), {1600, 576, 384, 128}, {255, 255, 255, 255});
+        TextManager::DrawText(this->renderer, this->font, "Score Player1: " + to_string(ScorePlayer1), {1600, 576, 384, 128}, {255, 255, 255, 255});
+        TextManager::DrawText(this->renderer, this->font, "Score Player2: " + to_string(ScorePlayer2), {1600, 832, 384, 128}, {255, 255, 255, 255});
+        if(gamestate == GameState::WINNING_TIME)
+        {
+            if(Player1.getComponent<SpriteComponent>().alive)
+                TextManager::DrawText(this->renderer, this->font, "Player1 Wins!", {576, 576, 512, 256}, {255, 0, 0, 255});
+            else
+                TextManager::DrawText(this->renderer, this->font, "Player2 Wins!", {576, 576, 512, 256}, {0, 0, 255, 255});
+        
+        }
     }
     else if(NumberOfPlayers == 3)
     {
-        TextManager::DrawText(this->renderer, this->font, "Score Player1: " + to_string(ScorePlayer1), {1664, 384, 384, 128}, {255, 255, 255, 255});
-        TextManager::DrawText(this->renderer, this->font, "Score Player2: " + to_string(ScorePlayer2), {1664, 576, 384, 128}, {255, 255, 255, 255});
-        TextManager::DrawText(this->renderer, this->font, "Score Player3: " + to_string(ScorePlayer3), {1664, 768, 384, 128}, {255, 255, 255, 255});
+        TextManager::DrawText(this->renderer, this->font, "Score Player1: " + to_string(ScorePlayer1), {1664, 448, 384, 128}, {255, 255, 255, 255});
+        TextManager::DrawText(this->renderer, this->font, "Score Player2: " + to_string(ScorePlayer2), {1664, 640, 384, 128}, {255, 255, 255, 255});
+        TextManager::DrawText(this->renderer, this->font, "Score Player3: " + to_string(ScorePlayer3), {1664, 832, 384, 128}, {255, 255, 255, 255});
+        if(gamestate == GameState::WINNING_TIME)
+        {
+            if(Player1.getComponent<SpriteComponent>().alive)
+                TextManager::DrawText(this->renderer, this->font, "Player1 Wins!", {576, 576, 512, 256}, {255, 0, 0, 255});
+            else if(Player2.getComponent<SpriteComponent>().alive)
+                TextManager::DrawText(this->renderer, this->font, "Player2 Wins!", {576, 576, 512, 256}, {0, 0, 255, 255});
+            else
+                TextManager::DrawText(this->renderer, this->font, "Player3 Wins!", {576, 576, 512, 256}, {0, 255, 0, 255});
+        }
     }
 }
 void Game::handleEvents()
@@ -159,7 +176,7 @@ void Game::handleEvents()
 
 void Game::update()
 {
-    if(gamestate == GameState::PLAYING)
+    if(gamestate == GameState::PLAYING || gamestate == GameState::WINNING_TIME)
     {
         manager.update();
         
@@ -221,7 +238,8 @@ void Game::ResetGame()
              isWall(player1_xpos + 64, player1_ypos + 64) || isWall(player1_xpos + 64, player1_ypos - 64)); 
 
     Player1.getComponent<SpriteComponent>().alive = true;
-    Player1.getComponent<SpriteComponent>().bullets.clear(); 
+    Player1.getComponent<SpriteComponent>().bullets.clear();
+    Player1.getComponent<SpriteComponent>().rockets.clear();
     Player1.getComponent<SpriteComponent>().now_type_of_bullet = TypeOfBullet::NORMAL;
     Player1.getComponent<TransformComponent>().position = Vector2D(player1_xpos, player1_ypos);
     Player1.getComponent<TransformComponent>().velocity = Vector2D(0, 0);
@@ -243,6 +261,7 @@ void Game::ResetGame()
              (player1_xpos == player2_xpos && player1_ypos == player2_ypos)); 
     Player2.getComponent<SpriteComponent>().alive = true;
     Player2.getComponent<SpriteComponent>().bullets.clear(); 
+    Player2.getComponent<SpriteComponent>().rockets.clear();
     Player2.getComponent<SpriteComponent>().now_type_of_bullet = TypeOfBullet::NORMAL;
     Player2.getComponent<TransformComponent>().position = Vector2D(player2_xpos, player2_ypos);
     Player2.getComponent<TransformComponent>().velocity = Vector2D(0, 0);
@@ -266,6 +285,7 @@ void Game::ResetGame()
                 (player3_xpos == player1_xpos && player3_ypos == player1_ypos) || (player3_xpos == player2_xpos && player3_ypos == player2_ypos)); 
         Player3.getComponent<SpriteComponent>().alive = true;
         Player3.getComponent<SpriteComponent>().bullets.clear(); 
+        Player3.getComponent<SpriteComponent>().rockets.clear();
         Player3.getComponent<SpriteComponent>().now_type_of_bullet = TypeOfBullet::NORMAL;
         Player3.getComponent<TransformComponent>().position = Vector2D(player3_xpos, player3_ypos);
         Player3.getComponent<TransformComponent>().velocity = Vector2D(0, 0);
@@ -285,8 +305,8 @@ void Game::spawnBulletPackage()
     string type;
     do 
     {
-        x = (rand() % (mapWidth / 64)) * 64;
-        y = (rand() % (mapHeight / 64)) * 64;
+        x = (rand() % (mapWidth / tileWidth)) * tileWidth;
+        y = (rand() % (mapHeight / tileHeight)) * tileHeight;
         type = this->TypeOfBulletPackage[rand() % (sizeof(TypeOfBulletPackage) / sizeof(TypeOfBulletPackage[0]))];
         //type = "Rocket";
        
@@ -317,6 +337,91 @@ bool Game::isWall(int x, int y)
     
     return false;
 }
+void Game::updateWinner() 
+{
+    static Uint32 resetTime = 0;
+    static bool hasPlayedWinningSound = false;
+    if (gamestate == GameState::WINNING_TIME) 
+    {
+        if (!hasPlayedWinningSound) 
+        {
+            hasPlayedWinningSound = true; 
+            AudioManager::PlaySound(WinningMusic);
+        }
+    }
+    else
+        hasPlayedWinningSound = false; 
+    
+    if (NumberOfPlayers == 2) 
+    {
+        if (!Player1.getComponent<SpriteComponent>().alive) 
+        {
+            gamestate = GameState::WINNING_TIME;
+            if (resetTime == 0)
+            {
+                resetTime = SDL_GetTicks();
+            }
+            else if (SDL_GetTicks() - resetTime > 4000) 
+            {
+                ScorePlayer2++;
+                ResetGame();
+                resetTime = 0;
+            }
+        }
+        else if(!Player2.getComponent<SpriteComponent>().alive)
+        {
+            gamestate = GameState::WINNING_TIME;    
+            if (resetTime == 0)
+                resetTime = SDL_GetTicks();
+            else if (SDL_GetTicks() - resetTime > 4000) 
+            {
+                ScorePlayer1++;
+                ResetGame();
+                resetTime = 0;
+            }
+        }
+    }
+    else if (NumberOfPlayers == 3) 
+    {
+        if (!Player1.getComponent<SpriteComponent>().alive && !Player2.getComponent<SpriteComponent>().alive) 
+        {
+            gamestate = GameState::WINNING_TIME;
+            if (resetTime == 0)
+                resetTime = SDL_GetTicks();
+            else if (SDL_GetTicks() - resetTime > 4000) 
+            {
+                ScorePlayer3++;
+                ResetGame();
+                resetTime = 0;
+            }
+        }
+        else if (!Player2.getComponent<SpriteComponent>().alive && !Player3.getComponent<SpriteComponent>().alive) 
+        {
+            gamestate = GameState::WINNING_TIME;
+            if (resetTime == 0)
+                resetTime = SDL_GetTicks();
+            else if (SDL_GetTicks() - resetTime > 4000) 
+            {
+                ScorePlayer1++;
+                ResetGame();
+                resetTime = 0;
+            }
+        }
+        else if (!Player3.getComponent<SpriteComponent>().alive && !Player1.getComponent<SpriteComponent>().alive) 
+        {
+            gamestate = GameState::WINNING_TIME;
+            if (resetTime == 0)
+                resetTime = SDL_GetTicks();
+            else if (SDL_GetTicks() - resetTime > 4000) 
+            {
+                ScorePlayer2++;
+                ResetGame();
+                resetTime = 0;
+            }
+        }
+    }
+    
+}
 void Game::clean()
 {
     delete menu;
@@ -346,7 +451,7 @@ void Game::clean()
     SDL_DestroyTexture(this->TripleBulletIcon);
     SDL_DestroyTexture(this->FastBulletIcon);
     Mix_FreeMusic(this->backgroundMusic);
-    Mix_FreeMusic(this->WinningMusic);
+    Mix_FreeChunk(this->WinningMusic);
 
     TTF_CloseFont(this->font);
     TTF_Quit();
@@ -358,7 +463,9 @@ void Game::preload()
 {
     initSDL(SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
     createRenderer(); 
-    
+    this->gamestate = GameState::START_SCREEN;
+    this->mute = false;
+
     this->startScreenTexture = TextureManager::LoadTexture("assets/PlayScreen/StartScreen.png", this->renderer);
     this->tutorialTexture = TextureManager::LoadTexture("assets/PlayScreen/Tutorial.png", this->renderer);
     this->selectModeTexture = TextureManager::LoadTexture("assets/PlayScreen/SelectMode.png", this->renderer);
@@ -369,8 +476,8 @@ void Game::preload()
     this->TripleBulletIcon = TextureManager::LoadTexture("assets/BulletPackageIcon/triple.png", this->renderer);
     this->FastBulletIcon = TextureManager::LoadTexture("assets/BulletPackageIcon/fast.png", this->renderer);
     this->font = TextManager::LoadText("assets/Fonts/04B_19.TTF");
-    this->backgroundMusic = AudioManager::LoadMusic("assets/Dani Stob - Unstoppable - Loop.wav");
-    this->WinningMusic = AudioManager::LoadMusic("assets/Dani Stob - Victory Fanfare.wav");
+    this->backgroundMusic = AudioManager::LoadMusic("assets/Sound/Dani Stob - Unstoppable - Loop.wav");
+    this->WinningMusic = AudioManager::LoadSound("assets/Sound/Dani Stob - Victory Fanfare.wav");
    
     TypeOfBulletPackage[0] = "Rocket";
     TypeOfBulletPackage[1] = "Gatling";
@@ -385,23 +492,23 @@ void Game::preload()
     menu->PlayBackgroundMusic();
 
     
-    ifstream mapData("mapAZ_1.json");
+    ifstream mapData("assets/Map/mapAZ_1.json");
     mapAZ_1 = new Map("map1", this->renderer, json::parse(mapData));
     mapAZ_1->setCollisionByProperty(new json({{"collision", true}}), true);
 
-    ifstream mapData2("mapAZ_2.json");
+    ifstream mapData2("assets/Map/mapAZ_2.json");
     mapAZ_2 = new Map("map2", this->renderer, json::parse(mapData2));
     mapAZ_2->setCollisionByProperty(new json({{"collision", true}}), true);
 
-    ifstream mapData3("mapAZ_3.json");
+    ifstream mapData3("assets/Map/mapAZ_3.json");
     mapAZ_3 = new Map("map3", this->renderer, json::parse(mapData3));
     mapAZ_3->setCollisionByProperty(new json({{"collision", true}}), true);
 
-    ifstream mapData4("mapAZ_4.json");
+    ifstream mapData4("assets/Map/mapAZ_4.json");
     mapAZ_4 = new Map("map4", this->renderer, json::parse(mapData4));
     mapAZ_4->setCollisionByProperty(new json({{"collision", true}}), true);
 
-    ifstream mapData5("mapAZ_5.json");
+    ifstream mapData5("assets/Map/mapAZ_5.json");
     mapAZ_5 = new Map("map5", this->renderer, json::parse(mapData5));
     mapAZ_5->setCollisionByProperty(new json({{"collision", true}}), true);
     

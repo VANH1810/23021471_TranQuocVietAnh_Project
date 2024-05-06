@@ -1,6 +1,7 @@
 #pragma once
+
+#include "Config.hpp"
 #include "TextureManager.cpp"
-#include "config.cpp"
 #include "Tile.cpp"
 
 

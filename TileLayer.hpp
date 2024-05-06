@@ -1,5 +1,5 @@
 #pragma once
-#include "Config.cpp"
+#include "Config.hpp"
 #include "TileSet.cpp"
 #include "Tile.cpp"
 

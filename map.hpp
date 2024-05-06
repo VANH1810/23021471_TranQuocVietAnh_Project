@@ -1,5 +1,5 @@
 #pragma once
-#include "Config.cpp"
+#include "Config.hpp"
 #include "Layer.cpp"
 
 class Map
@@ -17,7 +17,6 @@ class Map
         int tileHeight;
         json* mapData;
         TileSet* tileSet;
-        
         
     private:
         string mapName;

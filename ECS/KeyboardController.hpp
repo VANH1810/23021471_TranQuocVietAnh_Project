@@ -33,7 +33,8 @@ class KeyboardController : public Component
             if(event->type == SDL_KEYDOWN || event->type == SDL_KEYUP)
             {
                 const Uint8* state = SDL_GetKeyboardState(NULL);
-                if(state[SDL_SCANCODE_W]) {
+                if(state[SDL_SCANCODE_W]) 
+                {
                     if(state[SDL_SCANCODE_A]) transform->rotationSpeed = -5.0f;
                     else if(state[SDL_SCANCODE_D]) transform->rotationSpeed = 5.0f;
                     else transform->rotationSpeed = 0.0f;
@@ -41,26 +42,29 @@ class KeyboardController : public Component
                     transform->velocity.x = cos(transform->rotation * M_PI / 180.0f) * transform->speed;
                     transform->velocity.y = sin(transform->rotation * M_PI / 180.0f) * transform->speed;
                 }
-                else if(state[SDL_SCANCODE_S]) {
+                else if(state[SDL_SCANCODE_S]) 
+                {
                     if(state[SDL_SCANCODE_A]) transform->rotationSpeed = -5.0f;
                     else if(state[SDL_SCANCODE_D]) transform->rotationSpeed = 5.0f;
                     else transform->rotationSpeed = 0.0f;
                     transform->velocity.x = -cos(transform->rotation * M_PI / 180.0f) * transform->speed;
                     transform->velocity.y = -sin(transform->rotation * M_PI / 180.0f) * transform->speed;
                 }
-                else if(state[SDL_SCANCODE_A]) {
+                else if(state[SDL_SCANCODE_A]) 
                     transform->rotationSpeed = -5.0f;
-                }
-                else if(state[SDL_SCANCODE_D]) {
+                
+                else if(state[SDL_SCANCODE_D]) 
                     transform->rotationSpeed = 5.0f;
                     
-                }
-                else {
+                else 
+                {
                     transform->rotationSpeed = 0.0f;
                     transform->velocity.x = 0;
                     transform->velocity.y = 0;
                 }
-                if(state[SDL_SCANCODE_R]) {
+
+                if(state[SDL_SCANCODE_R]) 
+                {
                     currentTime = SDL_GetTicks();
                     if (currentTime > lastRPressTime + minRPressInterval) 
                     {
@@ -71,9 +75,7 @@ class KeyboardController : public Component
                 }
             }
         }
-           
-                
-        
+              
 };
 
 class KeyboardController2 : public KeyboardController
@@ -87,7 +89,7 @@ class KeyboardController2 : public KeyboardController
         ~KeyboardController2() = default;
         KeyboardController2(SDL_Event *e)
         {
-                this->event = e;
+            this->event = e;
         }
         void update() override
         {
@@ -96,7 +98,8 @@ class KeyboardController2 : public KeyboardController
             if(event->type == SDL_KEYDOWN || event->type == SDL_KEYUP)
             {
                 const Uint8* state = SDL_GetKeyboardState(NULL);
-                if(state[SDL_SCANCODE_UP]) {
+                if(state[SDL_SCANCODE_UP]) 
+                {
                     if(state[SDL_SCANCODE_LEFT]) transform->rotationSpeed = -5.0f;
                     else if(state[SDL_SCANCODE_RIGHT]) transform->rotationSpeed = 5.0f;
                     else transform->rotationSpeed = 0.0f;
@@ -104,26 +107,27 @@ class KeyboardController2 : public KeyboardController
                     transform->velocity.x = cos(transform->rotation * M_PI / 180.0f) * transform->speed;
                     transform->velocity.y = sin(transform->rotation * M_PI / 180.0f) * transform->speed;
                 }
-                else if(state[SDL_SCANCODE_DOWN]) {
+                else if(state[SDL_SCANCODE_DOWN]) 
+                {
                     if(state[SDL_SCANCODE_LEFT]) transform->rotationSpeed = -5.0f;
                     else if(state[SDL_SCANCODE_RIGHT]) transform->rotationSpeed = 5.0f;
                     else transform->rotationSpeed = 0.0f;
                     transform->velocity.x = -cos(transform->rotation * M_PI / 180.0f) * transform->speed;
                     transform->velocity.y = -sin(transform->rotation * M_PI / 180.0f) * transform->speed;
                 }
-                else if(state[SDL_SCANCODE_LEFT]) {
+                else if(state[SDL_SCANCODE_LEFT])
                     transform->rotationSpeed = -5.0f;
-                }
-                else if(state[SDL_SCANCODE_RIGHT]) {
+            
+                else if(state[SDL_SCANCODE_RIGHT])
                     transform->rotationSpeed = 5.0f;
-                    
-                }
-                else {
+                else 
+                {
                     transform->rotationSpeed = 0.0f;
                     transform->velocity.x = 0;
                     transform->velocity.y = 0;
                 }
-                if(state[SDL_SCANCODE_RCTRL]) {
+                if(state[SDL_SCANCODE_RCTRL]) 
+                {
                     currentTime = SDL_GetTicks();
                     if (currentTime > lastCtrlPressTime + minCtrlPressInterval) 
                     {
@@ -156,7 +160,8 @@ class KeyboardController3 : public KeyboardController
             if(event->type == SDL_KEYDOWN || event->type == SDL_KEYUP)
             {
                 const Uint8* state = SDL_GetKeyboardState(NULL);
-                if(state[SDL_SCANCODE_I]) {
+                if(state[SDL_SCANCODE_I]) 
+                {
                     if(state[SDL_SCANCODE_J]) transform->rotationSpeed = -5.0f;
                     else if(state[SDL_SCANCODE_L]) transform->rotationSpeed = 5.0f;
                     else transform->rotationSpeed = 0.0f;
@@ -164,25 +169,26 @@ class KeyboardController3 : public KeyboardController
                     transform->velocity.x = cos(transform->rotation * M_PI / 180.0f) * transform->speed;
                     transform->velocity.y = sin(transform->rotation * M_PI / 180.0f) * transform->speed;
                 }
-                else if(state[SDL_SCANCODE_K]) {
+                else if(state[SDL_SCANCODE_K]) 
+                {
                     if(state[SDL_SCANCODE_J]) transform->rotationSpeed = -5.0f;
                     else if(state[SDL_SCANCODE_L]) transform->rotationSpeed = 5.0f;
                     else transform->rotationSpeed = 0.0f;
                     transform->velocity.x = -cos(transform->rotation * M_PI / 180.0f) * transform->speed;
                     transform->velocity.y = -sin(transform->rotation * M_PI / 180.0f) * transform->speed;
                 }
-                else if(state[SDL_SCANCODE_J]) {
+                else if(state[SDL_SCANCODE_J])
                     transform->rotationSpeed = -5.0f;
-                }
-                else if(state[SDL_SCANCODE_L]) {
+                else if(state[SDL_SCANCODE_L])
                     transform->rotationSpeed = 5.0f;
-                }
-                else {
+                else 
+                {
                     transform->rotationSpeed = 0.0f;
                     transform->velocity.x = 0;
                     transform->velocity.y = 0;
                 }
-                if(state[SDL_SCANCODE_Y]) {
+                if(state[SDL_SCANCODE_Y]) 
+                {
                     currentTime = SDL_GetTicks();
                     if (currentTime > lastYPressTime + minYPressInterval) 
                     {

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Config.cpp"
+#include "Config.hpp"
 #include "TextureManager.hpp"
 class BulletPackage {
 private:
@@ -11,7 +11,7 @@ private:
 public:
     SDL_Rect destRect;
     string type;
-    BulletPackage() = default;
+    ~BulletPackage() = default;
     BulletPackage(int xpos, int ypos, SDL_Texture* bulletIcon, SDL_Renderer* ren, const string TypeOfBullet)
     {
         renderer = ren;
@@ -29,6 +29,4 @@ public:
         TextureManager::Draw(renderer, bulletIconTexture, srcRect, destRect);
     }
 
-    
-    
 };

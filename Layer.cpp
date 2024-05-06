@@ -2,7 +2,6 @@
 
 #include "Layer.hpp"
 
-
 Layer::Layer(json* map)
 {
 

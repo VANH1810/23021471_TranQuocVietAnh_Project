@@ -42,8 +42,6 @@ private:
         float delay;
     };
     queue<PendingBullet> pendingBullets;
-
-    
     
 public:
     vector<BulletComponent*> bullets;
@@ -78,7 +76,7 @@ public:
         WeaponTexture = TextureManager::LoadTexture(weapon_path.c_str(), ren);
         bulletTexture = TextureManager::LoadTexture(bullet_path.c_str(), ren);
         explosionTexture = TextureManager::LoadTexture(explosion_path.c_str(), ren);
-        soundEffect = AudioManager::LoadSound("assets/TankBulletExplosion.wav");
+        soundEffect = AudioManager::LoadSound("assets/Sound/TankBulletExplosion.wav");
         now_type_of_bullet = TypeOfBullet::NORMAL;
     }
     
@@ -152,6 +150,8 @@ public:
             newBullet3->isMove = true;
             bullets.push_back(newBullet3);
 
+            now_type_of_bullet = TypeOfBullet::NORMAL;
+
         }
         else if(now_type_of_bullet == TypeOfBullet::ROCKET)
         {
@@ -213,24 +213,21 @@ public:
 
         for(BulletComponent* bullet : bullets) 
         {
-            if(bullet->isMove) {
+            if(bullet->isMove) 
                 bullet->update();
-            }
-            else {
+            else 
                 bulletsToDelete.push_back(bullet);
-            }
         }
         for(RocketComponent* rocket : rockets) 
         {
-            if(rocket->isMove) {
+            if(rocket->isMove) 
+            {
                 rocket->targetX = nearestEnemy.first;
                 rocket->targetY = nearestEnemy.second;
                 rocket->update();
-
             }
-            else {
+            else 
                 rocketsToDelete.push_back(rocket);
-            }
         }
         TankdestRect.x = (int) transform->position.x;
         TankdestRect.y = (int) transform->position.y;
@@ -240,7 +237,7 @@ public:
 
     void draw() override
     {
-        if(alive == false) return;
+        if(!alive) return;
         SDL_Rect TankdestRectCopy = TankdestRect; 
         TankdestRectCopy.x = (int) transform->position.x - TankdestRect.w / 2; 
         TankdestRectCopy.y = (int) transform->position.y - TankdestRect.h / 2;
@@ -253,28 +250,26 @@ public:
         SDL_Point Weaponcenter = {WeapondestRect.w / 2, WeapondestRect.h / 2}; // Rotation center
         SDL_RenderCopyEx(renderer, WeaponTexture, &WeaponsrcRect, &WeapondestRectCopy, transform->rotation + 90.0f, &Weaponcenter, SDL_FLIP_NONE);
         
-        for(BulletComponent* bullet : bullets) 
-        { 
+        for(BulletComponent* bullet : bullets)
             bullet->draw();
-        }
-        for(BulletComponent* bullet : bulletsToDelete) {
+            
+        for(BulletComponent* bullet : bulletsToDelete) 
+        {
             bullets.erase(std::remove(bullets.begin(), bullets.end(), bullet), bullets.end());
             delete bullet;
         }
         bulletsToDelete.clear(); 
 
         for(RocketComponent* rocket : rockets) 
-        { 
             rocket->draw();
-        }
-        for(RocketComponent* rocket : rocketsToDelete) {
+
+        for(RocketComponent* rocket : rocketsToDelete) 
+        {
             rockets.erase(std::remove(rockets.begin(), rockets.end(), rocket), rockets.end());
             delete rocket;
         }
         rocketsToDelete.clear();
     }
-
-    
 };
 
 

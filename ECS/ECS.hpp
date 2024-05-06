@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Config.cpp"
+#include "../Config.hpp"
 #include "../map.cpp"
 
 class Component;

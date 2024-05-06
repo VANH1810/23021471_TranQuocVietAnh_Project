@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Config.cpp"
+#include "Config.hpp"
 #include "TextureManager.cpp"
 #include "TextManager.cpp"
 #include "AudioManager.cpp"
@@ -37,7 +37,7 @@ class Game
         Menu* menu;
 
         Mix_Music* backgroundMusic;
-        Mix_Music* WinningMusic;
+        Mix_Chunk* WinningMusic;
 
         Map* randomMap(Map* map1, Map* map2, Map* map3, Map* map4, Map* map5);    
 
@@ -60,6 +60,7 @@ class Game
             return isRunning;
         }
         void playMusic();
+        void updateWinner();
         static SDL_Renderer* renderer;
         int NumberOfPlayers;
         

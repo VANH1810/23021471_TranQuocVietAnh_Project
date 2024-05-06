@@ -7,6 +7,7 @@ Mix_Chunk* AudioManager::LoadSound(const string sound) {
         cerr << "Error: " << Mix_GetError() << "\n";
         return nullptr;
     }
+    Mix_AllocateChannels(64);
 
     // Load the sound effect
     Mix_Chunk* soundEffect = Mix_LoadWAV(sound.c_str());

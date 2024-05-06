@@ -1,5 +1,5 @@
 #pragma once
-#include "Config.cpp"
+#include "Config.hpp"
 #include "TextureManager.cpp"
 #include "TextManager.cpp"
 #include "AudioManager.cpp"
@@ -17,13 +17,13 @@ class Menu
 
         SDL_Event* event;
         Mix_Music* backgroundMusic;
-        Mix_Music* WinningMusic;
+        Mix_Chunk* WinningMusic;
 
         TTF_Font* font;
     public:
         int numberOfPlayers;
         ~Menu() = default;
-        Menu(SDL_Renderer* ren, SDL_Event* e, Mix_Music* bg_music, Mix_Music* win_music, TTF_Font* f, SDL_Texture* startScreenTexture, SDL_Texture* tutorialTexture, SDL_Texture* selectModeTexture, SDL_Texture* selectNumberOfPlayersTexture, SDL_Texture* keyboardShortcuts);
+        Menu(SDL_Renderer* ren, SDL_Event* e, Mix_Music* bg_music, Mix_Chunk* win_music, TTF_Font* f, SDL_Texture* startScreenTexture, SDL_Texture* tutorialTexture, SDL_Texture* selectModeTexture, SDL_Texture* selectNumberOfPlayersTexture, SDL_Texture* keyboardShortcuts);
         void Render(GameState &gameState);
         void HandleEvents(GameState &gameState);
         void PlayBackgroundMusic();

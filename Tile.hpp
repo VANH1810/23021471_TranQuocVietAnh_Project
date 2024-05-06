@@ -1,5 +1,5 @@
 #pragma once
-#include "Config.cpp"
+#include "Config.hpp"
 
 class Tile
 {
@@ -12,7 +12,6 @@ class Tile
         json properties; 
 
     private:
-        
         SDL_Texture* texture;
         SDL_Rect* srcRect;
         

@@ -3,14 +3,14 @@
 #include "ECS.hpp"
 #include "../Vector2D.hpp"
 class TransformComponent : public Component
-{
+{     
     public:
         Vector2D position;
         Vector2D velocity;
         Map* map;
-        int speed = 3.0f;
         float rotationSpeed = 0.0f;
         float rotation = 0.0f;
+        int speed = 3.0f;
 
         TransformComponent() = default;
         ~TransformComponent() = default;
@@ -61,10 +61,9 @@ class TransformComponent : public Component
                 rotation -= 360.0f;
             }
         }
+
         void setMap(Map* newMap) 
         {
             this->map = newMap;
         }
-
-    
 };

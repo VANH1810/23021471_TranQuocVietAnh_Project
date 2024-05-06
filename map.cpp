@@ -69,8 +69,8 @@ void Map::setCollisionByProperty(json* properties, bool istrue = true){
         }
         if (match)
         {
-                //cerr << "Setting collision for tile " << temp->id << endl;
-                temp->isCollidable = istrue;
+            //cerr << "Setting collision for tile " << temp->id << endl;
+            temp->isCollidable = istrue;
         }           
     }
 

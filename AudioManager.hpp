@@ -1,5 +1,5 @@
 #pragma once
-#include "Config.cpp"
+#include "Config.hpp"
 
 class AudioManager
 {
@@ -12,6 +12,5 @@ class AudioManager
         static void UnmuteSound();
         static void MuteMusic();
         static void UnmuteMusic();
-    private:
 
 };
