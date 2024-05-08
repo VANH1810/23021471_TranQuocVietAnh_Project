@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ECS.hpp"
-#include "../Vector2D.hpp"
+#include "../Class/Vector2D.hpp"
 class TransformComponent : public Component
 {     
     public:

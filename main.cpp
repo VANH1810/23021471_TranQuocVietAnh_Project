@@ -1,4 +1,4 @@
-#include "game.cpp"
+#include "Class/Game.cpp"
 
 signed main(int argc, char* argv[])
 {

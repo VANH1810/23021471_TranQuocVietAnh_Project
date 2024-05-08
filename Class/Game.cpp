@@ -1,6 +1,6 @@
 #pragma once
 
-#include "game.hpp"
+#include "Game.hpp"
 
 Map *mapAZ_1;
 Map *mapAZ_2;
@@ -443,7 +443,7 @@ void Game::clean()
 
     SDL_DestroyTexture(this->startScreenTexture);
     SDL_DestroyTexture(this->tutorialTexture);
-    SDL_DestroyTexture(this->selectModeTexture);
+    SDL_DestroyTexture(this->someAmmoTypes);
     SDL_DestroyTexture(this->selectNumberOfPlayersTexture);
     SDL_DestroyTexture(this->keyboardShortcuts);
     SDL_DestroyTexture(this->RocketIcon);
@@ -468,7 +468,7 @@ void Game::preload()
 
     this->startScreenTexture = TextureManager::LoadTexture("assets/PlayScreen/StartScreen.png", this->renderer);
     this->tutorialTexture = TextureManager::LoadTexture("assets/PlayScreen/Tutorial.png", this->renderer);
-    this->selectModeTexture = TextureManager::LoadTexture("assets/PlayScreen/SelectMode.png", this->renderer);
+    this->someAmmoTypes = TextureManager::LoadTexture("assets/PlayScreen/SomeAmmoTypes.png", this->renderer);
     this->selectNumberOfPlayersTexture = TextureManager::LoadTexture("assets/PlayScreen/SelectNumberOfPlayers.png", this->renderer);
     this->keyboardShortcuts = TextureManager::LoadTexture("assets/PlayScreen/KeyboardShortcuts.png", this->renderer);
     this->RocketIcon = TextureManager::LoadTexture("assets/BulletPackageIcon/rocket.png", this->renderer);
@@ -488,7 +488,7 @@ void Game::preload()
     bulletIcons["Triple"] = TripleBulletIcon;
     bulletIcons["Fast"] = FastBulletIcon;
 
-    menu = new Menu(this->renderer, &this->event, this->backgroundMusic, this->WinningMusic, this->font, this->startScreenTexture, this->tutorialTexture, this->selectModeTexture, this->selectNumberOfPlayersTexture, this->keyboardShortcuts);
+    menu = new Menu(this->renderer, &this->event, this->backgroundMusic, this->WinningMusic, this->font, this->startScreenTexture, this->tutorialTexture, this->someAmmoTypes, this->selectNumberOfPlayersTexture, this->keyboardShortcuts);
     menu->PlayBackgroundMusic();
 
     

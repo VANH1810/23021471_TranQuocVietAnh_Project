@@ -1,15 +1,16 @@
 #pragma once
 
 #include "Config.hpp"
+#include "../ECS/Components.hpp"
+#include "GameState.hpp"
+#include "Menu.cpp"
 #include "TextureManager.cpp"
 #include "TextManager.cpp"
 #include "AudioManager.cpp"
-#include "ECS/Components.hpp"
 #include "Vector2D.cpp"
-#include "GameState.hpp"
-#include "BulletPackage.hpp"
-#include "HandleCollectBulletPackage.hpp"
-#include "menu.cpp"
+#include "BulletPackage.cpp"
+#include "HandleCollectBulletPackage.cpp"
+
 class Game
 {
     private: 
@@ -19,7 +20,7 @@ class Game
 
         SDL_Texture* startScreenTexture;
         SDL_Texture* tutorialTexture;
-        SDL_Texture* selectModeTexture;
+        SDL_Texture* someAmmoTypes;
         SDL_Texture* selectNumberOfPlayersTexture;
         SDL_Texture* keyboardShortcuts;
 

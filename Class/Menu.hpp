@@ -10,7 +10,7 @@ class Menu
     private: 
         SDL_Texture* startScreenTexture;
         SDL_Texture* tutorialTexture;
-        SDL_Texture* selectModeTexture;
+        SDL_Texture* someAmmoTypes;
         SDL_Texture* selectNumberOfPlayersTexture;
         SDL_Texture* keyboardShortcuts;
         SDL_Renderer* renderer;

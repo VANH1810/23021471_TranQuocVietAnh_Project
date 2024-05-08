@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ECS.hpp"
-#include "../Vector2D.cpp"
+#include "../Class/Vector2D.cpp"
 
 class KeyboardController : public Component
 {

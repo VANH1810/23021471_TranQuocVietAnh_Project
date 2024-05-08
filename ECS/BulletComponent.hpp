@@ -1,8 +1,8 @@
 #pragma once
 
 #include "ECS.hpp"
-#include "../TextureManager.hpp"
-#include "../AudioManager.cpp"
+#include "../Class/TextureManager.cpp"
+#include "../Class/AudioManager.cpp"
 
 class BulletComponent
 {

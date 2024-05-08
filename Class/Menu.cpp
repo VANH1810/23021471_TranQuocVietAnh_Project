@@ -1,7 +1,7 @@
 #pragma once
 #include "menu.hpp"
 
-Menu::Menu(SDL_Renderer* ren, SDL_Event* e, Mix_Music* bg_music, Mix_Chunk* win_music, TTF_Font* f, SDL_Texture* startScreenTexture, SDL_Texture* tutorialTexture, SDL_Texture* selectModeTexture, SDL_Texture* selectNumberOfPlayersTexture, SDL_Texture* keyboardShortcuts)
+Menu::Menu(SDL_Renderer* ren, SDL_Event* e, Mix_Music* bg_music, Mix_Chunk* win_music, TTF_Font* f, SDL_Texture* startScreenTexture, SDL_Texture* tutorialTexture, SDL_Texture* someAmmoTypesTexture, SDL_Texture* selectNumberOfPlayersTexture, SDL_Texture* keyboardShortcuts)
 {
     this->renderer = ren;
     this->event = e;
@@ -9,8 +9,8 @@ Menu::Menu(SDL_Renderer* ren, SDL_Event* e, Mix_Music* bg_music, Mix_Chunk* win_
     this->WinningMusic = win_music;
     this->font = f;
     this->startScreenTexture = startScreenTexture;
+    this->someAmmoTypes = someAmmoTypesTexture;
     this->tutorialTexture = tutorialTexture;
-    this->selectModeTexture = selectModeTexture;
     this->selectNumberOfPlayersTexture = selectNumberOfPlayersTexture;
     this->keyboardShortcuts = keyboardShortcuts;
 
@@ -22,10 +22,10 @@ void Menu::Render(GameState &gamestate)
         SDL_RenderCopy(this->renderer, this->startScreenTexture, nullptr, nullptr);
     else if(gamestate == GameState::TUTORIAL)
         SDL_RenderCopy(this->renderer, this->tutorialTexture, nullptr, nullptr);
+    else if(gamestate == GameState::SOME_AMMO_TYPES)
+        SDL_RenderCopy(this->renderer, this->someAmmoTypes, nullptr, nullptr);
     else if(gamestate == GameState::KEYBOARD_SHORTCUTS)
         SDL_RenderCopy(this->renderer, this->keyboardShortcuts, nullptr, nullptr);
-    else if(gamestate == GameState::SELECT_MODE)
-        SDL_RenderCopy(this->renderer, this->selectModeTexture, nullptr, nullptr);
     else if(gamestate == GameState::SELECT_NUMBER_OF_PLAYERS)
         SDL_RenderCopy(this->renderer, this->selectNumberOfPlayersTexture, nullptr, nullptr);
 }
@@ -40,14 +40,11 @@ void Menu::HandleEvents(GameState &gamestate)
                 if(gamestate == GameState::START_SCREEN)
                     gamestate = GameState::TUTORIAL;
                 else if(gamestate == GameState::TUTORIAL)
+                    gamestate = GameState::SOME_AMMO_TYPES;
+                else if(gamestate == GameState::SOME_AMMO_TYPES)
                     gamestate = GameState::KEYBOARD_SHORTCUTS;
                 else if(gamestate == GameState::KEYBOARD_SHORTCUTS)
-                    gamestate = GameState::SELECT_MODE;
-                break;
-            case SDLK_F2:
-                if(gamestate == GameState::SELECT_MODE)
                     gamestate = GameState::SELECT_NUMBER_OF_PLAYERS;
-                break;
             case SDLK_2:
                 if(gamestate == GameState::SELECT_NUMBER_OF_PLAYERS)
                 {
@@ -64,10 +61,10 @@ void Menu::HandleEvents(GameState &gamestate)
                 break;
             case SDLK_BACKSPACE:
                 if(gamestate == GameState::SELECT_NUMBER_OF_PLAYERS)
-                    gamestate = GameState::SELECT_MODE;
-                else if(gamestate == GameState::SELECT_MODE)
                     gamestate = GameState::KEYBOARD_SHORTCUTS;
                 else if(gamestate == GameState::KEYBOARD_SHORTCUTS)
+                    gamestate = GameState::SOME_AMMO_TYPES;
+                else if(gamestate == GameState::SOME_AMMO_TYPES)
                     gamestate = GameState::TUTORIAL;
                 else if(gamestate == GameState::TUTORIAL)
                     gamestate = GameState::START_SCREEN;

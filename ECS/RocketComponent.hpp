@@ -1,8 +1,8 @@
 #pragma once
 
 #include "ECS.hpp"
-#include "../TextureManager.hpp"
-#include "../AudioManager.cpp"
+#include "../Class/TextureManager.hpp"
+#include "../Class/AudioManager.cpp"
 class RocketComponent
 {
     private:

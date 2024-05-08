@@ -22,12 +22,12 @@ Layer::Layer(json* map)
     }
 }
 
-Layer::~Layer(){
+Layer::~Layer()
+{
     delete srcRect;
 
     if (layerType == "tilelayer")
         delete tileLayer;
-
 }
 
 void Layer::render(TileSet* tileSet, SDL_Renderer* renderer)
