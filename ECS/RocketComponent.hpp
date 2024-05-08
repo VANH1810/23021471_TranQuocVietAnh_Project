@@ -36,6 +36,24 @@ class RocketComponent
         int pathIndex = 0;
         int frameCount;
 
+        double heuristic(int x1, int y1, int x2, int y2) {
+            double dx = abs(x1 - x2);
+            double dy = abs(y1 - y2);
+            double manhattan = dx + dy;
+            double octile = 64 * (dx + dy) + (sqrt(2)*64 - 2 * 64) * min(dx, dy); // From your previous code
+            double bias = 0.1;
+            return (0.7 * manhattan + 0.3 * octile) - bias * (dx + dy); // Adjust w1 and w2 as needed
+        } 
+        struct CellInfo2 {
+            int x, y;
+            float g; // cost from start node to current node
+            float h; // estimated cost from current node to target node
+            float f; // total cost (costF = costG + costH)
+            CellInfo2* prevCell;
+
+            CellInfo2(int x, int y, CellInfo2* prevCell, float g, float h) : x(x), y(y), prevCell(prevCell), g(g), h(h), f(g + h) {}    
+        };
+
     public:
         SDL_Rect rocketdestRect;
         bool isMove;
@@ -45,7 +63,6 @@ class RocketComponent
         ~RocketComponent() = default;
         RocketComponent(SDL_Texture *rocketImage,  SDL_Texture *explosionImage, SDL_Renderer *ren, float mSpeed, Map* mapdata, Mix_Chunk *_soundEffect, float time_alive)
         {
-    
             rocketTexture = rocketImage;
             renderer = ren;
             speed = mSpeed;
@@ -104,15 +121,19 @@ class RocketComponent
             return true;
         }
 
+        // BFS* Algorithm
         vector<pair<int, int>> findPathToTarget(int startX, int startY, int targetX, int targetY)
         {
-           
+            if(targetX < 0 || targetX >= mapWidth || targetY < 0 || targetY >= mapHeight) return {};
             queue<CellInfo*> q;
             bool found = false;
             
             vector<vector<bool>> visited(mapHeight, vector<bool>(mapWidth, false));
+            vector<CellInfo*> allCells;
             CellInfo* startCell = new CellInfo(startX, startY, nullptr);
             CellInfo* targetCell = nullptr; 
+
+            allCells.push_back(startCell);
            
             visited[startX][startY] = true;
             q.push(startCell);
@@ -138,6 +159,7 @@ class RocketComponent
                     {
                         visited[nextX][nextY] = true;
                         CellInfo* nextCell = new CellInfo(nextX, nextY, current);
+                        allCells.push_back(nextCell);
                         q.push(nextCell);
                     }
                 }
@@ -151,24 +173,109 @@ class RocketComponent
                 }
                 path.push_back(make_pair(startX, startY)); 
                 reverse(path.begin(), path.end()); 
-
+                for (CellInfo* cell : allCells) 
+                    delete cell;
                 return path;
+            }
+            else
+            {
+                for (CellInfo* cell : allCells) 
+                    delete cell;
             }
     
             return {};
+        }
+        // A* Algorithm
+        vector<pair<int, int>> findPathToTarget2(int startX, int startY, int targetX, int targetY) {
+            if(targetX < 0 || targetX >= mapWidth || targetY < 0 || targetY >= mapHeight) return {};
+            auto compare = [](const CellInfo2* a, const CellInfo2* b) {
+                return a->f > b->f;
+            };
+            priority_queue<CellInfo2*, vector<CellInfo2*>, decltype(compare)> openList(compare);
+            vector<vector<bool>> closedList(mapHeight, vector<bool>(mapWidth, false));
+
+            vector<CellInfo2*> allCells;
+            CellInfo2* startCell = new CellInfo2(startX, startY, nullptr, 0, heuristic(startX, startY, targetX, targetY));
+            CellInfo2* targetCell = nullptr;
+            allCells.push_back(startCell);
+            openList.push(startCell);
+            bool found = false;
+
+            while (!openList.empty()) 
+            {
+                CellInfo2* current = openList.top();
+                openList.pop();
+
+                int distance = sqrt((current->x - targetX) * (current->x - targetX) + (current->y - targetY) * (current->y - targetY));
+                if (distance <= 64) {
+                    targetCell = current; 
+                    found = true;
+                    break; 
+                }
+
+                closedList[current->x][current->y] = true;
+
+                for (int i = 0; i < dx.size(); ++i) {
+                    int nextX = current->x + dx[i];
+                    int nextY = current->y + dy[i];
+
+                    if (canMoveDiagonally(current->x, current->y, dx[i], dy[i]) && !closedList[nextX][nextY]) 
+                    {
+                        int tentative_g = current->g + 1; // Assuming each move has cost 1
+                        int tentative_f = tentative_g + heuristic(nextX, nextY, targetX, targetY);
+                        CellInfo2* neighbor = new CellInfo2(nextX, nextY, current, tentative_g, tentative_f);
+                        allCells.push_back(neighbor);
+
+                        if (!closedList[nextX][nextY]) 
+                        {
+                            openList.push(neighbor);
+                        } 
+                        else if (tentative_f < neighbor->f) 
+                        {
+                            // Update neighbor's values
+                            neighbor->prevCell = current;
+                            neighbor->g = tentative_g;
+                            neighbor->f = tentative_f;
+                        }
+                    }
+                }
+            }
+
+            if (found) 
+            {
+                vector<pair<int, int>> path;
+                CellInfo2* current = targetCell;
+                while (current != nullptr) {
+                    path.push_back(make_pair(current->x, current->y));
+                    current = current->prevCell;
+                }
+                reverse(path.begin(), path.end());
+                for (CellInfo2* cell : allCells) 
+                    delete cell;
+                
+                return path;
+            }
+            else
+            {
+                for (CellInfo2* cell : allCells) 
+                    delete cell;
+            }
+
+            return {}; // No path found
         }
         
         void update() 
         {
             frameCount++;
-            if(path.empty() || frameCount % 5 == 0)
+            if(path.empty() || frameCount % 10 == 0)
             {   
                 path.clear();
-                path = findPathToTarget(rocketdestRect.x, rocketdestRect.y, targetX, targetY);
+                path = findPathToTarget2(rocketdestRect.x, rocketdestRect.y, targetX, targetY);
                 pathIndex = 0;
+                if(path.empty()) isMove = false;
             }
-
-            if (!path.empty() && isMove)
+            
+            if(!path.empty() && isMove)
             {
                 int nextX = path[pathIndex].first;
                 int nextY = path[pathIndex].second;

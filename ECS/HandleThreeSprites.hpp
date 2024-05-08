@@ -57,6 +57,7 @@ class HandleThreeSprites
         }
         void update()
         {
+            /*
             if (sprite1->alive && sprite2->alive && sprite3->alive)
             {
                 if (sprite1->TankdestRect.x < sprite2->TankdestRect.x + sprite2->TankdestRect.w &&
@@ -84,6 +85,7 @@ class HandleThreeSprites
                     sprite3->alive = false;
                 }
             }
+            */
 
             for(BulletComponent* bullet : sprite1->bullets) 
             {

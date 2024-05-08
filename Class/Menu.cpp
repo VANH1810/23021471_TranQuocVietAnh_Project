@@ -45,6 +45,7 @@ void Menu::HandleEvents(GameState &gamestate)
                     gamestate = GameState::KEYBOARD_SHORTCUTS;
                 else if(gamestate == GameState::KEYBOARD_SHORTCUTS)
                     gamestate = GameState::SELECT_NUMBER_OF_PLAYERS;
+                break;
             case SDLK_2:
                 if(gamestate == GameState::SELECT_NUMBER_OF_PLAYERS)
                 {
