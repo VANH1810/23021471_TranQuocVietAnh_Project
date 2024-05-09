@@ -8,7 +8,7 @@ signed main(int argc, char* argv[])
     Uint32 frameStart;
     int frameTime;
     float timeSinceLastSpawn = 0.0f;
-    const float spawnInterval = 1.0f; 
+    const float spawnInterval = 3.0f; 
 
 
     game->preload();
@@ -22,6 +22,7 @@ signed main(int argc, char* argv[])
         if (game->gamestate != GameState::PAUSED)
         {
             game->update(); 
+            game->updateWinner();
             game->Render();
         }
 
@@ -35,10 +36,9 @@ signed main(int argc, char* argv[])
             game->spawnBulletPackage();
             timeSinceLastSpawn = 0.0f;
         }
-        game->updateWinner();
+        
         
     }
-    
     game->clean();
     delete game;
     return 0;

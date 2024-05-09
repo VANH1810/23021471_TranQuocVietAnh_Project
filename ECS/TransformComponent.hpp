@@ -10,7 +10,7 @@ class TransformComponent : public Component
         Map* map;
         float rotationSpeed = 0.0f;
         float rotation = 0.0f;
-        int speed = 3.0f;
+        int speed = 4.0f;
 
         TransformComponent() = default;
         ~TransformComponent() = default;

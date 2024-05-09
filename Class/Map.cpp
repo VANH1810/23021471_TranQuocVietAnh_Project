@@ -54,9 +54,8 @@ void Map::setCollisionByProperty(json* properties, bool istrue = true){
         Tile* temp = tile.second;
         unordered_map <string, json> props;
         for (auto property: temp->properties)
-        {
             props[property["name"]] = property["value"];
-        }
+        
         bool match = true;
         for (auto property: properties->items())
         {

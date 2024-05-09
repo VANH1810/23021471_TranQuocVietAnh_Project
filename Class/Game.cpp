@@ -206,8 +206,7 @@ void Game::playMusic()
 
 Map* Game::randomMap(Map* map1, Map* map2, Map* map3, Map* map4, Map* map5)
 {
-    return map1;
-    /*
+    
     int mapChoice = rand() % 5;
     if(mapChoice == 0) 
         return map1;
@@ -219,7 +218,7 @@ Map* Game::randomMap(Map* map1, Map* map2, Map* map3, Map* map4, Map* map5)
         return map4;
     else
         return map5;
-    */
+    
 }   
 void Game::ResetGame()
 {
@@ -310,8 +309,8 @@ void Game::spawnBulletPackage()
     {
         x = (rand() % (mapWidth / tileWidth)) * tileWidth;
         y = (rand() % (mapHeight / tileHeight)) * tileHeight;
-        //type = this->TypeOfBulletPackage[rand() % (sizeof(TypeOfBulletPackage) / sizeof(TypeOfBulletPackage[0]))];
-        type = "Rocket";
+        type = this->TypeOfBulletPackage[rand() % (sizeof(TypeOfBulletPackage) / sizeof(TypeOfBulletPackage[0]))];
+        //type = "Rocket";
        
     } while (isOccupied(x, y) || isWall(x, y)); 
     bulletPackages.push_back(new BulletPackage(x, y, bulletIcons[type], this->renderer, type));

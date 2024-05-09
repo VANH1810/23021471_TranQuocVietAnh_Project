@@ -15,6 +15,7 @@ class RocketComponent
         Map* map;
         float speed;
         float timeAlive;
+        float angle;
 
         Mix_Chunk *soundEffect;
 
@@ -25,7 +26,8 @@ class RocketComponent
 
             CellInfo(int x, int y, CellInfo* prevCell) : x(x), y(y), prevCell(prevCell) {}
             
-            bool operator!=(const CellInfo& other) const {
+            bool operator!=(const CellInfo& other) const 
+            {
                 return x != other.x || y != other.y;
             }
         };
@@ -36,15 +38,17 @@ class RocketComponent
         int pathIndex = 0;
         int frameCount;
 
-        double heuristic(int x1, int y1, int x2, int y2) {
-            double dx = abs(x1 - x2);
-            double dy = abs(y1 - y2);
-            double manhattan = dx + dy;
-            double octile = 64 * (dx + dy) + (sqrt(2)*64 - 2 * 64) * min(dx, dy); // From your previous code
-            double bias = 0.1;
-            return (0.7 * manhattan + 0.3 * octile) - bias * (dx + dy); // Adjust w1 and w2 as needed
+        double heuristic(int x1, int y1, int x2, int y2) 
+        {
+            // Octile distance
+            int dx = abs(x1 - x2);
+            int dy = abs(y1 - y2);
+            double D = 1.0; // Cost of horizontal/vertical movement
+            double D2 = sqrt(2); // Cost of diagonal movement
+            return D * (dx + dy) + (D2 - 2 * D) * min(dx, dy);
         } 
-        struct CellInfo2 {
+        struct CellInfo2 
+        {
             int x, y;
             float g; // cost from start node to current node
             float h; // estimated cost from current node to target node
@@ -121,7 +125,7 @@ class RocketComponent
             return true;
         }
 
-        // BFS* Algorithm
+        // BFS Algorithm
         vector<pair<int, int>> findPathToTarget(int startX, int startY, int targetX, int targetY)
         {
             if(targetX < 0 || targetX >= mapWidth || targetY < 0 || targetY >= mapHeight) return {};
@@ -186,9 +190,11 @@ class RocketComponent
             return {};
         }
         // A* Algorithm
-        vector<pair<int, int>> findPathToTarget2(int startX, int startY, int targetX, int targetY) {
+        vector<pair<int, int>> findPathToTarget2(int startX, int startY, int targetX, int targetY) 
+        {
             if(targetX < 0 || targetX >= mapWidth || targetY < 0 || targetY >= mapHeight) return {};
-            auto compare = [](const CellInfo2* a, const CellInfo2* b) {
+            auto compare = [](const CellInfo2* a, const CellInfo2* b) 
+            {
                 return a->f > b->f;
             };
             priority_queue<CellInfo2*, vector<CellInfo2*>, decltype(compare)> openList(compare);
@@ -270,7 +276,7 @@ class RocketComponent
             if(path.empty() || frameCount % 10 == 0)
             {   
                 path.clear();
-                path = findPathToTarget2(rocketdestRect.x, rocketdestRect.y, targetX, targetY);
+                path = findPathToTarget(rocketdestRect.x, rocketdestRect.y, targetX, targetY);
                 pathIndex = 0;
                 if(path.empty()) isMove = false;
             }
@@ -288,6 +294,7 @@ class RocketComponent
                     direction_x /= length;
                     direction_y /= length;
                 }
+                angle = atan2(direction_y, direction_x) * 180 / M_PI;
 
                 rocketdestRect.x += (float)(direction_x * speed);
                 rocketdestRect.y += (float)(direction_y * speed);
@@ -322,7 +329,7 @@ class RocketComponent
             else if(isMove)
             {
                 SDL_Point rocketCenter = {rocketdestRect.w / 2, rocketdestRect.h / 2}; // Rotation center
-                SDL_RenderCopyEx(renderer, rocketTexture, &rocketsrcRect, &rocketdestRect, direction, &rocketCenter, SDL_FLIP_NONE);
+                SDL_RenderCopyEx(renderer, rocketTexture, &rocketsrcRect, &rocketdestRect, angle, &rocketCenter, SDL_FLIP_NONE);
             }
         }
   
