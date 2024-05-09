@@ -54,8 +54,8 @@ Với quá trình làm bài tập nỗ lực và không ngừng học hỏi củ
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## 3. Các điểm nổi bật trong Game
-* Xây dựng đạn tên lửa đuổi [Rocket](ECS/RocketComponent.hpp), tìm đường đi ngắn nhất bằng **Thuật toán BFS, Thuật toán A*** và cấu trúc **Linked List**.
-* Tính năng đạn nảy [Bullet](ECS/BulletComponent.hpp), bằng tính toán vật lý có thể khiến đạn nảy khi gặp phải vật cản.
+* Xây dựng đạn tên lửa đuổi [Rocket](../ECS/RocketComponent.hpp), tìm đường đi ngắn nhất bằng **Thuật toán BFS, Thuật toán A*** và cấu trúc **Linked List**.
+* Tính năng đạn nảy [Bullet](../ECS/BulletComponent.hpp), bằng tính toán vật lý có thể khiến đạn nảy khi gặp phải vật cản.
 * Xây dựng [ECS - Entity Component System](ECS).
 * Xây dựng được bản đồ mê cung phức tạp và kiểm tra vật cản.
 * Xử lý Animation khi bắn đạn, Xử lý va chạm, Xử lý di chuyển quay của nhân vật, Xử lý nhặt các túi đạn, Chuyển giao giữa các loại đạn. 
@@ -72,7 +72,7 @@ Mã nguồn mở:
 * Thư viện SDL2: [SDL2](https://github.com/libsdl-org)
 
 Nguồn học tham khảo:
-* [ECS.hpp](ECS/ECS.hpp): [Entity Component System in C++ & SDL2 Tutorial](https://youtu.be/XsvI8Sng6dk?si=P7hOq0MlMJT73rH6)
+* [ECS.hpp](../ECS/ECS.hpp): [Entity Component System in C++ & SDL2 Tutorial](https://youtu.be/XsvI8Sng6dk?si=P7hOq0MlMJT73rH6)
 * Load map: [Tile Map & Tile Set implementation SDL2 Tutorial](https://youtu.be/FQOiFUl93lI?si=LVfmj7lZTyICDGDT)
 
 Hình ảnh:
