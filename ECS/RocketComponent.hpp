@@ -273,7 +273,7 @@ class RocketComponent
         void update() 
         {
             frameCount++;
-            if(path.empty() || frameCount % 10 == 0)
+            if(path.empty() || frameCount % 5 == 0)
             {   
                 path.clear();
                 path = findPathToTarget(rocketdestRect.x, rocketdestRect.y, targetX, targetY);

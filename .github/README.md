@@ -1,4 +1,4 @@
-# AZ TANK GAME: HUNT OR BE HUNTED
+# AZ TANK GAME: HUNT OR BE HUNTED!
 Bài tập lớn lớp Lập trình nâng cao **2324II_INT2215_22** - **K68CA1**
 
 ## **Họ và tên: [Trần Quốc Việt Anh](https://github.com/VANH1810)** / **Mã số sinh viên: 23021471**
@@ -35,6 +35,11 @@ Bạn phải sử dụng các nút định hướng để di chuyển xe tăng c
 
 Hãy làm chủ nghệ thuật ricochets – những cú đánh của bạn có thể bật ra khỏi tường và khiến đối thủ mất cảnh giác. Tiếp tục di chuyển để tránh đạn lạc.
 
+<p align="center">
+  <a href="https://youtu.be/ZCdxY4nwDTw">
+    <img src="https://github.com/VANH1810/23021471_TranQuocVietAnh_Project/blob/bcf24f98ec9cf39b7e1330987cf96fd8172d23c9/assets/PlayScreen/StartScreen.png" alt="AZ TANK GAME: HUNT OR BE HUNTED!">
+  </a>
+</p>
 <p align="center">A demo run of the game</p>
 
 ### Built With
@@ -53,11 +58,11 @@ Với quá trình làm bài tập nỗ lực và không ngừng học hỏi củ
 * Tính năng đạn nảy [Bullet](ECS/BulletComponent.hpp), bằng tính toán vật lý có thể khiến đạn nảy khi gặp phải vật cản.
 * Xây dựng [ECS - Entity Component System](ECS).
 * Xây dựng được bản đồ mê cung phức tạp và kiểm tra vật cản.
-* Xử lý Animation khi bắn đạn, Xử lý chuyển động quay, Xử lý nhặt các túi đạn, chuyển giao giữa các loại đạn. 
+* Xử lý Animation khi bắn đạn, Xử lý va chạm, Xử lý di chuyển quay của nhân vật, Xử lý nhặt các túi đạn, Chuyển giao giữa các loại đạn. 
 * Tự học và xử lý: **âm thanh, nhạc nền, texture, text, ...** bằng thư viện khác của SDL2 như **SDL2_image, SDL2_mixer, SDL2_ttf**.
 * Sử dụng đa dạng các cấu trúc dữ liệu **Vector, Map, Unordered_map, Queue, Priority Queue, ...**.
-* Sử dụng được Con trỏ và hàm
-* Xây dựng hình ảnh menu, bản đồ, nhân vật đẹp và bắt mắt. Âm thanh sống động.
+* Sử dụng được Con trỏ, Class, Struct, Hàm, ... và áp dụng được nhiều kiến thức học được trong lớp.
+* Game xây dựng hình ảnh menu, bản đồ, nhân vật đẹp và bắt mắt. Âm thanh sống động.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
