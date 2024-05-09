@@ -56,7 +56,7 @@ Với quá trình làm bài tập nỗ lực và không ngừng học hỏi củ
 ## 3. Các điểm nổi bật trong Game
 * Xây dựng đạn tên lửa đuổi [Rocket](../ECS/RocketComponent.hpp), tìm đường đi ngắn nhất bằng **Thuật toán BFS, Thuật toán A*** và cấu trúc **Linked List**.
 * Tính năng đạn nảy [Bullet](../ECS/BulletComponent.hpp), bằng tính toán vật lý có thể khiến đạn nảy khi gặp phải vật cản.
-* Xây dựng [ECS - Entity Component System](ECS).
+* Xây dựng [ECS - Entity Component System](../ECS).
 * Xây dựng được bản đồ mê cung phức tạp và kiểm tra vật cản.
 * Xử lý Animation khi bắn đạn, Xử lý va chạm, Xử lý di chuyển quay của nhân vật, Xử lý nhặt các túi đạn, Chuyển giao giữa các loại đạn. 
 * Tự học và xử lý: **âm thanh, nhạc nền, texture, text, ...** bằng thư viện khác của SDL2 như **SDL2_image, SDL2_mixer, SDL2_ttf**.
