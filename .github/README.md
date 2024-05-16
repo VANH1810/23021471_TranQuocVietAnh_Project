@@ -36,8 +36,8 @@ Bạn phải sử dụng các nút định hướng để di chuyển xe tăng c
 Hãy làm chủ nghệ thuật ricochets – những cú đánh của bạn có thể bật ra khỏi tường và khiến đối thủ mất cảnh giác. Tiếp tục di chuyển để tránh đạn lạc.
 
 <p align="center">
-  <a href="https://youtu.be/ZCdxY4nwDTw">
-    <img src="https://github.com/VANH1810/23021471_TranQuocVietAnh_Project/blob/bcf24f98ec9cf39b7e1330987cf96fd8172d23c9/assets/PlayScreen/StartScreen.png" alt="AZ TANK GAME: HUNT OR BE HUNTED!">
+  <a href="https://youtu.be/Qsj177toTJE">
+    <img src="https://github.com/VANH1810/23021471_TranQuocVietAnh_Project/blob/bcf24f98ec9cf39b7e1330987cf96fd8172d23c9/assets/PlayScreen/StartScreen2.png" alt="AZ TANK GAME: HUNT OR BE HUNTED!">
   </a>
 </p>
 <p align="center">A demo run of the game</p>
@@ -54,29 +54,30 @@ Với quá trình làm bài tập nỗ lực và không ngừng học hỏi củ
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## 3. Các điểm nổi bật trong Game
-* Xây dựng đạn tên lửa đuổi [Rocket](../ECS/RocketComponent.hpp), tìm đường đi ngắn nhất bằng **Thuật toán BFS, Thuật toán A*** và cấu trúc **Linked List**.
+* Xây dựng đạn tên lửa đuổi [Rocket](../ECS/RocketComponent.hpp), tìm đường đi ngắn nhất bằng **Thuật toán BFS, Thuật toán A*** và xây dựng lại đường sử dụng **Linked List**.
 * Tính năng đạn nảy [Bullet](../ECS/BulletComponent.hpp), bằng tính toán vật lý có thể khiến đạn nảy khi gặp phải vật cản.
 * Xây dựng [ECS - Entity Component System](../ECS).
-* Xây dựng được bản đồ mê cung phức tạp và kiểm tra vật cản.
-* Xử lý Animation khi bắn đạn, Xử lý va chạm, Xử lý di chuyển quay của nhân vật, Xử lý nhặt các túi đạn, Chuyển giao giữa các loại đạn. 
+* Xử lý Animation khi bắn đạn, Tính toán quy tắc di chuyển vật lý của nhân vật, Xử lý va chạm, Xử lý nhặt các túi đạn, Chuyển giao giữa các loại đạn. 
 * Tự học và xử lý: **hình ảnh, âm thanh, nhạc nền, texture, text, ...** bằng thư viện khác của SDL2 như **SDL2_image, SDL2_mixer, SDL2_ttf**.
 * Sử dụng đa dạng các cấu trúc dữ liệu **Vector, Map, Unordered_map, Queue, Priority Queue, ...**.
-* Sử dụng được Con trỏ, Class, Struct, Hàm, ... và áp dụng được nhiều kiến thức học được trong lớp.
+* Sử dụng được Con trỏ, Class, Struct, Hàm, ... và áp dụng được những kiến thức học được trong lớp.
 * Game xây dựng hình ảnh menu, bản đồ, nhân vật đẹp và bắt mắt. Âm thanh sống động.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## 4. Tham khảo
+
 Mã nguồn mở:
 * C++ nlohmann/json: [json.hpp](https://github.com/nlohmann/json)
 * Thư viện SDL2: [SDL2](https://github.com/libsdl-org)
 
-Nguồn học tham khảo:
+Nguồn học liệu tham khảo:
 * [ECS.hpp](../ECS/ECS.hpp): [Entity Component System in C++ & SDL2 Tutorial](https://youtu.be/XsvI8Sng6dk?si=P7hOq0MlMJT73rH6)
 * Load map: [Tile Map & Tile Set implementation SDL2 Tutorial](https://youtu.be/FQOiFUl93lI?si=LVfmj7lZTyICDGDT)
 
 Hình ảnh:
 * Bản đồ, xe tank: [TANK GAME](https://zintoki.itch.io/ground-shaker)
+* Màn hình menu: [Play Screen](https://www.pixel4k.com/world-of-tanks-pixels-24151.html)
 * Icon túi đạn: [BulletIcon](https://www.iconfinder.com/icons)
 * Đạn: [Fire Shots](https://free-game-assets.itch.io/free-2d-tank-game-assets)
 
