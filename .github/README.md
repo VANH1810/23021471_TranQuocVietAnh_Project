@@ -40,7 +40,7 @@ Hãy làm chủ nghệ thuật ricochets – những cú đánh của bạn có 
     <img src="https://github.com/VANH1810/23021471_TranQuocVietAnh_Project/blob/2698191432ae67ad6faf12e42b4962d41951d35d/assets/PlayScreen/StartScreen2.png" alt="AZ TANK GAME: HUNT OR BE HUNTED!">
   </a>
 </p>
-<p align="center">A demo run of the game</p>
+<p align="center">A demo run of the game (Click on the image above)</p>
 
 ### Built With
 
