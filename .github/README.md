@@ -37,7 +37,7 @@ Hãy làm chủ nghệ thuật ricochets – những cú đánh của bạn có 
 
 <p align="center">
   <a href="https://youtu.be/Qsj177toTJE">
-    <img src="https://github.com/VANH1810/23021471_TranQuocVietAnh_Project/blob/bcf24f98ec9cf39b7e1330987cf96fd8172d23c9/assets/PlayScreen/StartScreen2.png" alt="AZ TANK GAME: HUNT OR BE HUNTED!">
+    <img src="https://github.com/VANH1810/23021471_TranQuocVietAnh_Project/blob/2698191432ae67ad6faf12e42b4962d41951d35d/assets/PlayScreen/StartScreen2.png" alt="AZ TANK GAME: HUNT OR BE HUNTED!">
   </a>
 </p>
 <p align="center">A demo run of the game</p>
