@@ -59,7 +59,7 @@ Với quá trình làm bài tập nỗ lực và không ngừng học hỏi củ
 * Xây dựng [ECS - Entity Component System](../ECS).
 * Xây dựng được bản đồ mê cung phức tạp và kiểm tra vật cản.
 * Xử lý Animation khi bắn đạn, Xử lý va chạm, Xử lý di chuyển quay của nhân vật, Xử lý nhặt các túi đạn, Chuyển giao giữa các loại đạn. 
-* Tự học và xử lý: **âm thanh, nhạc nền, texture, text, ...** bằng thư viện khác của SDL2 như **SDL2_image, SDL2_mixer, SDL2_ttf**.
+* Tự học và xử lý: **hình ảnh, âm thanh, nhạc nền, texture, text, ...** bằng thư viện khác của SDL2 như **SDL2_image, SDL2_mixer, SDL2_ttf**.
 * Sử dụng đa dạng các cấu trúc dữ liệu **Vector, Map, Unordered_map, Queue, Priority Queue, ...**.
 * Sử dụng được Con trỏ, Class, Struct, Hàm, ... và áp dụng được nhiều kiến thức học được trong lớp.
 * Game xây dựng hình ảnh menu, bản đồ, nhân vật đẹp và bắt mắt. Âm thanh sống động.

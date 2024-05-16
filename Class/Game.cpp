@@ -95,6 +95,7 @@ void Game::Render()
         for(auto it : bulletPackages)
             it->draw();
         ScoreRender();
+
     }
     SDL_RenderPresent(renderer);
 }
@@ -107,17 +108,17 @@ void Game::ScoreRender()
         if(gamestate == GameState::WINNING_TIME)
         {
             if(Player1.getComponent<SpriteComponent>().alive)
-                TextManager::DrawText(this->renderer, this->font, "Player1 Wins!", {576, 576, 512, 256}, {255, 0, 0, 255});
+                TextManager::DrawText(this->renderer, this->font, "Player 1 Wins!", {576, 576, 512, 256}, {255, 0, 0, 255});
             else
-                TextManager::DrawText(this->renderer, this->font, "Player2 Wins!", {576, 576, 512, 256}, {0, 0, 255, 255});
+                TextManager::DrawText(this->renderer, this->font, "Player 2 Wins!", {576, 576, 512, 256}, {0, 0, 255, 255});
         
         }
     }
     else if(NumberOfPlayers == 3)
     {
-        TextManager::DrawText(this->renderer, this->font, "Score Player1: " + to_string(ScorePlayer1), {1664, 448, 384, 128}, {255, 255, 255, 255});
-        TextManager::DrawText(this->renderer, this->font, "Score Player2: " + to_string(ScorePlayer2), {1664, 640, 384, 128}, {255, 255, 255, 255});
-        TextManager::DrawText(this->renderer, this->font, "Score Player3: " + to_string(ScorePlayer3), {1664, 832, 384, 128}, {255, 255, 255, 255});
+        TextManager::DrawText(this->renderer, this->font, "Score Player 1: " + to_string(ScorePlayer1), {1664, 448, 384, 128}, {255, 255, 255, 255});
+        TextManager::DrawText(this->renderer, this->font, "Score Player 2: " + to_string(ScorePlayer2), {1664, 640, 384, 128}, {255, 255, 255, 255});
+        TextManager::DrawText(this->renderer, this->font, "Score Player 3: " + to_string(ScorePlayer3), {1664, 832, 384, 128}, {255, 255, 255, 255});
         if(gamestate == GameState::WINNING_TIME)
         {
             if(Player1.getComponent<SpriteComponent>().alive)
@@ -132,47 +133,74 @@ void Game::ScoreRender()
 void Game::handleEvents()
 {
     SDL_PollEvent(&event);
-    if(event.type == SDL_QUIT)
+    if (event.type == SDL_QUIT)
     {
         isRunning = false;
     }
-    if(event.type == SDL_KEYDOWN)
+    if (event.type == SDL_KEYDOWN)
     {
-        switch(event.key.keysym.sym)
+        switch (event.key.keysym.sym)
         {
             case SDLK_ESCAPE:
                 isRunning = false;
                 break;
             case SDLK_p:
-                if(gamestate == GameState::PAUSED)
+                if (gamestate == GameState::PAUSED)
                     gamestate = GameState::PLAYING;
-                else if(gamestate == GameState::PLAYING)
+                else if (gamestate == GameState::PLAYING)
                     gamestate = GameState::PAUSED;
                 break;
             case SDLK_m:
-                if(mute) 
-                    mute = false;
-                else 
-                    mute = true;
-                break;
-            case SDLK_BACKSPACE:
-                if(gamestate == GameState::PAUSED)
-                {
-                    ResetGame();
-                    gamestate = GameState::START_SCREEN;
-                    ScorePlayer1 = 0;
-                    ScorePlayer2 = 0;
-                    ScorePlayer3 = 0;
-                    Player3.getComponent<SpriteComponent>().alive = true;
-                }
+                mute = !mute;
                 break;
             default:
                 break;
         }
     }
+
+    // QUIT GAME && PAUSED BUTTON
+    else if(event.type == SDL_MOUSEBUTTONDOWN)
+    {
+        int x, y;
+        SDL_GetMouseState(&x, &y);
+
+        // START SCREEN
+        if(gamestate == GameState::START_SCREEN)
+        {
+            if(x >= 1566 && x <= 1630 && y >= 43 && y <= 132) 
+            
+                isRunning = false;
+        }
+
+        // PAUSED
+        if(gamestate == GameState::PAUSED)
+        {
+            //Continue
+            if(x >= 743 && x <= 1175 && y >= 306 && y <= 434) 
+                gamestate = GameState::PLAYING;
+
+            // Return to homepage
+            else if(x >= 569 && x <= 1352 && y >= 540 && y <= 660)
+            {
+                ResetGame();
+                gamestate = GameState::START_SCREEN;
+                ScorePlayer1 = 0;
+                ScorePlayer2 = 0;
+                ScorePlayer3 = 0;
+                Player3.getComponent<SpriteComponent>().alive = true;
+            }
+            //QUIT
+            else if (x >= 727 && x <= 1161 && y >= 762 && y <= 893)
+            {
+                isRunning = false;
+            }
+        }
+    }
+
     menu->HandleEvents(gamestate);
     this->NumberOfPlayers = menu->numberOfPlayers;
 }
+
 
 void Game::update()
 {
@@ -426,41 +454,65 @@ void Game::updateWinner()
 }
 void Game::clean()
 {
+    SDL_Log("Cleaning up game resources");
+
+    // Assuming these are pointers
     delete menu;
     delete HandleTwo;
     delete HandleThree;
     delete HandleBulletPackage1;
     delete HandleBulletPackage2;
     delete HandleBulletPackage3;
+
+    // Bullet packages
     for(auto it : bulletPackages)
         delete it;
+    bulletPackages.clear();
+
+    // Bullet icons
     for(auto it : bulletIcons)
         SDL_DestroyTexture(it.second);
+    bulletIcons.clear();
+
+    // Maps
     delete mapAZ_1;
     delete mapAZ_2;
     delete mapAZ_3;
     delete mapAZ_4;
     delete mapAZ_5;
-    delete chosenMap;
 
+    // SDL Textures
     SDL_DestroyTexture(this->startScreenTexture);
     SDL_DestroyTexture(this->tutorialTexture);
     SDL_DestroyTexture(this->someAmmoTypes);
     SDL_DestroyTexture(this->selectNumberOfPlayersTexture);
     SDL_DestroyTexture(this->keyboardShortcuts);
+    SDL_DestroyTexture(this->pausedTexture);
+    
     SDL_DestroyTexture(this->RocketIcon);
     SDL_DestroyTexture(this->GatlingIcon);
     SDL_DestroyTexture(this->TripleBulletIcon);
     SDL_DestroyTexture(this->FastBulletIcon);
+
+    // SDL Mixer
     Mix_FreeMusic(this->backgroundMusic);
     Mix_FreeChunk(this->WinningMusic);
 
+    // SDL TTF
     TTF_CloseFont(this->font);
     TTF_Quit();
+
+    // SDL Renderer
     SDL_DestroyRenderer(renderer);
+
+    // SDL Window
     SDL_DestroyWindow(window);
+
     SDL_Quit();
+    SDL_Log("Game resources cleaned up successfully");
 }
+
+
 void Game::preload()
 {
     initSDL(SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
@@ -473,10 +525,13 @@ void Game::preload()
     this->someAmmoTypes = TextureManager::LoadTexture("assets/PlayScreen/SomeAmmoTypes.png", this->renderer);
     this->selectNumberOfPlayersTexture = TextureManager::LoadTexture("assets/PlayScreen/SelectNumberOfPlayers.png", this->renderer);
     this->keyboardShortcuts = TextureManager::LoadTexture("assets/PlayScreen/KeyboardShortcuts.png", this->renderer);
+    this->pausedTexture = TextureManager::LoadTexture("assets/PlayScreen/Paused.png", this->renderer);
+    
     this->RocketIcon = TextureManager::LoadTexture("assets/BulletPackageIcon/rocket.png", this->renderer);
     this->GatlingIcon = TextureManager::LoadTexture("assets/BulletPackageIcon/gatling.png", this->renderer);
     this->TripleBulletIcon = TextureManager::LoadTexture("assets/BulletPackageIcon/triple.png", this->renderer);
     this->FastBulletIcon = TextureManager::LoadTexture("assets/BulletPackageIcon/fast.png", this->renderer);
+
     this->font = TextManager::LoadText("assets/Fonts/04B_19.TTF");
     this->backgroundMusic = AudioManager::LoadMusic("assets/Sound/Dani Stob - Unstoppable - Loop.wav");
     this->WinningMusic = AudioManager::LoadSound("assets/Sound/Dani Stob - Victory Fanfare.wav");
@@ -490,7 +545,7 @@ void Game::preload()
     bulletIcons["Triple"] = TripleBulletIcon;
     bulletIcons["Fast"] = FastBulletIcon;
 
-    menu = new Menu(this->renderer, &this->event, this->backgroundMusic, this->WinningMusic, this->font, this->startScreenTexture, this->tutorialTexture, this->someAmmoTypes, this->selectNumberOfPlayersTexture, this->keyboardShortcuts);
+    menu = new Menu(this->renderer, &this->event, this->backgroundMusic, this->WinningMusic, this->font, this->startScreenTexture, this->tutorialTexture, this->someAmmoTypes, this->selectNumberOfPlayersTexture, this->keyboardShortcuts, this->pausedTexture);
     menu->PlayBackgroundMusic();
 
     

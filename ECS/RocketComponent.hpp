@@ -45,7 +45,9 @@ class RocketComponent
             int dy = abs(y1 - y2);
             double D = 1.0; // Cost of horizontal/vertical movement
             double D2 = sqrt(2); // Cost of diagonal movement
-            return D * (dx + dy) + (D2 - 2 * D) * min(dx, dy);
+            double Octile = D * (dx + dy) + (D2 - 2 * D) * min(dx, dy);
+            double mahatan = abs(x1 - x2) + abs(y1 - y2);
+            return mahatan;
         } 
         struct CellInfo2 
         {
@@ -276,8 +278,9 @@ class RocketComponent
             if(path.empty() || frameCount % 5 == 0)
             {   
                 path.clear();
-                path = findPathToTarget(rocketdestRect.x, rocketdestRect.y, targetX, targetY);
+                path = findPathToTarget(rocketdestRect.x, rocketdestRect.y , targetX, targetY);
                 pathIndex = 0;
+
                 if(path.empty()) isMove = false;
             }
             

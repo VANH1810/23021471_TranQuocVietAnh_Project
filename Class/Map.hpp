@@ -17,9 +17,9 @@ class Map
         int tileHeight;
         json* mapData;
         TileSet* tileSet;
+        string mapName;
         
     private:
-        string mapName;
         SDL_Renderer *renderer;
 
 };

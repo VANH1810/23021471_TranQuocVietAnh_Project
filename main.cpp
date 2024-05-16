@@ -20,11 +20,11 @@ signed main(int argc, char* argv[])
 
         frameStart = SDL_GetTicks();
         if (game->gamestate != GameState::PAUSED)
-        {
+        { 
             game->update(); 
             game->updateWinner();
-            game->Render();
         }
+        game->Render();
 
         frameTime = SDL_GetTicks() - frameStart;
         if(frameDelay > frameTime)

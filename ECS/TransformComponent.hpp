@@ -7,6 +7,7 @@ class TransformComponent : public Component
     public:
         Vector2D position;
         Vector2D velocity;
+        
         Map* map;
         float rotationSpeed = 0.0f;
         float rotation = 0.0f;

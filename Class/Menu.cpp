@@ -1,7 +1,7 @@
 #pragma once
 #include "menu.hpp"
 
-Menu::Menu(SDL_Renderer* ren, SDL_Event* e, Mix_Music* bg_music, Mix_Chunk* win_music, TTF_Font* f, SDL_Texture* startScreenTexture, SDL_Texture* tutorialTexture, SDL_Texture* someAmmoTypesTexture, SDL_Texture* selectNumberOfPlayersTexture, SDL_Texture* keyboardShortcuts)
+Menu::Menu(SDL_Renderer* ren, SDL_Event* e, Mix_Music* bg_music, Mix_Chunk* win_music, TTF_Font* f, SDL_Texture* startScreenTexture, SDL_Texture* tutorialTexture, SDL_Texture* someAmmoTypesTexture, SDL_Texture* selectNumberOfPlayersTexture, SDL_Texture* keyboardShortcuts, SDL_Texture* pausedTexture)
 {
     this->renderer = ren;
     this->event = e;
@@ -13,7 +13,7 @@ Menu::Menu(SDL_Renderer* ren, SDL_Event* e, Mix_Music* bg_music, Mix_Chunk* win_
     this->tutorialTexture = tutorialTexture;
     this->selectNumberOfPlayersTexture = selectNumberOfPlayersTexture;
     this->keyboardShortcuts = keyboardShortcuts;
-
+    this->pausedTexture = pausedTexture;
 }
         
 void Menu::Render(GameState &gamestate)
@@ -28,6 +28,8 @@ void Menu::Render(GameState &gamestate)
         SDL_RenderCopy(this->renderer, this->keyboardShortcuts, nullptr, nullptr);
     else if(gamestate == GameState::SELECT_NUMBER_OF_PLAYERS)
         SDL_RenderCopy(this->renderer, this->selectNumberOfPlayersTexture, nullptr, nullptr);
+    else if(gamestate == GameState::PAUSED)
+        SDL_RenderCopy(this->renderer, this->pausedTexture, nullptr, nullptr);
 }
 
 void Menu::HandleEvents(GameState &gamestate)
@@ -73,6 +75,23 @@ void Menu::HandleEvents(GameState &gamestate)
             default:
                 break;
         }
+    }
+    else if(event->type == SDL_MOUSEBUTTONDOWN)
+    {
+        int x, y;
+        SDL_GetMouseState(&x, &y);
+        if(gamestate == GameState::START_SCREEN)
+        {
+            if(x >= 860 && x <= 860 + 220 && y >= 876 && y <= 876 + 96) 
+                    gamestate = GameState::TUTORIAL;
+        }
+        if(gamestate == GameState::PAUSED)
+        {
+            if(x >= 860 && x <= 860 + 220 && y >= 876 && y <= 876 + 96) 
+                gamestate = GameState::PLAYING;
+            
+        }
+        
     }
 
 }

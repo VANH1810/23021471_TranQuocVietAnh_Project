@@ -23,11 +23,13 @@ class Game
         SDL_Texture* someAmmoTypes;
         SDL_Texture* selectNumberOfPlayersTexture;
         SDL_Texture* keyboardShortcuts;
+        SDL_Texture* pausedTexture;
 
         SDL_Texture* RocketIcon;
         SDL_Texture* FastBulletIcon;
         SDL_Texture* GatlingIcon;
         SDL_Texture* TripleBulletIcon;
+        
 
         bool isWall(int x, int y);
         bool isOccupied(int x, int y);

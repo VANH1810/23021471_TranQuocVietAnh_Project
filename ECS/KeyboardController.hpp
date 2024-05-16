@@ -106,14 +106,17 @@ class KeyboardController2 : public KeyboardController
 
                     transform->velocity.x = cos(transform->rotation * M_PI / 180.0f) * transform->speed;
                     transform->velocity.y = sin(transform->rotation * M_PI / 180.0f) * transform->speed;
+                    
                 }
                 else if(state[SDL_SCANCODE_DOWN]) 
                 {
                     if(state[SDL_SCANCODE_LEFT]) transform->rotationSpeed = -5.0f;
                     else if(state[SDL_SCANCODE_RIGHT]) transform->rotationSpeed = 5.0f;
                     else transform->rotationSpeed = 0.0f;
+
                     transform->velocity.x = -cos(transform->rotation * M_PI / 180.0f) * transform->speed;
                     transform->velocity.y = -sin(transform->rotation * M_PI / 180.0f) * transform->speed;
+                
                 }
                 else if(state[SDL_SCANCODE_LEFT])
                     transform->rotationSpeed = -5.0f;
