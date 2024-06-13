@@ -36,7 +36,7 @@ Bạn phải sử dụng các nút định hướng để di chuyển xe tăng c
 Hãy làm chủ nghệ thuật ricochets – những cú đánh của bạn có thể bật ra khỏi tường và khiến đối thủ mất cảnh giác. Tiếp tục di chuyển để tránh đạn lạc.
 
 <p align="center">
-  <a href="https://youtu.be/Qsj177toTJE">
+  <a href="https://youtu.be/xeMLchz6kTk?si=QTepSCeT2jgIs8z_">
     <img src="https://github.com/VANH1810/23021471_TranQuocVietAnh_Project/blob/2698191432ae67ad6faf12e42b4962d41951d35d/assets/PlayScreen/StartScreen2.png" alt="AZ TANK GAME: HUNT OR BE HUNTED!">
   </a>
 </p>
