@@ -17,7 +17,6 @@ Bài tập lớn lớp Lập trình nâng cao **2324II_INT2215_22** - **K68CA1**
         <li><a href="#built-with">Built With</a></li>
       </ul>
     </li>
-    <li><a href="#2-ngưỡng-điểm-mong-muốn-9---10">Ngưỡng điểm mong muốn</a></li>
     <li>
       <a href="#3-Các-điểm-nổi-bật-trong-Game">Các điểm nổi bật trong Game</a>
     </li>
@@ -48,12 +47,7 @@ Hãy làm chủ nghệ thuật ricochets – những cú đánh của bạn có 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-## 2. Ngưỡng điểm mong muốn: 9 - 10
-Với quá trình làm bài tập nỗ lực và không ngừng học hỏi của mình, em mong muốn ngưỡng điểm mình đạt được sẽ là 9 - 10đ.
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-## 3. Các điểm nổi bật trong Game
+## 2. Các điểm nổi bật trong Game
 * Xây dựng đạn tên lửa đuổi [Rocket](../ECS/RocketComponent.hpp), tìm đường đi ngắn nhất bằng **Thuật toán BFS, Thuật toán A*** và xây dựng lại đường sử dụng **Linked List**.
 * Tính năng đạn nảy [Bullet](../ECS/BulletComponent.hpp), bằng tính toán vật lý có thể khiến đạn nảy khi gặp phải vật cản.
 * Xây dựng [ECS - Entity Component System](../ECS).
@@ -65,7 +59,7 @@ Với quá trình làm bài tập nỗ lực và không ngừng học hỏi củ
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-## 4. Tham khảo
+## 3. Tham khảo
 
 Mã nguồn mở:
 * C++ nlohmann/json: [json.hpp](https://github.com/nlohmann/json)
@@ -87,7 +81,7 @@ Hình ảnh:
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- CONTACT -->
-## 5. Liên hệ
+## 4. Liên hệ
 
 * Facebook: [Tran Quoc Viet Anh](https://www.facebook.com/quocvietanh.tran/)
 * SĐT: 0981 181 005
