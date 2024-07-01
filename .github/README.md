@@ -1,8 +1,4 @@
 # AZ TANK GAME: HUNT OR BE HUNTED!
-Bài tập lớn lớp Lập trình nâng cao **2324II_INT2215_22** - **K68CA1**
-
-## **Họ và tên: [Trần Quốc Việt Anh](https://github.com/VANH1810)** / **Mã số sinh viên: 23021471**
-
 
 <div id="readme-top"></div>
 <!-- TABLE OF CONTENTS -->
